@@ -1,15 +1,20 @@
 import { useContext } from "react"
 import { Link } from "react-router-dom"
 import { UserContext } from "../../providers/UserProvider"
+import { KTIcon } from "../../../_metronic/helpers"
 
 const UserActionCell = ({ user }: any) => {
   const { setIdForUpdate, setIdForDelete } = useContext(UserContext)
 
   return (
-    <>
-      <button className="btn p-0 me-2" onClick={() => setIdForUpdate(user?.id)}><i className="bi bi-arrow-counterclockwise fs-3 text-warning"></i></button>
-      <button className="btn p-0 me-2" onClick={() => setIdForDelete(user?.id)}><i className="bi bi-slash-circle fs-6 text-danger"></i></button>
-    </>
+    <div className='d-flex justify-content-end flex-shrink-0'>
+      <button className="btn btn-icon btn-bg-light btn-active-color-primary btn-sm me-1" onClick={() => setIdForUpdate(user?.id)}>
+        <KTIcon iconName='pencil' className='fs-3' />
+      </button>
+      <button className="btn btn-icon btn-bg-light btn-active-color-primary btn-sm" onClick={() => setIdForDelete(user?.id)}>
+        <KTIcon iconName='trash' className='fs-3' />
+      </button>
+    </div>
   )
 }
 

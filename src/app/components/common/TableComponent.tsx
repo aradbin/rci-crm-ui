@@ -22,7 +22,7 @@ const TableLayout = ({
                 <thead>
                     <tr className='fw-bold text-muted'>
                         {headers.map((column: any) => (
-                            <th className={column.id==='action' ? 'text-end' : ''} {...column.getHeaderProps()}>{column.render('Header')}</th>
+                            <th className={column.id==='Actions' ? 'text-end' : ''} {...column.getHeaderProps()}>{column.render('Header')}</th>
                         ))}
                     </tr>
                 </thead>

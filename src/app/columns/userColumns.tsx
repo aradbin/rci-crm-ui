@@ -1,30 +1,28 @@
+import { toAbsoluteUrl } from "../../_metronic/helpers"
 import { UserActionCell } from "../components/cells/UserActionCell"
 import { formatDate } from "../helpers/Utils"
 
 export const userColumns = [
   {
-    Header: "Employee ID",
-    accessor: "employee_id"
-  },
-  {
     Header: "Name",
-    accessor: "name"
+    Cell: ({ row }: any) => { return (
+      <div className='d-flex align-items-center'>
+        <div className='symbol symbol-30px me-5'>
+          <img src={row?.original?.avatar || toAbsoluteUrl('/media/avatars/blank.png')} alt='Avatar' />
+        </div>
+        <div className='d-flex justify-content-start flex-column'>
+          <a href='#' className='text-dark fw-bold text-hover-primary fs-7'>{row?.original?.name}</a>
+        </div>
+      </div>
+    )}
   },
   {
-    Header: "Team Lead",
-    Cell: ({ row }: any) => row?.original?.team_user[0]?.team?.team_users[0]?.user?.name
+    Header: "Email",
+    accessor: "email",
   },
   {
-    Header: "Designation",
-    accessor: "designation.name",
-  },
-  {
-    Header: "City",
-    accessor: "city.name"
-  },
-  {
-    Header: "Team Type",
-    accessor: "team_type.name"
+    Header: "Contact",
+    accessor: "contact"
   },
   {
     Header: "Created On",
