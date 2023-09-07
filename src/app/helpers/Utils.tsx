@@ -19,7 +19,7 @@ const formatDate = (value: any, type="") => {
     if(type==='input'){
       return moment(value).format('YYYY-MM-DD')
     }
-    return moment(value).format('DD/MM/YYYY')
+    return moment(value).format('DD-MM-YYYY')
   }
   return ""
 }

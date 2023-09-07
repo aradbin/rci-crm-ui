@@ -34,7 +34,13 @@ import {AuthProvider, setupAxios} from './app/modules/auth'
 setupAxios(axios)
 Chart.register(...registerables)
 
-const queryClient = new QueryClient()
+const queryClient = new QueryClient({
+  defaultOptions: {
+    queries: {
+      refetchOnWindowFocus: false
+    },
+  },
+})
 const container = document.getElementById('root')
 if (container) {
   createRoot(container).render(

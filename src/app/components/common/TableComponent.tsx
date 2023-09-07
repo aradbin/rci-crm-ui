@@ -16,26 +16,24 @@ const TableLayout = ({
         <div className='table-responsive'>
             <table
                 id='kt_table_users'
-                className='table align-middle table-striped table-hover fs-6 gy-5 dataTable no-footer'
+                className='table table-row-dashed table-row-gray-300 align-middle gs-0'
                 {...getTableProps()}
             >
                 <thead>
-                    <tr className='table-active text-center text-primary fw-bolder gs-0'>
+                    <tr className='fw-bold text-muted'>
                         {headers.map((column: any) => (
-                            <th className='px-4' {...column.getHeaderProps()}>{column.render('Header')}</th>
+                            <th className={column.id==='action' ? 'text-end' : ''} {...column.getHeaderProps()}>{column.render('Header')}</th>
                         ))}
                     </tr>
                 </thead>
-                <tbody className='fw-semibold' {...getTableBodyProps()}>
+                <tbody {...getTableBodyProps()}>
                     {rows.length > 0 ? (
                         rows.map((row: any, i: number) => {
                             prepareRow(row)
-                            return <tr className='text-center' {...row.getRowProps()}>
+                            return <tr {...row.getRowProps()}>
                                 {row.cells.map((cell: any) => {
                                     return (
-                                        <td className='px-4'
-                                            {...cell.getCellProps()}
-                                        >
+                                        <td className="text-dark fw-semibold fs-7" {...cell.getCellProps()}>
                                             {cell.render('Cell')}
                                         </td>
                                     )
