@@ -4,18 +4,25 @@ import { userColumns } from "../../columns/userColumns"
 import { TableComponent } from "../../components/common/TableComponent"
 import { USERS_URL } from "../../helpers/ApiEndpoints"
 import { UserProvider } from "../../providers/UserProvider"
+import { UserCreateForm } from "../../components/forms/UserCreateForm"
 
 const UserToolbar = () => {
+    const [showCreate, setShowCreate] = useState(false)
+    const toggleShowCreate = (show: boolean) => {
+        setShowCreate(show)
+    }
+
     return (
         <div className='card-header border-0 pt-5'>
             <h3 className='card-title align-items-start flex-column'>
                 <span className='card-label fw-bold fs-3 mb-1'>Users List</span>
             </h3>
             <div className='card-toolbar'>
-                <button className='btn btn-sm btn-light-primary' data-bs-toggle='modal' data-bs-target='#kt_modal_invite_friends'>
+                <button className='btn btn-sm btn-light-primary' onClick={() => toggleShowCreate(true)}>
                     <KTIcon iconName='plus' className='fs-3' /> Create User
                 </button>
             </div>
+            <UserCreateForm show={showCreate} toggleShow={toggleShowCreate} />
         </div>
     );
 }
