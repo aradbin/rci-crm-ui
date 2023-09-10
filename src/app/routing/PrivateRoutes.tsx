@@ -17,9 +17,7 @@ const PrivateRoutes = () => {
         {/* Pages */}
         <Route path='dashboard' element={<DashboardWrapper />} />
         {/* Lazy Modules */}
-        <Route
-          path='users'
-          element={
+        <Route path='users' element={
             <SuspensedView>
               <UsersPage />
             </SuspensedView>

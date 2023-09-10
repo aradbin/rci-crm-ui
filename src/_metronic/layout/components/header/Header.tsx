@@ -1,6 +1,6 @@
 import {FC, useEffect} from 'react'
 import {ILayout, useLayout} from '../../core'
-import {MenuInner} from './header-menus'
+// import {MenuInner} from './header-menus'
 
 const Header: FC = () => {
   const {config} = useLayout()
