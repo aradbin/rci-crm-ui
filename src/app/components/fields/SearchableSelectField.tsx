@@ -32,7 +32,7 @@ export const SearchableSelectField = ({
     }
 
     return (
-        <div className={`mb-4 ${formStyle==='inline' && 'form-group row'}`}>
+        <div className={`mb-7 ${formStyle==='inline' && 'form-group row'}`}>
             <label className={`${required} fw-bold mb-2 ${size==='sm' ? 'fs-7' : 'fs-6'} ${formStyle==='inline' && 'col-sm-3 col-form-label'} ${(size==='sm' && formStyle==='inline') && 'pt-3'}`}>{label}</label>
 
             {formStyle==='inline' ? 
@@ -41,9 +41,8 @@ export const SearchableSelectField = ({
                         name={field.name}
                         className={clsx(
                             'mb-3 mb-lg-0',
-                            {'w-300px': !size},
+                            {'w-100': !size || size==='lg'},
                             {'w-200px': size==='sm'},
-                            {'w-100': size==='lg'},
                             // {'is-invalid': touched[field.name] && errors[field.name]},
                             // {'is-valid': touched[field.name] && !errors[field.name]},
                         )}
@@ -59,9 +58,8 @@ export const SearchableSelectField = ({
                     name={field.name}
                     className={clsx(
                         'mb-3 mb-lg-0',
-                        {'w-300px': !size},
+                        {'w-100': !size || size==='lg'},
                         {'w-200px': size==='sm'},
-                        {'w-100': size==='lg'},
                         // {'is-invalid': touched[field.name] && errors[field.name]},
                         // {'is-valid': touched[field.name] && !errors[field.name]},
                     )}

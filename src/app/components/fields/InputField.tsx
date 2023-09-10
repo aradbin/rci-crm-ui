@@ -22,9 +22,8 @@ export const InputField = ({
                         type={type}
                         className={clsx(
                             'form-control mb-3 mb-lg-0',
-                            {'w-300px': !size},
-                            {'form-control-sm': size==='sm'},
-                            {'w-200px': size==='sm'},
+                            {'w-100': !size},
+                            {'w-200px form-control-sm': size==='sm'},
                             {'is-invalid': touched[field.name] && errors[field.name]},
                             // {'is-valid': touched[field.name] && !errors[field.name]},
                         )}
@@ -38,9 +37,8 @@ export const InputField = ({
                     type={type}
                     className={clsx(
                         'form-control mb-3 mb-lg-0',
-                        {'w-300px': !size},
-                        {'form-control-sm': size==='sm'},
-                        {'w-200px': size==='sm'},
+                        {'w-100': !size},
+                        {'w-200px form-control-sm': size==='sm'},
                         {'is-invalid': touched[field.name] && errors[field.name]},
                         // {'is-valid': touched[field.name] && !errors[field.name]},
                     )}
