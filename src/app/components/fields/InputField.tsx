@@ -20,10 +20,8 @@ export const InputField = ({
                         {...field}
                         placeholder={placeholder || label}
                         type={type}
-                        className={clsx(
-                            'form-control mb-3 mb-lg-0',
-                            {'w-100': !size},
-                            {'w-200px form-control-sm': size==='sm'},
+                        className={clsx('form-control mb-3 mb-lg-0',
+                            {'form-control-sm': size==='sm'},
                             {'is-invalid': touched[field.name] && errors[field.name]},
                             // {'is-valid': touched[field.name] && !errors[field.name]},
                         )}
@@ -35,10 +33,8 @@ export const InputField = ({
                     {...field}
                     placeholder={placeholder || label}
                     type={type}
-                    className={clsx(
-                        'form-control mb-3 mb-lg-0',
-                        {'w-100': !size},
-                        {'w-200px form-control-sm': size==='sm'},
+                    className={clsx('form-control mb-3 mb-lg-0',
+                        {'form-control-sm': size==='sm'},
                         {'is-invalid': touched[field.name] && errors[field.name]},
                         // {'is-valid': touched[field.name] && !errors[field.name]},
                     )}

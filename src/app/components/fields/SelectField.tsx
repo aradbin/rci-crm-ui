@@ -17,10 +17,8 @@ export const SelectField = ({
                 <div className="col-sm-9">
                     <select
                         {...field}
-                        className={clsx(
-                            'form-select mb-3 mb-lg-0',
-                            {'w-100': !size},
-                            {'w-200px form-select-sm': size==='sm'},
+                        className={clsx('form-select mb-3 mb-lg-0',
+                            {'form-select-sm': size==='sm'},
                             {'is-invalid': touched[field.name] && errors[field.name]},
                             // {'is-valid': touched[field.name] && !errors[field.name]},
                         )}
@@ -35,10 +33,8 @@ export const SelectField = ({
             :
                 <select
                     {...field}
-                    className={clsx(
-                        'form-select mb-3 mb-lg-0',
-                        {'w-100': !size},
-                        {'w-200px form-select-sm': size==='sm'},
+                    className={clsx('form-select mb-3 mb-lg-0',
+                        {'form-select-sm': size==='sm'},
                         {'is-invalid': touched[field.name] && errors[field.name]},
                         // {'is-valid': touched[field.name] && !errors[field.name]},
                     )}

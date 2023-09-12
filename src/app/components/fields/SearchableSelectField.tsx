@@ -39,10 +39,7 @@ export const SearchableSelectField = ({
                 <div className="col-sm-9">
                     <Select
                         name={field.name}
-                        className={clsx(
-                            'mb-3 mb-lg-0',
-                            {'w-100': !size || size==='lg'},
-                            {'w-200px': size==='sm'},
+                        className={clsx('mb-3 mb-lg-0',
                             // {'is-invalid': touched[field.name] && errors[field.name]},
                             // {'is-valid': touched[field.name] && !errors[field.name]},
                         )}
@@ -56,10 +53,7 @@ export const SearchableSelectField = ({
             : 
                 <Select
                     name={field.name}
-                    className={clsx(
-                        'mb-3 mb-lg-0',
-                        {'w-100': !size || size==='lg'},
-                        {'w-200px': size==='sm'},
+                    className={clsx('mb-3 mb-lg-0',
                         // {'is-invalid': touched[field.name] && errors[field.name]},
                         // {'is-valid': touched[field.name] && !errors[field.name]},
                     )}

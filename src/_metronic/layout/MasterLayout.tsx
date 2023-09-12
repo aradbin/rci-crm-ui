@@ -10,6 +10,9 @@ import {ActivityDrawer, DrawerMessenger, InviteUsers, UpgradePlan} from '../part
 import {PageDataProvider} from './core'
 import {reInitMenu} from '../helpers'
 import {ToolbarWrapper} from './components/toolbar'
+import { ToastContainer } from 'react-toastify'
+
+import 'react-toastify/dist/ReactToastify.css'
 
 const MasterLayout = () => {
   const location = useLocation()
@@ -48,6 +51,18 @@ const MasterLayout = () => {
       <UpgradePlan />
       {/* end:: Modals */}
       <ScrollTop />
+      <ToastContainer
+          position="bottom-center"
+          autoClose={5000}
+          hideProgressBar={false}
+          newestOnTop
+          closeOnClick
+          rtl={false}
+          pauseOnFocusLoss
+          draggable
+          pauseOnHover
+          theme="colored"
+        />
     </PageDataProvider>
   )
 }
