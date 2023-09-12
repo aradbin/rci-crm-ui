@@ -1,12 +1,18 @@
 import { Field, FormikProvider, useFormik } from "formik"
 import * as Yup from 'yup'
-import { createRequest } from "../../helpers/Requests"
+import { createRequest, getRequest, updateRequest } from "../../helpers/Requests"
 import { USERS_URL } from "../../helpers/ApiEndpoints"
 import { InputField } from "../fields/InputField"
 import { Modal } from "react-bootstrap"
 import { toast } from "react-toastify"
+import { useContext, useEffect, useState } from "react"
+import { UserContext } from "../../providers/UserProvider"
+import { Loading } from "../common/Loading"
 
-const UserCreateForm = ({show, toggleShow, updateList}: any) => {    
+const UserCreateForm = ({show, toggleShow, updateList}: any) => {
+    const [loading, setLoading] = useState(false)
+    const { idForUpdate, setIdForUpdate } = useContext(UserContext)
+
     const formik = useFormik({
         initialValues: {
             name: "",
@@ -18,20 +24,31 @@ const UserCreateForm = ({show, toggleShow, updateList}: any) => {
             name: Yup.string().required('Name is required'),
             email: Yup.string().required('Email is required').email('Please provide valid email address'),
             contact: Yup.string().required('Contact is required'),
-            password: Yup.string().required('Password is required'),
+            password: Yup.string().when({
+                is: () => idForUpdate === 0,
+                then: (schema) => schema.required('Password is required')
+            }),
         }),
         onSubmit: async (values, {setSubmitting, resetForm}) => {
             setSubmitting(true)
             try {
-                await createRequest(USERS_URL,values).then((response) => {
-                    console.log(response)
-                    if(response?.status===201){
-                        toast.success('User Created Successfully')
-                        resetForm()
-                        updateList()
-                        toggleShow(false)
-                    }
-                })
+                if(idForUpdate === 0){
+                    await createRequest(USERS_URL,values).then((response) => {
+                        if(response?.status===201){
+                            toast.success('User Created Successfully')
+                            updateList()
+                            closeModal()
+                        }
+                    })
+                }else{
+                    await updateRequest(`${USERS_URL}/${idForUpdate}`,values).then((response) => {
+                        if(response?.status===200){
+                            toast.success('User Updated Successfully')
+                            updateList()
+                            closeModal()
+                        }
+                    })
+                }
             } catch (ex) {
                 console.error(ex)
             } finally {
@@ -40,9 +57,24 @@ const UserCreateForm = ({show, toggleShow, updateList}: any) => {
         },
     })
 
+    useEffect(() => {
+        if(idForUpdate > 0){
+            toggleShow(true)
+            setLoading(true)
+            getRequest(`${USERS_URL}/${idForUpdate}`).then((response) => {
+                formik.setFieldValue("name",response.name)
+                formik.setFieldValue("email",response.email)
+                formik.setFieldValue("contact",response.contact)
+            }).finally(() => {
+                setLoading(false)
+            })
+        }
+    },[idForUpdate])
+
     const closeModal = () => {
-        toggleShow(false)
         formik.resetForm()
+        toggleShow(false)
+        setIdForUpdate(0)
     }
 
     return (
@@ -82,14 +114,14 @@ const UserCreateForm = ({show, toggleShow, updateList}: any) => {
                                     component={InputField}
                                     size="sm"
                                 />
-                                <Field
+                                {idForUpdate === 0 && <Field
                                     label="Password"
                                     name="password"
                                     type="password"
                                     required="required"
                                     component={InputField}
                                     size="sm"
-                                />
+                                />}
                             </div>
                         </div>
                         <div className="modal-footer">
@@ -110,6 +142,7 @@ const UserCreateForm = ({show, toggleShow, updateList}: any) => {
                     </form>
                 </FormikProvider>
             </div>
+            {loading && <Loading />}
         </Modal>
     )
 }
