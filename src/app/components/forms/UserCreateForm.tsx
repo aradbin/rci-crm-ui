@@ -4,9 +4,7 @@ import { createRequest } from "../../helpers/Requests"
 import { USERS_URL } from "../../helpers/ApiEndpoints"
 import { InputField } from "../fields/InputField"
 import { Modal } from "react-bootstrap"
-import { useEffect } from "react"
 import { toast } from "react-toastify"
-import { KTIcon } from "../../../_metronic/helpers"
 
 const UserCreateForm = ({show, toggleShow, updateList}: any) => {    
     const formik = useFormik({
@@ -18,15 +16,16 @@ const UserCreateForm = ({show, toggleShow, updateList}: any) => {
         },
         validationSchema: Yup.object().shape({
             name: Yup.string().required('Name is required'),
-            email: Yup.string().required('Email is required'),
+            email: Yup.string().required('Email is required').email('Please provide valid email address'),
             contact: Yup.string().required('Contact is required'),
             password: Yup.string().required('Password is required'),
         }),
         onSubmit: async (values, {setSubmitting, resetForm}) => {
             setSubmitting(true)
             try {
-                await createRequest(USERS_URL,values).then(async (response) => {
-                    if(response?.status===201 && response?.data?.id){
+                await createRequest(USERS_URL,values).then((response) => {
+                    console.log(response)
+                    if(response?.status===201){
                         toast.success('User Created Successfully')
                         resetForm()
                         updateList()
@@ -47,16 +46,16 @@ const UserCreateForm = ({show, toggleShow, updateList}: any) => {
     }
 
     return (
-        <Modal className="fade" aria-hidden='true' show={show}>
+        <Modal className="fade" aria-hidden='true' show={show} centered animation>
             <div className="modal-content">
                 <div className='modal-header'>
                     <h2 className='fw-bolder'>Create User</h2>
                     <div className='btn btn-icon btn-sm btn-active-icon-primary' onClick={() => closeModal()}>
-                        <KTIcon iconName='cross' className='fs-1' />
+                        <i className="fa fa-times fs-2"></i>
                     </div>
                 </div>
                 <FormikProvider value={formik}>
-                    <form className='form' onSubmit={formik.handleSubmit} noValidate>
+                    <form className="form" onSubmit={formik.handleSubmit} noValidate>
                         <div className="modal-body scroll-y mx-2 mx-xl-2 my-2">
                             <div className='d-flex flex-column'>
                                 <Field
@@ -91,22 +90,22 @@ const UserCreateForm = ({show, toggleShow, updateList}: any) => {
                                     component={InputField}
                                     size="sm"
                                 />
-                                <div>
-                                    <button type="submit" className="btn btn-sm btn-primary w-150px me-3" disabled={formik.isSubmitting}>
-                                        {formik.isSubmitting ? (
-                                            <span>
-                                                Please wait...{' '}
-                                                <span className='spinner-border spinner-border-sm align-middle ms-2'></span>
-                                            </span>
-                                        ) : (
-                                            <span>Submit</span>
-                                        )}
-                                    </button>
-                                    <button type="button" className='btn btn-sm btn-outline btn-light w-150px' aria-disabled={formik.isSubmitting} onClick={closeModal}>
-                                        Cancel
-                                    </button>
-                                </div>
                             </div>
+                        </div>
+                        <div className="modal-footer">
+                            <button type="submit" className="btn btn-sm btn-primary w-125px me-3" disabled={formik.isSubmitting}>
+                                {formik.isSubmitting ? (
+                                    <span>
+                                        Please wait {' '}
+                                        <span className='spinner-border spinner-border-sm align-middle ms-2'></span>
+                                    </span>
+                                ) : (
+                                    <span>Submit</span>
+                                )}
+                            </button>
+                            <button type="button" className='btn btn-sm btn-outline btn-light w-125px' aria-disabled={formik.isSubmitting} onClick={closeModal}>
+                                Cancel
+                            </button>
                         </div>
                     </form>
                 </FormikProvider>
