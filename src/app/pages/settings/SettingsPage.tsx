@@ -1,12 +1,10 @@
 import { useState } from "react"
-import { KTCard, KTCardBody, KTIcon } from "../../../_metronic/helpers"
+import { KTCard, KTCardBody } from "../../../_metronic/helpers"
 import { userColumns } from "../../columns/userColumns"
 import { TableComponent } from "../../components/common/TableComponent"
-import { SETTINGS_URL, USERS_URL } from "../../helpers/ApiEndpoints"
+import { SETTINGS_URL } from "../../helpers/ApiEndpoints"
 import { UserProvider } from "../../providers/UserProvider"
 import { UserCreateForm } from "../../components/forms/UserCreateForm"
-import { Dropdown1 } from "../../../_metronic/partials"
-import { PageTitleComponent } from "../../components/common/PageTitleComponent"
 import { ToolbarComponent } from "../../components/common/ToolbarComponent"
 
 const breadCrumbs = [
@@ -28,7 +26,7 @@ const SettingsPage = () => {
 
     return (
         <UserProvider>
-            <ToolbarComponent breadCrumbs={breadCrumbs} handleButtonClick={toggleShowCreate}>
+            <ToolbarComponent title="Department" breadCrumbs={breadCrumbs} handleButtonClick={toggleShowCreate}>
             </ToolbarComponent>
             <KTCard className="mb-5 mb-xl-8">
                 <KTCardBody className='py-3'>

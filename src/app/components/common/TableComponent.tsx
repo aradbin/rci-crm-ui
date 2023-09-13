@@ -110,7 +110,7 @@ const TableComponent = ({queryKey, url, params, columns, refetch, canExpand=''}:
       <>
         <TableInstance tableData={tableData || []} tableColumns={columns} />
         {(isLoading || isFetching) && <LoadingComponent />}
-        <PaginationComponent page={page} pageSize={pageSize} count={data?.totalCount} updatePage={updatePage} updatePageSize={updatePageSize} />
+        <PaginationComponent page={page} pageSize={pageSize} count={data?.total} updatePage={updatePage} updatePageSize={updatePageSize} />
       </>
     );
 }

@@ -1,11 +1,11 @@
 import { KTIcon } from "../../../_metronic/helpers"
 import { PageTitleComponent } from "./PageTitleComponent"
 
-const ToolbarComponent = ({breadCrumbs, handleButtonClick, children}) => {
+const ToolbarComponent = ({title, breadCrumbs, handleButtonClick, children}) => {
     return (
         <div id="kt_app_toolbar" className='app-toolbar pb-3 pb-lg-6'>
             <div id="kt_app_toolbar_container" className='d-flex flex-stack container-fluid p-0'>
-                <PageTitleComponent pageTitle="Settings" pageBreadcrumbs={breadCrumbs} />
+                <PageTitleComponent pageTitle={title} pageBreadcrumbs={breadCrumbs} />
                 <div className='d-flex align-items-center gap-2 gap-lg-3'>
                     {children && <div className='m-0'>
                         <a href='#' className='btn btn-sm btn-flex fw-bold bg-body btn-color-gray-700 btn-active-color-primary' data-kt-menu-trigger='click' data-kt-menu-placement='bottom-end'>
