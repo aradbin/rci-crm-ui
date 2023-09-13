@@ -6,6 +6,8 @@ import { USERS_URL } from "../../helpers/ApiEndpoints"
 import { UserProvider } from "../../providers/UserProvider"
 import { UserCreateForm } from "../../components/forms/UserCreateForm"
 import { ToolbarComponent } from "../../components/common/ToolbarComponent"
+import { UserFilter } from "../../components/filters/UserFilter"
+import { stringifyRequestQuery } from "../../helpers/Utils"
 
 const breadCrumbs = [
     { title: 'User Management', path: '/users', isSeparator: false },
@@ -17,9 +19,14 @@ const UsersPage = () => {
     const [refetch, setRefetch] = useState(0)
     const [showCreate, setShowCreate] = useState(false)
 
+    const handleFilterSubmit = (values: any) => {
+        setParams(stringifyRequestQuery({...values}))
+    }
+
     const toggleShowCreate = (show: boolean) => {
         setShowCreate(show)
     }
+
     const updateList = () => {
         setRefetch(refetch+1)
     }
@@ -27,6 +34,7 @@ const UsersPage = () => {
     return (
         <UserProvider>
             <ToolbarComponent title="Users" breadCrumbs={breadCrumbs} handleButtonClick={toggleShowCreate}>
+                <UserFilter submit={handleFilterSubmit}/>
             </ToolbarComponent>
             <KTCard className="mb-5 mb-xl-8">
                 <KTCardBody className='py-3'>
