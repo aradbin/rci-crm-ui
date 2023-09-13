@@ -5,6 +5,7 @@ import TopBarProgress from 'react-topbar-progress-indicator'
 import {DashboardWrapper} from '../pages/dashboard/DashboardWrapper'
 import {getCSSVariableValue} from '../../_metronic/assets/ts/_utils'
 import {WithChildren} from '../../_metronic/helpers'
+import SettingsPage from '../pages/settings/SettingsPage'
 
 const PrivateRoutes = () => {
   const UsersPage = lazy(() => import('../pages/user/UsersPage'))
@@ -16,6 +17,7 @@ const PrivateRoutes = () => {
         <Route path='auth/*' element={<Navigate to='/dashboard' />} />
         {/* Pages */}
         <Route path='dashboard' element={<DashboardWrapper />} />
+
         {/* Lazy Modules */}
         <Route path='users' element={
             <SuspensedView>
@@ -23,6 +25,13 @@ const PrivateRoutes = () => {
             </SuspensedView>
           }
         />
+        <Route path='settings' element={
+            <SuspensedView>
+              <SettingsPage />
+            </SuspensedView>
+          }
+        />
+
         {/* Page Not Found */}
         <Route path='*' element={<Navigate to='/error/404' />} />
       </Route>
