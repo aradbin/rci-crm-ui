@@ -7,7 +7,7 @@ import { Modal } from "react-bootstrap"
 import { toast } from "react-toastify"
 import { useContext, useEffect, useState } from "react"
 import { UserContext } from "../../providers/UserProvider"
-import { Loading } from "../common/Loading"
+import { LoadingComponent } from "../common/LoadingComponent"
 
 const UserCreateForm = ({show, toggleShow, updateList}: any) => {
     const [loading, setLoading] = useState(false)
@@ -142,7 +142,7 @@ const UserCreateForm = ({show, toggleShow, updateList}: any) => {
                     </form>
                 </FormikProvider>
             </div>
-            {loading && <Loading />}
+            {loading && <LoadingComponent />}
         </Modal>
     )
 }

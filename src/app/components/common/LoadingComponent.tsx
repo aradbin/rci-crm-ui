@@ -1,4 +1,4 @@
-const Loading = () => {
+const LoadingComponent = () => {
     const styles = {
       borderRadius: '0.475rem',
       boxShadow: '0 0 50px 0 rgb(82 63 105 / 15%)',
@@ -18,4 +18,4 @@ const Loading = () => {
       </div>)
 }
 
-export { Loading }
+export { LoadingComponent }

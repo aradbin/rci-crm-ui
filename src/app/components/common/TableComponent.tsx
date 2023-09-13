@@ -2,7 +2,7 @@ import { useEffect, useMemo, useState } from "react";
 import { useQueryClient } from "react-query";
 import { useExpanded, useTable } from "react-table";
 import { Query } from "../../helpers/Queries";
-import { Loading } from "./Loading";
+import { LoadingComponent } from "./LoadingComponent";
 import { PaginationComponent } from "./PaginationComponent";
 
 const TableLayout = ({
@@ -109,7 +109,7 @@ const TableComponent = ({queryKey, url, params, columns, refetch, canExpand=''}:
     return (
       <>
         <TableInstance tableData={tableData || []} tableColumns={columns} />
-        {(isLoading || isFetching) && <Loading />}
+        {(isLoading || isFetching) && <LoadingComponent />}
         <PaginationComponent page={page} pageSize={pageSize} count={data?.totalCount} updatePage={updatePage} updatePageSize={updatePageSize} />
       </>
     );
