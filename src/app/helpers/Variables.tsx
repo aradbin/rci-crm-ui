@@ -1,6 +1,6 @@
-// Test
-const test = [
-    { id: 1, name: 'Test' },
+const settings = [
+    { label: 'Departments', value: 'department' },
+    { label: 'Designations', value: 'designation' },
 ]
 
-export { test }
+export { settings }
