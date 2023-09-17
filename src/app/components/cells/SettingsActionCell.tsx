@@ -10,9 +10,9 @@ const SettingsActionCell = ({ item }: any) => {
       <button className="btn btn-icon btn-bg-light btn-active-color-primary btn-sm me-1" onClick={() => setIdForUpdate(item?.id)}>
         <KTIcon iconName='pencil' className='fs-3' />
       </button>
-      <button className="btn btn-icon btn-bg-light btn-active-color-primary btn-sm" onClick={() => setIdForDelete(item?.id)}>
+      {/* <button className="btn btn-icon btn-bg-light btn-active-color-primary btn-sm" onClick={() => setIdForDelete(item?.id)}>
         <KTIcon iconName='trash' className='fs-3' />
-      </button>
+      </button> */}
     </div>
   )
 }
