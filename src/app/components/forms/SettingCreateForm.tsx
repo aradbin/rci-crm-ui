@@ -1,49 +1,42 @@
 import { Field, FormikProvider, useFormik } from "formik"
 import * as Yup from 'yup'
 import { createRequest, getRequest, updateRequest } from "../../helpers/Requests"
-import { USERS_URL } from "../../helpers/ApiEndpoints"
+import { SETTINGS_URL } from "../../helpers/ApiEndpoints"
 import { InputField } from "../fields/InputField"
 import { Modal } from "react-bootstrap"
 import { toast } from "react-toastify"
 import { useContext, useEffect, useState } from "react"
-import { UserContext } from "../../providers/UserProvider"
 import { LoadingComponent } from "../common/LoadingComponent"
+import { firstLetterUpper } from "../../helpers/Utils"
+import { SettingsContext } from "../../providers/SettingsProvider"
 
-const UserCreateForm = ({show, toggleShow, updateList}: any) => {
+const SettingCreateForm = ({show, toggleShow, updateList, type}: any) => {
     const [loading, setLoading] = useState(false)
-    const { idForUpdate, setIdForUpdate } = useContext(UserContext)
+    const { idForUpdate, setIdForUpdate } = useContext(SettingsContext)
 
     const formik = useFormik({
         initialValues: {
             name: "",
-            email: "",
-            contact: "",
-            password: "",
         },
         validationSchema: Yup.object().shape({
             name: Yup.string().required('Name is required'),
-            email: Yup.string().required('Email is required').email('Please provide valid email address'),
-            contact: Yup.string().required('Contact is required'),
-            password: Yup.string().when({
-                is: () => idForUpdate === 0,
-                then: (schema) => schema.required('Password is required')
-            }),
         }),
         onSubmit: async (values, {setSubmitting}) => {
             setSubmitting(true)
             try {
+                const formData = {...values, type: type}
                 if(idForUpdate === 0){
-                    await createRequest(USERS_URL,values).then((response) => {
+                    await createRequest(SETTINGS_URL,formData).then((response) => {
                         if(response?.status===201){
-                            toast.success('User Created Successfully')
+                            toast.success(`${firstLetterUpper(type)} Created Successfully`)
                             updateList()
                             closeModal()
                         }
                     })
                 }else{
-                    await updateRequest(`${USERS_URL}/${idForUpdate}`,values).then((response) => {
+                    await updateRequest(`${SETTINGS_URL}/${idForUpdate}`,formData).then((response) => {
                         if(response?.status===200){
-                            toast.success('User Updated Successfully')
+                            toast.success(`${firstLetterUpper(type)} Updated Successfully`)
                             updateList()
                             closeModal()
                         }
@@ -61,10 +54,8 @@ const UserCreateForm = ({show, toggleShow, updateList}: any) => {
         if(idForUpdate > 0){
             toggleShow(true)
             setLoading(true)
-            getRequest(`${USERS_URL}/${idForUpdate}`).then((response) => {
+            getRequest(`${SETTINGS_URL}/${idForUpdate}`).then((response) => {
                 formik.setFieldValue("name",response.name)
-                formik.setFieldValue("email",response.email)
-                formik.setFieldValue("contact",response.contact)
             }).finally(() => {
                 setLoading(false)
             })
@@ -81,7 +72,7 @@ const UserCreateForm = ({show, toggleShow, updateList}: any) => {
         <Modal className="fade" aria-hidden='true' show={show} centered animation>
             <div className="modal-content">
                 <div className='modal-header'>
-                    <h2 className='fw-bolder'>{idForUpdate === 0 ? 'Create' : 'Update'} User</h2>
+                    <h2 className='fw-bolder'>{idForUpdate === 0 ? 'Create' : 'Update'} {firstLetterUpper(type)}</h2>
                     <div className='btn btn-icon btn-sm btn-active-icon-primary' onClick={() => closeModal()}>
                         <i className="fa fa-times fs-2"></i>
                     </div>
@@ -98,30 +89,6 @@ const UserCreateForm = ({show, toggleShow, updateList}: any) => {
                                     component={InputField}
                                     size="sm"
                                 />
-                                <Field
-                                    label="Email"
-                                    name="email"
-                                    type="email"
-                                    required="required"
-                                    component={InputField}
-                                    size="sm"
-                                />
-                                <Field
-                                    label="Contact"
-                                    name="contact"
-                                    type="text"
-                                    required="required"
-                                    component={InputField}
-                                    size="sm"
-                                />
-                                {idForUpdate === 0 && <Field
-                                    label="Password"
-                                    name="password"
-                                    type="password"
-                                    required="required"
-                                    component={InputField}
-                                    size="sm"
-                                />}
                             </div>
                         </div>
                         <div className="modal-footer">
@@ -147,4 +114,4 @@ const UserCreateForm = ({show, toggleShow, updateList}: any) => {
     )
 }
 
-export {UserCreateForm}
+export {SettingCreateForm}

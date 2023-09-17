@@ -24,4 +24,8 @@ const formatDate = (value: any, type="") => {
   return ""
 }
 
-export { stringifyRequestQuery, formatDate }
+const firstLetterUpper = (string: string) => {
+  return string.charAt(0).toUpperCase() + string.slice(1);
+}
+
+export { stringifyRequestQuery, formatDate, firstLetterUpper }
