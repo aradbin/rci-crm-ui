@@ -29,7 +29,7 @@ const Card5: FC<Props> = ({
       <div className='card-header flex-nowrap border-0 pt-9'>
         <div className='card-title m-0'>
           <div className='symbol symbol-45px w-45px bg-light me-5'>
-            <img src={toAbsoluteUrl(image)} alt='Metronic' className='p-3' />
+            <img src={toAbsoluteUrl(image)} alt='Image' className='p-3' />
           </div>
 
           <a href='#' className='fs-4 fw-bold text-hover-primary text-gray-600 m-0'>

@@ -114,7 +114,7 @@ const HeaderNotificationsMenu: FC = () => (
           </div>
 
           <div className='text-center px-4'>
-            <img className='mw-100 mh-200px' alt='metronic' src={useIllustrationsPath('1.png')} />
+            <img className='mw-100 mh-200px' alt='image' src={useIllustrationsPath('1.png')} />
           </div>
         </div>
       </div>

@@ -55,7 +55,7 @@ const Languages: FC = () => {
             <img
               className='w-15px h-15px rounded-1 ms-2'
               src={currentLanguage?.flag}
-              alt='metronic'
+              alt='image'
             />
           </span>
         </span>
