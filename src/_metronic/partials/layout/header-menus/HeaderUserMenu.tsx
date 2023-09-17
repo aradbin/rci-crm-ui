@@ -38,14 +38,14 @@ const HeaderUserMenu: FC = () => {
         </Link>
       </div>
 
-      {/* <div className='menu-item px-5'>
+      <div className='menu-item px-5'>
         <a href='#' className='menu-link px-5'>
           <span className='menu-text'>My Projects</span>
           <span className='menu-badge'>
             <span className='badge badge-light-danger badge-circle fw-bolder fs-7'>3</span>
           </span>
         </a>
-      </div> */}
+      </div>
 
       {/* <div
         className='menu-item px-5'
@@ -117,11 +117,11 @@ const HeaderUserMenu: FC = () => {
 
       {/* <Languages /> */}
 
-      {/* <div className='menu-item px-5 my-1'>
+      <div className='menu-item px-5 my-1'>
         <Link to='/crafted/account/settings' className='menu-link px-5'>
           Account Settings
         </Link>
-      </div> */}
+      </div>
 
       <div className='menu-item px-5'>
         <a onClick={logout} className='menu-link px-5'>
