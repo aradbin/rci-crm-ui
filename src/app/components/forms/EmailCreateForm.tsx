@@ -7,6 +7,7 @@ import { Modal } from "react-bootstrap"
 import { toast } from "react-toastify"
 import { useContext, useEffect } from "react"
 import { UserContext } from "../../providers/UserProvider"
+import { TextAreaField } from "../fields/TextAreaField"
 
 const EmailCreateForm = ({show, toggleShow, updateList}: any) => {
     const { idForEmail, setIdForEmail } = useContext(UserContext)
@@ -21,6 +22,7 @@ const EmailCreateForm = ({show, toggleShow, updateList}: any) => {
         validationSchema: Yup.object().shape({
             toEmail: Yup.string().required('To email address is required'),
             subject: Yup.string().required('Subject is required'),
+            text: Yup.string().required('Body is required'),
         }),
         onSubmit: async (values, {setSubmitting}) => {
             setSubmitting(true)
@@ -89,7 +91,7 @@ const EmailCreateForm = ({show, toggleShow, updateList}: any) => {
                                     name="text"
                                     type="text"
                                     required="required"
-                                    component={InputField}
+                                    component={TextAreaField}
                                     size="sm"
                                 />
                             </div>
