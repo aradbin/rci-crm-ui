@@ -34,17 +34,17 @@ const AuthLayout = () => {
         <div className='d-flex flex-center flex-wrap px-5'>
           {/* begin::Links */}
           <div className='d-flex fw-semibold text-primary fs-base'>
-            <a href='#' className='px-5' target='_blank'>
+            {/* <a href='#' className='px-5' target='_blank'>
               Terms
-            </a>
+            </a> */}
 
-            <a href='#' className='px-5' target='_blank'>
+            {/* <a href='#' className='px-5' target='_blank'>
               Plans
-            </a>
+            </a> */}
 
-            <a href='#' className='px-5' target='_blank'>
+            {/* <a href='#' className='px-5' target='_blank'>
               Contact Us
-            </a>
+            </a> */}
           </div>
           {/* end::Links */}
         </div>
@@ -54,7 +54,7 @@ const AuthLayout = () => {
 
       {/* begin::Aside */}
       <div
-        className='d-flex flex-lg-row-fluid w-lg-50 bgi-size-cover bgi-position-center order-1 order-lg-2'
+        className='d-none d-lg-flex flex-lg-row-fluid w-lg-50 bgi-size-cover bgi-position-center order-1 order-lg-2'
         style={{backgroundImage: `url(${toAbsoluteUrl('/media/misc/auth-bg.png')})`}}
       >
         {/* begin::Content */}
@@ -64,35 +64,6 @@ const AuthLayout = () => {
             <img alt='Logo' src={toAbsoluteUrl('/media/framework-logos/nodejs.png')} className='h-75px' />
           </Link>
           {/* end::Logo */}
-
-          {/* begin::Image */}
-          <img
-            className='mx-auto w-275px w-md-50 w-xl-500px mb-10 mb-lg-20'
-            src={toAbsoluteUrl('/media/misc/auth-screens.png')}
-            alt=''
-          />
-          {/* end::Image */}
-
-          {/* begin::Title */}
-          <h1 className='text-white fs-2qx fw-bolder text-center mb-7'>
-            Fast, Efficient and Productive
-          </h1>
-          {/* end::Title */}
-
-          {/* begin::Text */}
-          <div className='text-white fs-base text-center'>
-            In this kind of post,{' '}
-            <a href='#' className='opacity-75-hover text-warning fw-bold me-1'>
-              the blogger
-            </a>
-            introduces a person they’ve interviewed <br /> and provides some background information
-            about
-            <a href='#' className='opacity-75-hover text-warning fw-bold me-1'>
-              the interviewee
-            </a>
-            and their <br /> work following this is a transcript of the interview.
-          </div>
-          {/* end::Text */}
         </div>
         {/* end::Content */}
       </div>
