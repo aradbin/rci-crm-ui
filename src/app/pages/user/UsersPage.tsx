@@ -8,7 +8,6 @@ import { UserCreateForm } from "../../components/forms/UserCreateForm"
 import { ToolbarComponent } from "../../components/common/ToolbarComponent"
 import { UserFilter } from "../../components/filters/UserFilter"
 import { stringifyRequestQuery } from "../../helpers/Utils"
-import { EmailCreateForm } from "../../components/forms/EmailCreateForm"
 
 const breadCrumbs = [
     { title: 'User Management', path: '/users', isSeparator: false },
@@ -19,7 +18,6 @@ const UsersPage = () => {
     const [params, setParams] = useState("")
     const [refetch, setRefetch] = useState(0)
     const [showCreate, setShowCreate] = useState(false)
-    const [showEmail, setShowEmail] = useState(false)
 
     const handleFilterSubmit = (values: any) => {
         setParams(stringifyRequestQuery({...values}))
@@ -27,10 +25,6 @@ const UsersPage = () => {
 
     const toggleShowCreate = (show: boolean) => {
         setShowCreate(show)
-    }
-
-    const toggleShowEmail = (show: boolean) => {
-        setShowEmail(show)
     }
 
     const updateList = () => {
@@ -48,7 +42,6 @@ const UsersPage = () => {
                 </KTCardBody>
             </KTCard>
             <UserCreateForm show={showCreate} toggleShow={toggleShowCreate} updateList={updateList} />
-            <EmailCreateForm show={showEmail} toggleShow={toggleShowEmail} updateList={() => {}} />
         </UserProvider>
     )
 }

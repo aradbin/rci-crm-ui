@@ -1,39 +1,49 @@
 import { Field, FormikProvider, useFormik } from "formik"
 import * as Yup from 'yup'
-import { createRequest } from "../../helpers/Requests"
-import { EMAIL_URL } from "../../helpers/ApiEndpoints"
+import { createRequest, getRequest, updateRequest } from "../../helpers/Requests"
+import { CUSTOMERS_URL } from "../../helpers/ApiEndpoints"
 import { InputField } from "../fields/InputField"
 import { Modal } from "react-bootstrap"
 import { toast } from "react-toastify"
-import { useContext, useEffect } from "react"
-import { TextAreaField } from "../fields/TextAreaField"
+import { useContext, useEffect, useState } from "react"
+import { LoadingComponent } from "../common/LoadingComponent"
 import { CustomerContext } from "../../providers/CustomerProvider"
 
-const EmailCreateForm = ({show, toggleShow, updateList}: any) => {
-    const { idForEmail, setIdForEmail } = useContext(CustomerContext)
+const CustomerCreateForm = ({show, toggleShow, updateList}: any) => {
+    const [loading, setLoading] = useState(false)
+    const { idForUpdate, setIdForUpdate } = useContext(CustomerContext)
 
     const formik = useFormik({
         initialValues: {
-            toEmail: "",
-            subject: "",
-            text: "",
-            html: "",
+            name: "",
+            email: "",
+            contact: "",
         },
         validationSchema: Yup.object().shape({
-            toEmail: Yup.string().required('To email address is required'),
-            subject: Yup.string().required('Subject is required'),
-            text: Yup.string().required('Body is required'),
+            name: Yup.string().required('Name is required'),
+            email: Yup.string().required('Email is required').email('Please provide valid email address'),
+            contact: Yup.string().required('Contact is required'),
         }),
         onSubmit: async (values, {setSubmitting}) => {
             setSubmitting(true)
             try {
-                await createRequest(EMAIL_URL,values).then((response) => {
-                    if(response?.status===201){
-                        toast.success('Email Sent Successfully')
-                        updateList()
-                        closeModal()
-                    }
-                })
+                if(idForUpdate === 0){
+                    await createRequest(CUSTOMERS_URL,values).then((response) => {
+                        if(response?.status===201){
+                            toast.success('Customer Created Successfully')
+                            updateList()
+                            closeModal()
+                        }
+                    })
+                }else{
+                    await updateRequest(`${CUSTOMERS_URL}/${idForUpdate}`,values).then((response) => {
+                        if(response?.status===200){
+                            toast.success('Customer Updated Successfully')
+                            updateList()
+                            closeModal()
+                        }
+                    })
+                }
             } catch (ex) {
                 console.error(ex)
             } finally {
@@ -43,25 +53,30 @@ const EmailCreateForm = ({show, toggleShow, updateList}: any) => {
     })
 
     useEffect(() => {
-        if(idForEmail !== ""){
+        if(idForUpdate > 0){
             toggleShow(true)
-            formik.setFieldValue("toEmail", idForEmail)
-        }else{
-            formik.setFieldValue("toEmail", "")
+            setLoading(true)
+            getRequest(`${CUSTOMERS_URL}/${idForUpdate}`).then((response) => {
+                formik.setFieldValue("name",response.name)
+                formik.setFieldValue("email",response.email)
+                formik.setFieldValue("contact",response.contact)
+            }).finally(() => {
+                setLoading(false)
+            })
         }
-    },[idForEmail])
+    },[idForUpdate])
 
     const closeModal = () => {
         formik.resetForm()
         toggleShow(false)
-        setIdForEmail("")
+        setIdForUpdate(0)
     }
 
     return (
         <Modal className="fade" aria-hidden='true' show={show} centered animation>
             <div className="modal-content">
                 <div className='modal-header'>
-                    <h2 className='fw-bolder'>Send Email</h2>
+                    <h2 className='fw-bolder'>{idForUpdate === 0 ? 'Create' : 'Update'} Customer</h2>
                     <div className='btn btn-icon btn-sm btn-active-icon-primary' onClick={() => closeModal()}>
                         <i className="fa fa-times fs-2"></i>
                     </div>
@@ -71,27 +86,27 @@ const EmailCreateForm = ({show, toggleShow, updateList}: any) => {
                         <div className="modal-body scroll-y mx-2 mx-xl-2 my-2">
                             <div className='d-flex flex-column'>
                                 <Field
-                                    label="To"
-                                    name="toEmail"
+                                    label="Name"
+                                    name="name"
+                                    type="text"
+                                    required="required"
+                                    component={InputField}
+                                    size="sm"
+                                />
+                                <Field
+                                    label="Email"
+                                    name="email"
                                     type="email"
                                     required="required"
                                     component={InputField}
                                     size="sm"
                                 />
                                 <Field
-                                    label="Subject"
-                                    name="subject"
+                                    label="Contact"
+                                    name="contact"
                                     type="text"
                                     required="required"
                                     component={InputField}
-                                    size="sm"
-                                />
-                                <Field
-                                    label="Body"
-                                    name="text"
-                                    type="text"
-                                    required="required"
-                                    component={TextAreaField}
                                     size="sm"
                                 />
                             </div>
@@ -114,8 +129,9 @@ const EmailCreateForm = ({show, toggleShow, updateList}: any) => {
                     </form>
                 </FormikProvider>
             </div>
+            {loading && <LoadingComponent />}
         </Modal>
     )
 }
 
-export {EmailCreateForm}
+export {CustomerCreateForm}

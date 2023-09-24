@@ -5,11 +5,12 @@ import TopBarProgress from 'react-topbar-progress-indicator'
 import {DashboardWrapper} from '../pages/dashboard/DashboardWrapper'
 import {getCSSVariableValue} from '../../_metronic/assets/ts/_utils'
 import {WithChildren} from '../../_metronic/helpers'
-import SettingsPage from '../pages/settings/SettingsPage'
-import EmailPage from '../pages/email/EmailPage'
 
 const PrivateRoutes = () => {
   const UsersPage = lazy(() => import('../pages/user/UsersPage'))
+  const CustomersPage = lazy(() => import('../pages/customer/CustomersPage'))
+  const EmailPage = lazy(() => import('../pages/email/EmailPage'))
+  const SettingsPage = lazy(() => import('../pages/settings/SettingsPage'))
 
   return (
     <Routes>
@@ -23,6 +24,12 @@ const PrivateRoutes = () => {
         <Route path='users' element={
             <SuspensedView>
               <UsersPage />
+            </SuspensedView>
+          }
+        />
+        <Route path='customers' element={
+            <SuspensedView>
+              <CustomersPage />
             </SuspensedView>
           }
         />
