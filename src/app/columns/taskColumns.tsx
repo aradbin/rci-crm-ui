@@ -1,19 +1,26 @@
-import { toAbsoluteUrl } from "../../_metronic/helpers"
 import { CustomerActionCell } from "../components/cells/CustomerActionCell"
 import { formatDate } from "../helpers/Utils"
 
 export const taskColumns = [
   {
-    Header: "Name",
-    accessor: "name",
+    Header: "Title",
+    accessor: "title",
   },
   {
-    Header: "Email",
-    accessor: "email",
+    Header: "Customer",
+    accessor: "customer.name",
   },
   {
-    Header: "Contact",
-    accessor: "contact"
+    Header: "Assignee",
+    accessor: "assignee.name",
+  },
+  {
+    Header: "Priority",
+    accessor: "priority",
+  },
+  {
+    Header: "Due Date",
+    Cell: ({row}: any) => formatDate(row?.original?.due_date)
   },
   {
     Header: "Created On",

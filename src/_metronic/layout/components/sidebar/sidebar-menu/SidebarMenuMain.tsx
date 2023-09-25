@@ -15,7 +15,7 @@ const SidebarMenuMain = () => {
           <span className='menu-section text-muted text-uppercase fs-8 ls-1'>Task</span>
         </div>
       </div>
-      <SidebarMenuItem to='/tasks' icon='check-square' iconColor='text-primary' title='Tasks' fontIcon='bi-layers' />
+      <SidebarMenuItem to='/tasks' icon='check-square' iconColor='text-primary' title='All Tasks' fontIcon='bi-layers' />
       <div className='menu-item'>
         <div className='menu-content pt-8 pb-2'>
           <span className='menu-section text-muted text-uppercase fs-8 ls-1'>Communication</span>

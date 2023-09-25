@@ -8,27 +8,51 @@ import { toast } from "react-toastify"
 import { useContext, useEffect, useState } from "react"
 import { LoadingComponent } from "../common/LoadingComponent"
 import { AppContext } from "../../providers/AppProvider"
+import { TextAreaField } from "../fields/TextAreaField"
+import { SearchableSelectField } from "../fields/SearchableSelectField"
 
 const TaskCreateForm = ({show, toggleShow, updateList}: any) => {
     const [loading, setLoading] = useState(false)
     const { idForUpdate, setIdForUpdate } = useContext(AppContext)
 
+    const priorityOptions = [
+        { label: "Low", value: 1 },
+        { label: "Medium", value: 2 },
+        { label: "High", value: 3 }
+    ]
+
+    const customerOptions = [
+        { label: "Name", value: 1 },
+    ]
+
+    const assigneeOptions = [
+        { label: "Name", value: 1 },
+    ]
+
     const formik = useFormik({
         initialValues: {
-            name: "",
-            email: "",
-            contact: "",
+            title: "",
+            description: "",
+            due_date: "",
+            priority: "",
+            customer_id: "",
+            assignee_id: ""
         },
         validationSchema: Yup.object().shape({
-            name: Yup.string().required('Name is required'),
-            email: Yup.string().required('Email is required').email('Please provide valid email address'),
-            contact: Yup.string().required('Contact is required'),
+            title: Yup.string().required('Title is required'),
+            due_date: Yup.string().required('Due date is required'),
         }),
         onSubmit: async (values, {setSubmitting}) => {
             setSubmitting(true)
+            const formData = {...values}
+            Object.keys(formData).forEach((key) => {
+                if(formData[key]===""){
+                    delete formData[key]
+                }
+            })
             try {
                 if(idForUpdate === 0){
-                    await createRequest(TASKS_URL,values).then((response) => {
+                    await createRequest(TASKS_URL,formData).then((response) => {
                         if(response?.status===201){
                             toast.success('Task Created Successfully')
                             updateList()
@@ -36,7 +60,7 @@ const TaskCreateForm = ({show, toggleShow, updateList}: any) => {
                         }
                     })
                 }else{
-                    await updateRequest(`${TASKS_URL}/${idForUpdate}`,values).then((response) => {
+                    await updateRequest(`${TASKS_URL}/${idForUpdate}`,formData).then((response) => {
                         if(response?.status===200){
                             toast.success('Task Updated Successfully')
                             updateList()
@@ -57,9 +81,12 @@ const TaskCreateForm = ({show, toggleShow, updateList}: any) => {
             toggleShow(true)
             setLoading(true)
             getRequest(`${TASKS_URL}/${idForUpdate}`).then((response) => {
-                formik.setFieldValue("name",response.name)
-                formik.setFieldValue("email",response.email)
-                formik.setFieldValue("contact",response.contact)
+                formik.setFieldValue("title",response.title)
+                formik.setFieldValue("description",response.description)
+                formik.setFieldValue("due_date",response.due_date)
+                formik.setFieldValue("priority",response.priority)
+                formik.setFieldValue("customer_id",response.customer_id)
+                formik.setFieldValue("assignee_id",response.assignee_id)
             }).finally(() => {
                 setLoading(false)
             })
@@ -86,27 +113,47 @@ const TaskCreateForm = ({show, toggleShow, updateList}: any) => {
                         <div className="modal-body scroll-y mx-2 mx-xl-2 my-2">
                             <div className='d-flex flex-column'>
                                 <Field
-                                    label="Name"
-                                    name="name"
+                                    label="Title"
+                                    name="title"
                                     type="text"
                                     required="required"
                                     component={InputField}
                                     size="sm"
                                 />
                                 <Field
-                                    label="Email"
-                                    name="email"
-                                    type="email"
+                                    label="Description"
+                                    name="description"
+                                    type="text"
+                                    component={TextAreaField}
+                                    size="sm"
+                                />
+                                <Field
+                                    label="Due Date"
+                                    name="due_date"
+                                    type="date"
                                     required="required"
                                     component={InputField}
                                     size="sm"
                                 />
                                 <Field
-                                    label="Contact"
-                                    name="contact"
-                                    type="text"
-                                    required="required"
-                                    component={InputField}
+                                    label="Priority"
+                                    name="priority"
+                                    options={priorityOptions}
+                                    component={SearchableSelectField}
+                                    size="sm"
+                                />
+                                <Field
+                                    label="Customer"
+                                    name="customer_id"
+                                    options={customerOptions}
+                                    component={SearchableSelectField}
+                                    size="sm"
+                                />
+                                <Field
+                                    label="Assignee"
+                                    name="assignee_id"
+                                    options={assigneeOptions}
+                                    component={SearchableSelectField}
                                     size="sm"
                                 />
                             </div>
