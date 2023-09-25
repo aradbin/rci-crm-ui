@@ -9,6 +9,7 @@ import {WithChildren} from '../../_metronic/helpers'
 const PrivateRoutes = () => {
   const UsersPage = lazy(() => import('../pages/user/UsersPage'))
   const CustomersPage = lazy(() => import('../pages/customer/CustomersPage'))
+  const TasksPage = lazy(() => import('../pages/task/TasksPage'))
   const EmailPage = lazy(() => import('../pages/email/EmailPage'))
   const SettingsPage = lazy(() => import('../pages/settings/SettingsPage'))
 
@@ -30,6 +31,12 @@ const PrivateRoutes = () => {
         <Route path='customers' element={
             <SuspensedView>
               <CustomersPage />
+            </SuspensedView>
+          }
+        />
+        <Route path='tasks' element={
+            <SuspensedView>
+              <TasksPage />
             </SuspensedView>
           }
         />

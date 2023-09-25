@@ -8,11 +8,11 @@ import { toast } from "react-toastify"
 import { useContext, useEffect, useState } from "react"
 import { LoadingComponent } from "../common/LoadingComponent"
 import { firstLetterUpper } from "../../helpers/Utils"
-import { SettingsContext } from "../../providers/SettingsProvider"
+import { AppContext } from "../../providers/AppProvider"
 
 const SettingCreateForm = ({show, toggleShow, updateList, type}: any) => {
     const [loading, setLoading] = useState(false)
-    const { idForUpdate, setIdForUpdate } = useContext(SettingsContext)
+    const { idForUpdate, setIdForUpdate } = useContext(AppContext)
 
     const formik = useFormik({
         initialValues: {

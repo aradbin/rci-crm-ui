@@ -6,12 +6,12 @@ import { InputField } from "../fields/InputField"
 import { Modal } from "react-bootstrap"
 import { toast } from "react-toastify"
 import { useContext, useEffect, useState } from "react"
-import { UserContext } from "../../providers/UserProvider"
+import { AppContext } from "../../providers/AppProvider"
 import { LoadingComponent } from "../common/LoadingComponent"
 
 const UserCreateForm = ({show, toggleShow, updateList}: any) => {
     const [loading, setLoading] = useState(false)
-    const { idForUpdate, setIdForUpdate } = useContext(UserContext)
+    const { idForUpdate, setIdForUpdate } = useContext(AppContext)
 
     const formik = useFormik({
         initialValues: {

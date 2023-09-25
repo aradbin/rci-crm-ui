@@ -1,9 +1,9 @@
 import { useContext } from "react"
-import { UserContext } from "../../providers/UserProvider"
+import { AppContext } from "../../providers/AppProvider"
 import { KTIcon } from "../../../_metronic/helpers"
 
 const UserActionCell = ({ user }: any) => {
-  const { setIdForUpdate, setIdForEmail, setIdForDelete } = useContext(UserContext)
+  const { setIdForUpdate, setIdForEmail, setIdForDelete } = useContext(AppContext)
 
   return (
     <div className='d-flex justify-content-end flex-shrink-0'>

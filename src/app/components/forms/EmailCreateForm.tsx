@@ -7,10 +7,10 @@ import { Modal } from "react-bootstrap"
 import { toast } from "react-toastify"
 import { useContext, useEffect } from "react"
 import { TextAreaField } from "../fields/TextAreaField"
-import { CustomerContext } from "../../providers/CustomerProvider"
+import { AppContext } from "../../providers/AppProvider"
 
 const EmailCreateForm = ({show, toggleShow, updateList}: any) => {
-    const { idForEmail, setIdForEmail } = useContext(CustomerContext)
+    const { idForEmail, setIdForEmail } = useContext(AppContext)
 
     const formik = useFormik({
         initialValues: {

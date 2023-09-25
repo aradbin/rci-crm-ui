@@ -1,6 +1,6 @@
 import { createContext, useState } from "react";
 
-const CustomerContext = createContext({
+const AppContext = createContext({
     idForUpdate: 0,
     setIdForUpdate: (id: number) => {},
     idForEmail: "",
@@ -9,13 +9,13 @@ const CustomerContext = createContext({
     setIdForDelete: (id: number) => {},
 })
 
-const CustomerProvider = ({children}: any) => {
+const AppProvider = ({children}: any) => {
     const [idForUpdate, setIdForUpdate] = useState(0)
     const [idForEmail, setIdForEmail] = useState("")
     const [idForDelete, setIdForDelete] = useState(0)
     
     return (
-        <CustomerContext.Provider value={{
+        <AppContext.Provider value={{
             idForUpdate,
             setIdForUpdate,
             idForEmail,
@@ -24,8 +24,8 @@ const CustomerProvider = ({children}: any) => {
             setIdForDelete,
         }}>
             {children}
-        </CustomerContext.Provider>
+        </AppContext.Provider>
     )
 }
 
-export { CustomerProvider, CustomerContext }
+export { AppProvider, AppContext }

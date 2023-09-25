@@ -5,7 +5,6 @@ import { CUSTOMERS_URL } from "../../helpers/ApiEndpoints"
 import { ToolbarComponent } from "../../components/common/ToolbarComponent"
 import { stringifyRequestQuery } from "../../helpers/Utils"
 import { EmailCreateForm } from "../../components/forms/EmailCreateForm"
-import { CustomerProvider } from "../../providers/CustomerProvider"
 import { CustomerCreateForm } from "../../components/forms/CustomerCreateForm"
 import { customerColumns } from "../../columns/customerColumns"
 import { FilterComponent } from "../../components/common/FilterComponent"
@@ -51,7 +50,7 @@ const CustomersPage = () => {
     }
 
     return (
-        <CustomerProvider>
+        <>
             <ToolbarComponent title="Customers" breadCrumbs={breadCrumbs} handleButtonClick={toggleShowCreate}>
                 <FilterComponent filter={filter} submit={handleFilterSubmit}/>
             </ToolbarComponent>
@@ -62,7 +61,7 @@ const CustomersPage = () => {
             </KTCard>
             <CustomerCreateForm show={showCreate} toggleShow={toggleShowCreate} updateList={updateList} />
             <EmailCreateForm show={showEmail} toggleShow={toggleShowEmail} updateList={() => {}} />
-        </CustomerProvider>
+        </>
     )
 }
 

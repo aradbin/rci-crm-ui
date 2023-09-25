@@ -5,6 +5,7 @@ import {LayoutProvider, LayoutSplashScreen} from '../_metronic/layout/core'
 import {MasterInit} from '../_metronic/layout/MasterInit'
 import {AuthInit} from './modules/auth'
 import {ThemeModeProvider} from '../_metronic/partials'
+import { AppProvider } from './providers/AppProvider'
 
 const App = () => {
   return (
@@ -13,8 +14,10 @@ const App = () => {
         <LayoutProvider>
           <ThemeModeProvider>
             <AuthInit>
-              <Outlet />
-              <MasterInit />
+              <AppProvider>
+                <Outlet />
+                <MasterInit />
+              </AppProvider>
             </AuthInit>
           </ThemeModeProvider>
         </LayoutProvider>

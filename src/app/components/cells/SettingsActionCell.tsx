@@ -1,9 +1,9 @@
 import { useContext } from "react"
 import { KTIcon } from "../../../_metronic/helpers"
-import { SettingsContext } from "../../providers/SettingsProvider"
+import { AppContext } from "../../providers/AppProvider"
 
 const SettingsActionCell = ({ item }: any) => {
-  const { setIdForUpdate, setIdForDelete } = useContext(SettingsContext)
+  const { setIdForUpdate, setIdForDelete } = useContext(AppContext)
 
   return (
     <div className='d-flex justify-content-end flex-shrink-0'>

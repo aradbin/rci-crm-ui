@@ -3,7 +3,6 @@ import { KTCard, KTCardBody } from "../../../_metronic/helpers"
 import { TableComponent } from "../../components/common/TableComponent"
 import { SETTINGS_URL } from "../../helpers/ApiEndpoints"
 import { ToolbarComponent } from "../../components/common/ToolbarComponent"
-import { SettingsProvider } from "../../providers/SettingsProvider"
 import { SettingsSidebar } from "../../components/settings/SettingsSidebar"
 import { settingsColumns } from "../../columns/settingsColumns"
 import { SettingCreateForm } from "../../components/forms/SettingCreateForm"
@@ -27,10 +26,9 @@ const SettingsPage = () => {
     }
 
     return (
-        <SettingsProvider>
+        <>
             <ToolbarComponent title={type.label} breadCrumbs={breadCrumbs} handleButtonClick={toggleShowCreate}>
             </ToolbarComponent>
-
             <div className='d-flex flex-column flex-lg-row'>
                 <SettingsSidebar type={type} setType={setType} />
                 <div className='flex-lg-row-fluid ms-lg-7 ms-xl-10'>
@@ -41,9 +39,8 @@ const SettingsPage = () => {
                     </KTCard>
                 </div>
             </div>
-
             <SettingCreateForm show={showCreate} toggleShow={toggleShowCreate} updateList={updateList} type={type.value} />
-        </SettingsProvider>
+        </>
     )
 }
 

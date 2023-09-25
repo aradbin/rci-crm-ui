@@ -3,7 +3,6 @@ import { KTCard, KTCardBody } from "../../../_metronic/helpers"
 import { userColumns } from "../../columns/userColumns"
 import { TableComponent } from "../../components/common/TableComponent"
 import { USERS_URL } from "../../helpers/ApiEndpoints"
-import { UserProvider } from "../../providers/UserProvider"
 import { UserCreateForm } from "../../components/forms/UserCreateForm"
 import { ToolbarComponent } from "../../components/common/ToolbarComponent"
 import { stringifyRequestQuery } from "../../helpers/Utils"
@@ -45,7 +44,7 @@ const UsersPage = () => {
     }
 
     return (
-        <UserProvider>
+        <>
             <ToolbarComponent title="Users" breadCrumbs={breadCrumbs} handleButtonClick={toggleShowCreate}>
                 <FilterComponent filter={filter} submit={handleFilterSubmit}/>
             </ToolbarComponent>
@@ -55,7 +54,7 @@ const UsersPage = () => {
                 </KTCardBody>
             </KTCard>
             <UserCreateForm show={showCreate} toggleShow={toggleShowCreate} updateList={updateList} />
-        </UserProvider>
+        </>
     )
 }
 
