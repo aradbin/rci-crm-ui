@@ -6,14 +6,27 @@ import { ToolbarComponent } from "../../components/common/ToolbarComponent"
 import { stringifyRequestQuery } from "../../helpers/Utils"
 import { EmailCreateForm } from "../../components/forms/EmailCreateForm"
 import { CustomerProvider } from "../../providers/CustomerProvider"
-import { CustomerFilter } from "../../components/filters/CustomerFilter"
 import { CustomerCreateForm } from "../../components/forms/CustomerCreateForm"
 import { customerColumns } from "../../columns/customerColumns"
+import { FilterComponent } from "../../components/common/FilterComponent"
 
 const breadCrumbs = [
     { title: 'Customer Management', path: '/customers', isSeparator: false },
     { isSeparator: true },
 ]
+
+const filter = {
+    initialValues: {
+        name: "",
+        email: "",
+        contact: ""
+    },
+    fields: [
+        { label: "Name", name: "name" },
+        { label: "Email", name: "email" },
+        { label: "Contact", name: "contact" },
+    ]
+}
 
 const CustomersPage = () => {
     const [params, setParams] = useState("")
@@ -40,7 +53,7 @@ const CustomersPage = () => {
     return (
         <CustomerProvider>
             <ToolbarComponent title="Customers" breadCrumbs={breadCrumbs} handleButtonClick={toggleShowCreate}>
-                <CustomerFilter submit={handleFilterSubmit}/>
+                <FilterComponent filter={filter} submit={handleFilterSubmit}/>
             </ToolbarComponent>
             <KTCard className="mb-5 mb-xl-8">
                 <KTCardBody className='py-3'>

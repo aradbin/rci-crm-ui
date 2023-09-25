@@ -1,19 +1,11 @@
 import { Field, FormikProvider, useFormik } from "formik"
 import * as Yup from 'yup'
 import { InputField } from "../fields/InputField"
+import { SelectField } from "../fields/SelectField"
 
-const UserFilter = ({submit}: any) => {
+const FilterComponent = ({filter, submit}: any) => {
     const formik = useFormik({
-        initialValues: {
-            name: "",
-            email: "",
-            contact: "",
-        },
-        validationSchema: Yup.object().shape({
-            name: Yup.string(),
-            email: Yup.string(),
-            contact: Yup.string(),
-        }),
+        initialValues: filter.initialValues,
         onSubmit: (values) => {
             submit(values)
         },
@@ -28,30 +20,17 @@ const UserFilter = ({submit}: any) => {
                     </div>
                     <div className='separator border-gray-200'></div>
                     <div className='px-7 py-5'>
-                        <Field
-                            label="Name"
-                            name="name"
-                            type="text"
-                            required="required"
-                            component={InputField}
-                            size="sm"
-                        />
-                        <Field
-                            label="Email"
-                            name="email"
-                            type="email"
-                            required="required"
-                            component={InputField}
-                            size="sm"
-                        />
-                        <Field
-                            label="Contact"
-                            name="contact"
-                            type="text"
-                            required="required"
-                            component={InputField}
-                            size="sm"
-                        />
+                        {filter?.fields?.map((item: any, index: number) =>
+                            <Field
+                                key={index}
+                                label={item?.label}
+                                name={item?.name}
+                                type={item?.type || "text"}
+                                required={item?.required || ""}
+                                component={item?.type === 'select' ? SelectField : InputField}
+                                size={item?.size || "sm"}
+                            />
+                        )}
                     </div>
                     <div className='separator border-gray-200'></div>
                     <div className='d-flex justify-content-end px-7 py-5'>
@@ -61,7 +40,6 @@ const UserFilter = ({submit}: any) => {
                         }}>
                             Reset
                         </button>
-
                         <button type='submit' className='btn btn-sm btn-primary' data-kt-menu-dismiss='true'>
                             Apply
                         </button>
@@ -72,4 +50,4 @@ const UserFilter = ({submit}: any) => {
     )
 }
 
-export {UserFilter}
+export {FilterComponent}
