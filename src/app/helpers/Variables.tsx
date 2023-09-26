@@ -3,4 +3,10 @@ const settings = [
     { label: 'Designations', value: 'designation' },
 ]
 
-export { settings }
+const priorities = [
+    { name: "Low", id: 1 },
+    { name: "Medium", id: 2 },
+    { name: "High", id: 3 }
+]
+
+export { settings, priorities }

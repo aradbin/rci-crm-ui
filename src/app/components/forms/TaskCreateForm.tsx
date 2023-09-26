@@ -1,7 +1,7 @@
 import { Field, FormikProvider, useFormik } from "formik"
 import * as Yup from 'yup'
 import { createRequest, getRequest, updateRequest } from "../../helpers/Requests"
-import { TASKS_URL } from "../../helpers/ApiEndpoints"
+import { CUSTOMERS_URL, TASKS_URL, USERS_URL } from "../../helpers/ApiEndpoints"
 import { InputField } from "../fields/InputField"
 import { Modal } from "react-bootstrap"
 import { toast } from "react-toastify"
@@ -10,24 +10,22 @@ import { LoadingComponent } from "../common/LoadingComponent"
 import { AppContext } from "../../providers/AppProvider"
 import { TextAreaField } from "../fields/TextAreaField"
 import { SearchableSelectField } from "../fields/SearchableSelectField"
+import { Query } from "../../helpers/Queries"
+import { formatDate } from "../../helpers/Utils"
+import { priorities } from "../../helpers/Variables"
+import { SelectField } from "../fields/SelectField"
 
 const TaskCreateForm = ({show, toggleShow, updateList}: any) => {
     const [loading, setLoading] = useState(false)
+    const [customerOptions, setCustomerOptions] = useState([])
+    const [assigneeOptions, setAssigneeOptions] = useState([])
+
     const { idForUpdate, setIdForUpdate } = useContext(AppContext)
 
-    const priorityOptions = [
-        { label: "Low", value: 1 },
-        { label: "Medium", value: 2 },
-        { label: "High", value: 3 }
-    ]
+    const priorityOptions = priorities
 
-    const customerOptions = [
-        { label: "Name", value: 1 },
-    ]
-
-    const assigneeOptions = [
-        { label: "Name", value: 1 },
-    ]
+    const customers = Query('team-types', CUSTOMERS_URL)
+    const users = Query('users', USERS_URL)
 
     const formik = useFormik({
         initialValues: {
@@ -41,13 +39,18 @@ const TaskCreateForm = ({show, toggleShow, updateList}: any) => {
         validationSchema: Yup.object().shape({
             title: Yup.string().required('Title is required'),
             due_date: Yup.string().required('Due date is required'),
+            priority: Yup.number().required('Priority is required'),
         }),
-        onSubmit: async (values, {setSubmitting}) => {
+        onSubmit: async (values, {setSubmitting}) => {console.log(values)
             setSubmitting(true)
-            const formData = {...values}
+            const formData = JSON.parse(JSON.stringify(values))
             Object.keys(formData).forEach((key) => {
                 if(formData[key]===""){
                     delete formData[key]
+                }else{
+                    if(key==='priority'){
+                        formData.priority = parseInt(values.priority)
+                    }
                 }
             })
             try {
@@ -77,13 +80,31 @@ const TaskCreateForm = ({show, toggleShow, updateList}: any) => {
     })
 
     useEffect(() => {
+        if(customers?.data?.results?.length > 0){
+            const array = customers?.data?.results?.map((item: any) => {
+                return { label: item?.name, value: item?.id }
+            })
+            setCustomerOptions(array)
+        }
+    },[customers])
+
+    useEffect(() => {
+        if(users?.data?.results?.length > 0){
+            const array = users?.data?.results?.map((item: any) => {
+                return { label: item?.name, value: item?.id }
+            })
+            setAssigneeOptions(array)
+        }
+    },[users])
+
+    useEffect(() => {
         if(idForUpdate > 0){
             toggleShow(true)
             setLoading(true)
             getRequest(`${TASKS_URL}/${idForUpdate}`).then((response) => {
                 formik.setFieldValue("title",response.title)
-                formik.setFieldValue("description",response.description)
-                formik.setFieldValue("due_date",response.due_date)
+                formik.setFieldValue("description",response.description || "")
+                formik.setFieldValue("due_date",formatDate(response.due_date, 'input'))
                 formik.setFieldValue("priority",response.priority)
                 formik.setFieldValue("customer_id",response.customer_id)
                 formik.setFieldValue("assignee_id",response.assignee_id)
@@ -110,7 +131,7 @@ const TaskCreateForm = ({show, toggleShow, updateList}: any) => {
                 </div>
                 <FormikProvider value={formik}>
                     <form className="form" onSubmit={formik.handleSubmit} noValidate>
-                        <div className="modal-body scroll-y mx-2 mx-xl-2 my-2">
+                        <div className="modal-body mx-2 mx-xl-2 my-2">
                             <div className='d-flex flex-column'>
                                 <Field
                                     label="Title"
@@ -139,7 +160,7 @@ const TaskCreateForm = ({show, toggleShow, updateList}: any) => {
                                     label="Priority"
                                     name="priority"
                                     options={priorityOptions}
-                                    component={SearchableSelectField}
+                                    component={SelectField}
                                     size="sm"
                                 />
                                 <Field

@@ -1,5 +1,5 @@
 import { CustomerActionCell } from "../components/cells/CustomerActionCell"
-import { formatDate } from "../helpers/Utils"
+import { formatDate, getPriorityBadge } from "../helpers/Utils"
 
 export const taskColumns = [
   {
@@ -16,7 +16,7 @@ export const taskColumns = [
   },
   {
     Header: "Priority",
-    accessor: "priority",
+    Cell: ({row}: any) => getPriorityBadge(row?.original?.priority)
   },
   {
     Header: "Due Date",

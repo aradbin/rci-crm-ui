@@ -28,4 +28,17 @@ const firstLetterUpper = (string: string) => {
   return string.charAt(0).toUpperCase() + string.slice(1);
 }
 
-export { stringifyRequestQuery, formatDate, firstLetterUpper }
+const getPriorityBadge = (value: number) => {
+  if(value===1){
+    return <span className="badge badge-light-info">Low</span>
+  }
+  if(value===2){
+    return <span className="badge badge-light-warning">Medium</span>
+  }
+  if(value===3){
+    return <span className="badge badge-light-danger">High</span>
+  }
+  return ''
+}
+
+export { stringifyRequestQuery, formatDate, firstLetterUpper, getPriorityBadge }

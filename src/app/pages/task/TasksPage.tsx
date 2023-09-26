@@ -52,7 +52,7 @@ const TasksPage = () => {
     return (
         <>
             <ToolbarComponent title="Tasks" breadCrumbs={breadCrumbs} handleButtonClick={toggleShowCreate}>
-                <FilterComponent filter={filter} submit={handleFilterSubmit}/>
+                {/* <FilterComponent filter={filter} submit={handleFilterSubmit}/> */}
             </ToolbarComponent>
             <KTCard className="mb-5 mb-xl-8">
                 <KTCardBody className='py-3'>
