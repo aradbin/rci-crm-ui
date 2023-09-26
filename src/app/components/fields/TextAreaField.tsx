@@ -27,7 +27,9 @@ export const TextAreaField = ({
                         )}
                         autoComplete='off'
                         rows="10"
-                    />
+                    >
+                        {field?.value || ""}
+                    </textarea>
                 </div>
             :
                 <textarea
