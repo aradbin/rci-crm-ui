@@ -1,5 +1,6 @@
 import clsx from "clsx";
 import Select from "react-select";
+import { useThemeMode } from "../../../_metronic/partials";
 
 export const SearchableSelectField = ({
     label,
@@ -11,6 +12,41 @@ export const SearchableSelectField = ({
     formStyle,
     multiple
 }: any) => {
+    const { mode } = useThemeMode()
+
+    const customStyles = {
+        control: (baseStyles: any) => ({
+            ...baseStyles,
+            border: `1px solid ${mode==='dark' ? '#323248' : '#dbdfe9'}`,
+            backgroundColor: 'transparent',
+        }),
+        indicatorSeparator: (baseStyles: any) => ({
+            ...baseStyles,
+            display: 'none',
+        }),
+        dropdownIndicator: (baseStyles: any) => ({
+            ...baseStyles,
+            color: '#828c97',
+        }),
+        singleValue: (baseStyles: any) => ({
+            ...baseStyles,
+            color: mode==='dark' ? '#828c97' : '#4b5675',
+            fontWeight: 500
+        }),
+        menu: (baseStyles: any) => ({
+            ...baseStyles,
+            backgroundColor: mode==='dark' ? '#1c1c1c' : '#fff',
+        }),
+        option: (baseStyles: any, state: any) => ({
+            ...baseStyles,
+            backgroundColor: state.isSelected ? '#4da6ff' : 'transparent',
+            '&:hover': {
+                backgroundColor: '#4da6ff', // Background color on hover
+            },
+            cursor: 'pointer'
+        }),
+    };
+    
     const getValue = () => {
         if(options?.length > 0){
             return multiple
@@ -39,6 +75,7 @@ export const SearchableSelectField = ({
                 <div className="col-sm-9">
                     <Select
                         name={field.name}
+                        styles={customStyles}
                         className={clsx('mb-3 mb-lg-0',
                             // {'is-invalid': touched[field.name] && errors[field.name]},
                             // {'is-valid': touched[field.name] && !errors[field.name]},
@@ -47,12 +84,13 @@ export const SearchableSelectField = ({
                         value={getValue()}
                         onChange={onChange}
                         isMulti={multiple}
-                        closeMenuOnSelect={false}
+                        closeMenuOnSelect={multiple ? false : true}
                     />
                 </div>
             : 
                 <Select
                     name={field.name}
+                    styles={customStyles}
                     className={clsx('mb-3 mb-lg-0',
                         // {'is-invalid': touched[field.name] && errors[field.name]},
                         // {'is-valid': touched[field.name] && !errors[field.name]},
@@ -61,7 +99,7 @@ export const SearchableSelectField = ({
                     value={getValue()}
                     onChange={onChange}
                     isMulti={multiple}
-                    closeMenuOnSelect={false}
+                    closeMenuOnSelect={multiple ? false : true}
                 />
             }
             
