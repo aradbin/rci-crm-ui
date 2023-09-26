@@ -24,8 +24,8 @@ const TaskCreateForm = ({show, toggleShow, updateList}: any) => {
 
     const priorityOptions = priorities
 
-    const customers = Query('team-types', CUSTOMERS_URL)
-    const users = Query('users', USERS_URL)
+    const customers = Query('team-types', CUSTOMERS_URL, 'pageSize=all')
+    const users = Query('users', USERS_URL, 'pageSize=all')
 
     const formik = useFormik({
         initialValues: {
@@ -80,8 +80,8 @@ const TaskCreateForm = ({show, toggleShow, updateList}: any) => {
     })
 
     useEffect(() => {
-        if(customers?.data?.results?.length > 0){
-            const array = customers?.data?.results?.map((item: any) => {
+        if(customers?.data?.length > 0){
+            const array = customers?.data?.map((item: any) => {
                 return { label: item?.name, value: item?.id }
             })
             setCustomerOptions(array)
@@ -89,8 +89,8 @@ const TaskCreateForm = ({show, toggleShow, updateList}: any) => {
     },[customers])
 
     useEffect(() => {
-        if(users?.data?.results?.length > 0){
-            const array = users?.data?.results?.map((item: any) => {
+        if(users?.data?.length > 0){
+            const array = users?.data?.map((item: any) => {
                 return { label: item?.name, value: item?.id }
             })
             setAssigneeOptions(array)
