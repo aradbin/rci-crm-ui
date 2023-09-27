@@ -28,9 +28,9 @@ const firstLetterUpper = (string: string) => {
   return string.charAt(0).toUpperCase() + string.slice(1);
 }
 
-const getPriorityBadge = (value: number) => {
+const getTaskPriorityBadge = (value: number) => {
   if(value===1){
-    return <span className="badge badge-light-info">Low</span>
+    return <span className="badge badge-light-primary">Low</span>
   }
   if(value===2){
     return <span className="badge badge-light-warning">Medium</span>
@@ -41,4 +41,17 @@ const getPriorityBadge = (value: number) => {
   return ''
 }
 
-export { stringifyRequestQuery, formatDate, firstLetterUpper, getPriorityBadge }
+const getTaskStatusBadge = (value: string) => {
+  if(value==='todo'){
+    return <span className="badge badge-secondary">To Do</span>
+  }
+  if(value==='inprogress'){
+    return <span className="badge badge-info">In Progress</span>
+  }
+  if(value==='done'){
+    return <span className="badge badge-success">Done</span>
+  }
+  return ''
+}
+
+export { stringifyRequestQuery, formatDate, firstLetterUpper, getTaskPriorityBadge, getTaskStatusBadge }

@@ -27,7 +27,7 @@ const WhatsAppCreateForm = ({show, toggleShow, updateList}: any) => {
             setSubmitting(true)
             try {
                 await createRequest(`${WHATSAPP_URL}/send-message`,values).then((response) => {
-                    if(response?.status===201){
+                    if(response?.status===200){
                         toast.success('Message Sent Successfully')
                         updateList()
                         closeModal()

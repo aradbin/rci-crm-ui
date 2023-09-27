@@ -25,7 +25,7 @@ export const customerColumns = [
     accessor: "contact"
   },
   {
-    Header: "Created On",
+    Header: "Created At",
     Cell: ({row}: any) => formatDate(row?.original?.created_at)
   },  
   {

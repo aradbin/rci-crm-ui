@@ -7,7 +7,7 @@ export const settingsColumns = [
     accessor: "name",
   },
   {
-    Header: "Created On",
+    Header: "Created At",
     Cell: ({row}: any) => formatDate(row?.original?.created_at)
   },  
   {
