@@ -1,4 +1,4 @@
-import { CustomerActionCell } from "../components/cells/CustomerActionCell"
+import { TaskActionCell } from "../components/cells/TaskActionCell"
 import { formatDate, getPriorityBadge } from "../helpers/Utils"
 
 export const taskColumns = [
@@ -28,6 +28,6 @@ export const taskColumns = [
   },  
   {
     Header: "Actions",
-    Cell: ({ row }: any) => <CustomerActionCell item={row?.original} />
+    Cell: ({ row }: any) => <TaskActionCell item={row?.original} />
   }
 ]
