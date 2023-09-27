@@ -16,14 +16,17 @@ const breadCrumbs = [
 
 const filter = {
     initialValues: {
-        name: "",
-        email: "",
-        contact: ""
+        id: "",
+        title: "",
+        sort: "",
     },
     fields: [
-        { label: "Name", name: "name" },
-        { label: "Email", name: "email" },
-        { label: "Contact", name: "contact" },
+        { label: "ID", name: "id", type: "number" },
+        { label: "Title", name: "title" },
+        { label: "Sort By", name: "sort", type: "select", options: [
+            { id: 'priorityLowToHigh', name: "Priority (Low to High)" },
+            { id: 'priorityHighToLow', name: "Priority (High to Low)" },
+        ] },
     ]
 }
 
@@ -34,7 +37,18 @@ const TasksPage = () => {
     const [showEmail, setShowEmail] = useState(false)
 
     const handleFilterSubmit = (values: any) => {
-        setParams(stringifyRequestQuery({...values}))
+        const formData = {...values}
+        if(formData?.sort){
+            if(formData?.sort === 'priorityLowToHigh'){
+                formData.sortBy = 'priority';
+                formData.orderBy = 'asc';
+            }else if(formData?.sort === 'priorityHighToLow'){
+                formData.sortBy = 'priority';
+                formData.orderBy = 'desc';
+            }
+            delete formData.sort;
+        }
+        setParams(stringifyRequestQuery(formData))
     }
 
     const toggleShowCreate = (show: boolean) => {
@@ -52,7 +66,7 @@ const TasksPage = () => {
     return (
         <>
             <ToolbarComponent title="Tasks" breadCrumbs={breadCrumbs} handleButtonClick={toggleShowCreate}>
-                {/* <FilterComponent filter={filter} submit={handleFilterSubmit}/> */}
+                <FilterComponent filter={filter} submit={handleFilterSubmit}/>
             </ToolbarComponent>
             <KTCard className="mb-5 mb-xl-8">
                 <KTCardBody className='py-3'>

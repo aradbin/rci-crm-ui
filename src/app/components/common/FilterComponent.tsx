@@ -28,6 +28,7 @@ const FilterComponent = ({filter, submit}: any) => {
                                 type={item?.type || "text"}
                                 required={item?.required || ""}
                                 component={item?.type === 'select' ? SelectField : InputField}
+                                options={item?.options}
                                 size={item?.size || "sm"}
                             />
                         )}
