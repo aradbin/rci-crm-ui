@@ -11,6 +11,7 @@ const PrivateRoutes = () => {
   const CustomersPage = lazy(() => import('../pages/customer/CustomersPage'))
   const TasksPage = lazy(() => import('../pages/task/TasksPage'))
   const EmailPage = lazy(() => import('../pages/email/EmailPage'))
+  const WhatsAppPage = lazy(() => import('../pages/whatsapp/WhatsAppPage'))
   const SettingsPage = lazy(() => import('../pages/settings/SettingsPage'))
 
   return (
@@ -43,6 +44,12 @@ const PrivateRoutes = () => {
         <Route path='email' element={
             <SuspensedView>
               <EmailPage />
+            </SuspensedView>
+          }
+        />
+        <Route path='whatsapp' element={
+            <SuspensedView>
+              <WhatsAppPage />
             </SuspensedView>
           }
         />
