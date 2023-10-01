@@ -15,7 +15,7 @@ class ThemeMode {
   public getMode = (): Mode => {
     const modeParam: string = this.getParamName('value')
     const themeMode: Mode | '' = this.getMenuMode()
-    const defaultMode = 'light'
+    const defaultMode = 'dark'
     if (!localStorage.getItem(modeParam)) {
       return defaultMode
     }
