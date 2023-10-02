@@ -4,7 +4,6 @@ import { TableComponent } from "../../components/common/TableComponent"
 import { CUSTOMERS_URL } from "../../helpers/ApiEndpoints"
 import { ToolbarComponent } from "../../components/common/ToolbarComponent"
 import { stringifyRequestQuery } from "../../helpers/Utils"
-import { EmailCreateForm } from "../../components/forms/EmailCreateForm"
 import { CustomerCreateForm } from "../../components/forms/CustomerCreateForm"
 import { customerColumns } from "../../columns/customerColumns"
 import { FilterComponent } from "../../components/common/FilterComponent"
@@ -31,7 +30,6 @@ const CustomersPage = () => {
     const [params, setParams] = useState("")
     const [refetch, setRefetch] = useState(0)
     const [showCreate, setShowCreate] = useState(false)
-    const [showEmail, setShowEmail] = useState(false)
 
     const handleFilterSubmit = (values: any) => {
         setParams(stringifyRequestQuery({...values}))
@@ -39,10 +37,6 @@ const CustomersPage = () => {
 
     const toggleShowCreate = (show: boolean) => {
         setShowCreate(show)
-    }
-
-    const toggleShowEmail = (show: boolean) => {
-        setShowEmail(show)
     }
 
     const updateList = () => {
@@ -60,7 +54,6 @@ const CustomersPage = () => {
                 </KTCardBody>
             </KTCard>
             <CustomerCreateForm show={showCreate} toggleShow={toggleShowCreate} updateList={updateList} />
-            <EmailCreateForm show={showEmail} toggleShow={toggleShowEmail} updateList={() => {}} />
         </>
     )
 }

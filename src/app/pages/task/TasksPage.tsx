@@ -4,7 +4,6 @@ import { TableComponent } from "../../components/common/TableComponent"
 import { TASKS_URL } from "../../helpers/ApiEndpoints"
 import { ToolbarComponent } from "../../components/common/ToolbarComponent"
 import { stringifyRequestQuery } from "../../helpers/Utils"
-import { EmailCreateForm } from "../../components/forms/EmailCreateForm"
 import { FilterComponent } from "../../components/common/FilterComponent"
 import { TaskCreateForm } from "../../components/forms/TaskCreateForm"
 import { taskColumns } from "../../columns/taskColumns"
@@ -74,7 +73,6 @@ const TasksPage = () => {
                 </KTCardBody>
             </KTCard>
             <TaskCreateForm show={showCreate} toggleShow={toggleShowCreate} updateList={updateList} />
-            <EmailCreateForm show={showEmail} toggleShow={toggleShowEmail} updateList={() => {}} />
         </>
     )
 }

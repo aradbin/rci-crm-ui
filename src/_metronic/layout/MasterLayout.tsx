@@ -1,18 +1,19 @@
 import {useEffect} from 'react'
 import {Outlet, useLocation} from 'react-router-dom'
 import {HeaderWrapper} from './components/header'
-import {RightToolbar} from '../partials/layout/RightToolbar'
 import {ScrollTop} from './components/scroll-top'
 import {Content} from './components/content'
 import {FooterWrapper} from './components/footer'
 import {Sidebar} from './components/sidebar'
-import {ActivityDrawer, DrawerMessenger, InviteUsers, UpgradePlan} from '../partials'
+import {InviteUsers, UpgradePlan} from '../partials'
 import {PageDataProvider} from './core'
 import {reInitMenu} from '../helpers'
 import {ToolbarWrapper} from './components/toolbar'
 import { ToastContainer } from 'react-toastify'
 
 import 'react-toastify/dist/ReactToastify.css'
+import { ShortcutComponent } from '../../app/components/common/ShortcutComponent'
+import { EmailCreateForm } from '../../app/components/forms/EmailCreateForm'
 
 const MasterLayout = () => {
   const location = useLocation()
@@ -29,7 +30,6 @@ const MasterLayout = () => {
             <Sidebar />
             <div className='app-main flex-column flex-row-fluid' id='kt_app_main'>
               <div className='d-flex flex-column flex-column-fluid'>
-                <ToolbarWrapper />
                 <Content>
                   <Outlet />
                 </Content>
@@ -40,29 +40,23 @@ const MasterLayout = () => {
         </div>
       </div>
 
-      {/* begin:: Drawers */}
-      <ActivityDrawer />
-      {/* <RightToolbar /> */}
-      <DrawerMessenger />
-      {/* end:: Drawers */}
+      <ShortcutComponent />
 
-      {/* begin:: Modals */}
-      <InviteUsers />
-      <UpgradePlan />
-      {/* end:: Modals */}
-      <ScrollTop />
+      <EmailCreateForm />
+      
       <ToastContainer
-          position="bottom-center"
-          autoClose={5000}
-          hideProgressBar={false}
-          newestOnTop
-          closeOnClick
-          rtl={false}
-          pauseOnFocusLoss
-          draggable
-          pauseOnHover
-          theme="colored"
-        />
+        position="bottom-center"
+        autoClose={5000}
+        hideProgressBar={false}
+        newestOnTop
+        closeOnClick
+        rtl={false}
+        pauseOnFocusLoss
+        draggable
+        pauseOnHover
+        theme="colored"
+      />
+
     </PageDataProvider>
   )
 }

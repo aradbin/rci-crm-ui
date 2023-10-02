@@ -1,5 +1,5 @@
 const API_URL = process.env.REACT_APP_API_URL
-const API_URL_LOCAL = 'http://localhost:8080'
+const API_URL_LOCAL = 'https://m8sqj2s0-8080.asse.devtunnels.ms'
 
 const BASE_URL = API_URL_LOCAL
 

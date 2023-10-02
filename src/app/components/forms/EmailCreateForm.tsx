@@ -5,12 +5,13 @@ import { EMAIL_URL } from "../../helpers/ApiEndpoints"
 import { InputField } from "../fields/InputField"
 import { Modal } from "react-bootstrap"
 import { toast } from "react-toastify"
-import { useContext, useEffect } from "react"
+import { useContext, useEffect, useState } from "react"
 import { TextAreaField } from "../fields/TextAreaField"
 import { AppContext } from "../../providers/AppProvider"
 
-const EmailCreateForm = ({show, toggleShow, updateList}: any) => {
-    const { idForEmail, setIdForEmail } = useContext(AppContext)
+const EmailCreateForm = () => {
+    const [show, setShow] = useState(false)
+    const { idForEmail, setIdForEmail, showCreateEmail, setShowCreateEmail } = useContext(AppContext)
 
     const formik = useFormik({
         initialValues: {
@@ -30,7 +31,6 @@ const EmailCreateForm = ({show, toggleShow, updateList}: any) => {
                 await createRequest(EMAIL_URL,values).then((response) => {
                     if(response?.status===201){
                         toast.success('Email Sent Successfully')
-                        updateList()
                         closeModal()
                     }
                 })
@@ -42,6 +42,10 @@ const EmailCreateForm = ({show, toggleShow, updateList}: any) => {
         },
     })
 
+    const toggleShow = (val: boolean) => {
+        setShow(val)
+    }
+
     useEffect(() => {
         if(idForEmail !== ""){
             toggleShow(true)
@@ -51,10 +55,15 @@ const EmailCreateForm = ({show, toggleShow, updateList}: any) => {
         }
     },[idForEmail])
 
+    useEffect(() => {
+        toggleShow(showCreateEmail)
+    },[showCreateEmail])
+
     const closeModal = () => {
         formik.resetForm()
         toggleShow(false)
         setIdForEmail("")
+        setShowCreateEmail(false)
     }
 
     return (

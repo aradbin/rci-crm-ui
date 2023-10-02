@@ -1,9 +1,9 @@
-import { useState } from "react"
+import { useContext, useState } from "react"
 import { KTCard, KTCardBody } from "../../../_metronic/helpers"
 import { TableComponent } from "../../components/common/TableComponent"
 import { EMAIL_URL } from "../../helpers/ApiEndpoints"
 import { ToolbarComponent } from "../../components/common/ToolbarComponent"
-import { EmailCreateForm } from "../../components/forms/EmailCreateForm"
+import { AppContext } from "../../providers/AppProvider"
 
 const breadCrumbs = [
     { title: 'Email', path: '/email', isSeparator: false },
@@ -13,10 +13,11 @@ const breadCrumbs = [
 const EmailPage = () => {
     const [params, setParams] = useState("")
     const [refetch, setRefetch] = useState(0)
-    const [showCreate, setShowCreate] = useState(false)
+
+    const { setShowCreateEmail } = useContext(AppContext)
 
     const toggleShowCreate = (show: boolean) => {
-        setShowCreate(show)
+        setShowCreateEmail(show)
     }
 
     const updateList = () => {
@@ -32,7 +33,6 @@ const EmailPage = () => {
                     {/* <TableComponent queryKey="email" url={EMAIL_URL} params={params} columns={[]} refetch={refetch} /> */}
                 </KTCardBody>
             </KTCard>
-            <EmailCreateForm show={showCreate} toggleShow={toggleShowCreate} updateList={() => {}} />
         </>
     )
 }
