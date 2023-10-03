@@ -6,6 +6,7 @@ const AppContext = createContext({
 
     idForEmail: "", setIdForEmail: (id: string) => {},
     showCreateEmail: false, setShowCreateEmail: (val: boolean) => {},
+    showCreateEmailSettings: false, setShowCreateEmailSettings: (val: boolean) => {},
 
     idForTaskUpdate: 0, setIdForTaskUpdate: (id: number) => {},
     idForTaskDelete: 0, setIdForTaskDelete: (id: number) => {},
@@ -18,6 +19,7 @@ const AppProvider = ({children}: any) => {
 
     const [idForEmail, setIdForEmail] = useState("")
     const [showCreateEmail, setShowCreateEmail] = useState(false)
+    const [showCreateEmailSettings, setShowCreateEmailSettings] = useState(false)
 
     const [idForTaskUpdate, setIdForTaskUpdate] = useState(0)
     const [idForTaskDelete, setIdForTaskDelete] = useState(0)
@@ -30,6 +32,7 @@ const AppProvider = ({children}: any) => {
 
             idForEmail, setIdForEmail,
             showCreateEmail, setShowCreateEmail,
+            showCreateEmailSettings, setShowCreateEmailSettings,
 
             idForTaskUpdate, setIdForTaskUpdate,
             idForTaskDelete, setIdForTaskDelete,

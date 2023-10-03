@@ -1,38 +1,34 @@
 import { Field, FormikProvider, useFormik } from "formik"
 import * as Yup from 'yup'
 import { createRequest } from "../../helpers/Requests"
-import { EMAIL_URL } from "../../helpers/ApiEndpoints"
+import { EMAIL_SETTINGS_URL } from "../../helpers/ApiEndpoints"
 import { InputField } from "../fields/InputField"
 import { Modal } from "react-bootstrap"
 import { toast } from "react-toastify"
 import { useContext, useEffect, useState } from "react"
-import { TextAreaField } from "../fields/TextAreaField"
 import { AppContext } from "../../providers/AppProvider"
-import { useAuth } from "../../modules/auth"
 
-const EmailCreateForm = () => {
-    const { currentUser } = useAuth()
+const EmailSettingsCreateForm = () => {
     const [show, setShow] = useState(false)
-    const { idForEmail, setIdForEmail, showCreateEmail, setShowCreateEmail, setShowCreateEmailSettings } = useContext(AppContext)
+    const { showCreateEmailSettings, setShowCreateEmailSettings } = useContext(AppContext)
 
     const formik = useFormik({
         initialValues: {
-            toEmail: "",
-            subject: "",
-            text: "",
-            html: "",
+            host: "",
+            username: "",
+            password: "",
         },
         validationSchema: Yup.object().shape({
-            toEmail: Yup.string().required('To email address is required'),
-            subject: Yup.string().required('Subject is required'),
-            text: Yup.string().required('Body is required'),
+            host: Yup.string().required('Host address is required'),
+            username: Yup.string().required('Email address is required'),
+            password: Yup.string().required('Password is required'),
         }),
         onSubmit: async (values, {setSubmitting}) => {
             setSubmitting(true)
             try {
-                await createRequest(EMAIL_URL,values).then((response) => {
+                await createRequest(EMAIL_SETTINGS_URL,values).then((response) => {
                     if(response?.status===201){
-                        toast.success('Email Sent Successfully')
+                        toast.success('Email Configured Successfully')
                         closeModal()
                     }
                 })
@@ -49,44 +45,20 @@ const EmailCreateForm = () => {
     }
 
     useEffect(() => {
-        if(idForEmail !== ""){
-            if(!currentUser?.emailSettings){
-                closeModal()
-                setShowCreateEmailSettings(true)
-            }else{
-                toggleShow(true)
-                formik.setFieldValue("toEmail", idForEmail)
-            }
-        }else{
-            formik.setFieldValue("toEmail", "")
-        }
-    },[idForEmail])
-
-    useEffect(() => {
-        if(showCreateEmail){
-            if(!currentUser?.emailSettings){
-                closeModal()
-                setShowCreateEmailSettings(true)
-            }else{
-                toggleShow(showCreateEmail)
-            }
-        }else{
-            toggleShow(showCreateEmail)
-        }
-    },[showCreateEmail])
+        toggleShow(showCreateEmailSettings)
+    },[showCreateEmailSettings])
 
     const closeModal = () => {
         formik.resetForm()
         toggleShow(false)
-        setIdForEmail("")
-        setShowCreateEmail(false)
+        setShowCreateEmailSettings(false)
     }
 
     return (
         <Modal className="fade" aria-hidden='true' show={show} centered animation>
             <div className="modal-content">
                 <div className='modal-header'>
-                    <h2 className='fw-bolder'>Send Email</h2>
+                    <h2 className='fw-bolder'>Configure Your Email</h2>
                     <div className='btn btn-icon btn-sm btn-active-icon-primary' onClick={() => closeModal()}>
                         <i className="fa fa-times fs-2"></i>
                     </div>
@@ -96,27 +68,27 @@ const EmailCreateForm = () => {
                         <div className="modal-body scroll-y mx-2 mx-xl-2 my-2">
                             <div className='d-flex flex-column'>
                                 <Field
-                                    label="To"
-                                    name="toEmail"
+                                    label="Host"
+                                    name="host"
+                                    type="text"
+                                    required="required"
+                                    component={InputField}
+                                    size="sm"
+                                />
+                                <Field
+                                    label="Email"
+                                    name="username"
                                     type="email"
                                     required="required"
                                     component={InputField}
                                     size="sm"
                                 />
                                 <Field
-                                    label="Subject"
-                                    name="subject"
-                                    type="text"
+                                    label="Password"
+                                    name="password"
+                                    type="password"
                                     required="required"
                                     component={InputField}
-                                    size="sm"
-                                />
-                                <Field
-                                    label="Body"
-                                    name="text"
-                                    type="text"
-                                    required="required"
-                                    component={TextAreaField}
                                     size="sm"
                                 />
                             </div>
@@ -143,4 +115,4 @@ const EmailCreateForm = () => {
     )
 }
 
-export {EmailCreateForm}
+export {EmailSettingsCreateForm}
