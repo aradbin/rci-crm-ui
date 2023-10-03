@@ -18,7 +18,7 @@ const ShortcutComponent = () => {
             right: '40px',
         }}>
             {show && 
-            <OverlayTrigger placement="left" trigger="hover" overlay={<Tooltip placement="left">Create Task</Tooltip>}>
+            <OverlayTrigger placement="left" trigger={['hover', 'focus']} overlay={<Tooltip placement="left">Create Task</Tooltip>}>
                 <button className="btn btn-primary btn-icon" style={{
                     borderRadius: '50px',
                     animation: 'animationFadeIn 0.6s ease-in-out'
@@ -29,7 +29,7 @@ const ShortcutComponent = () => {
             }
 
             {show && 
-            <OverlayTrigger placement="left" trigger="hover" overlay={<Tooltip placement="left">Send Email</Tooltip>}>
+            <OverlayTrigger placement="left" trigger={['hover', 'focus']} overlay={<Tooltip placement="left">Send Email</Tooltip>}>
                 <button className="btn btn-warning btn-icon" style={{
                     borderRadius: '50px',
                     animation: 'animationFadeIn 0.4s ease-in-out'
@@ -40,7 +40,7 @@ const ShortcutComponent = () => {
             }
 
             {show && 
-            <OverlayTrigger placement="left" trigger="hover" overlay={<Tooltip placement="left">Send WhatsApp</Tooltip>}>
+            <OverlayTrigger placement="left" trigger={['hover', 'focus']} overlay={<Tooltip placement="left">Send WhatsApp</Tooltip>}>
                 <button className="btn btn-success btn-icon" style={{
                     borderRadius: '50px',
                     animation: 'animationFadeIn 0.2s ease-in-out'
