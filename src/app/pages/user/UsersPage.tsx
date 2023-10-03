@@ -7,6 +7,7 @@ import { UserCreateForm } from "../../components/forms/UserCreateForm"
 import { ToolbarComponent } from "../../components/common/ToolbarComponent"
 import { stringifyRequestQuery } from "../../helpers/Utils"
 import { FilterComponent } from "../../components/common/FilterComponent"
+import { useQueryClient } from "react-query"
 
 const breadCrumbs = [
     { title: 'User Management', path: '/users', isSeparator: false },
@@ -27,6 +28,8 @@ const filter = {
 }
 
 const UsersPage = () => {
+    const queryClient = useQueryClient()
+
     const [params, setParams] = useState("")
     const [refetch, setRefetch] = useState(0)
     const [showCreate, setShowCreate] = useState(false)
@@ -45,6 +48,7 @@ const UsersPage = () => {
     }
 
     const updateList = () => {
+        queryClient.invalidateQueries({ queryKey: ['all-users', 'pageSize=all'] })
         setRefetch(refetch+1)
     }
 

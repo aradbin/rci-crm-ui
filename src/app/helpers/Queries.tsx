@@ -2,7 +2,7 @@ import { useQuery } from "react-query"
 import { getRequest } from "../helpers/Requests"
 import { stringifyRequestQuery } from "./Utils"
 
-const Query = (queryKey: any, url: string, params: string= "") => {
+const Query = (queryKey: any, url: string, params: string = "") => {
     const queryInstance = useQuery([queryKey, params], () => getRequest(url, params), {
         keepPreviousData: true,
     })

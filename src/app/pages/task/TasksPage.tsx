@@ -1,12 +1,12 @@
-import { useState } from "react"
+import { useContext, useState } from "react"
 import { KTCard, KTCardBody } from "../../../_metronic/helpers"
 import { TableComponent } from "../../components/common/TableComponent"
 import { TASKS_URL } from "../../helpers/ApiEndpoints"
 import { ToolbarComponent } from "../../components/common/ToolbarComponent"
 import { stringifyRequestQuery } from "../../helpers/Utils"
 import { FilterComponent } from "../../components/common/FilterComponent"
-import { TaskCreateForm } from "../../components/forms/TaskCreateForm"
 import { taskColumns } from "../../columns/taskColumns"
+import { AppContext } from "../../providers/AppProvider"
 
 const breadCrumbs = [
     { title: 'Task Management', path: '/tasks', isSeparator: false },
@@ -32,8 +32,8 @@ const filter = {
 const TasksPage = () => {
     const [params, setParams] = useState("")
     const [refetch, setRefetch] = useState(0)
-    const [showCreate, setShowCreate] = useState(false)
-    const [showEmail, setShowEmail] = useState(false)
+
+    const { setShowCreateTask } = useContext(AppContext)
 
     const handleFilterSubmit = (values: any) => {
         const formData = {...values}
@@ -51,11 +51,7 @@ const TasksPage = () => {
     }
 
     const toggleShowCreate = (show: boolean) => {
-        setShowCreate(show)
-    }
-
-    const toggleShowEmail = (show: boolean) => {
-        setShowEmail(show)
+        setShowCreateTask(show)
     }
 
     const updateList = () => {
@@ -72,7 +68,6 @@ const TasksPage = () => {
                     <TableComponent queryKey="tasks" url={TASKS_URL} params={params} columns={taskColumns} refetch={refetch} />
                 </KTCardBody>
             </KTCard>
-            <TaskCreateForm show={showCreate} toggleShow={toggleShowCreate} updateList={updateList} />
         </>
     )
 }

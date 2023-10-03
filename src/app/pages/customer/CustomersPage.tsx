@@ -7,6 +7,7 @@ import { stringifyRequestQuery } from "../../helpers/Utils"
 import { CustomerCreateForm } from "../../components/forms/CustomerCreateForm"
 import { customerColumns } from "../../columns/customerColumns"
 import { FilterComponent } from "../../components/common/FilterComponent"
+import { useQueryClient } from "react-query"
 
 const breadCrumbs = [
     { title: 'Customer Management', path: '/customers', isSeparator: false },
@@ -27,6 +28,8 @@ const filter = {
 }
 
 const CustomersPage = () => {
+    const queryClient = useQueryClient()
+
     const [params, setParams] = useState("")
     const [refetch, setRefetch] = useState(0)
     const [showCreate, setShowCreate] = useState(false)
@@ -40,6 +43,7 @@ const CustomersPage = () => {
     }
 
     const updateList = () => {
+        queryClient.invalidateQueries({ queryKey: ['all-customers', 'pageSize=all'] })
         setRefetch(refetch+1)
     }
 

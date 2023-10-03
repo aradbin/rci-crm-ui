@@ -5,7 +5,7 @@ import { AppContext } from "../../providers/AppProvider"
 const ShortcutComponent = () => {
     const [show, setShow] = useState(false)
 
-    const { setShowCreateEmail } = useContext(AppContext)
+    const { setShowCreateTask, setShowCreateEmail } = useContext(AppContext)
 
     const toggleShow = () => {
         setShow(!show)
@@ -22,7 +22,7 @@ const ShortcutComponent = () => {
                 <button className="btn btn-primary btn-icon" style={{
                     borderRadius: '50px',
                     animation: 'animationFadeIn 0.6s ease-in-out'
-                }}>
+                }} onClick={() => setShowCreateTask(true)}>
                     <i className="fa-solid fa-check p-0 fs-1"></i>
                 </button>
             </OverlayTrigger>

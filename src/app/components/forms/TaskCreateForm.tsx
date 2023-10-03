@@ -5,7 +5,7 @@ import { CUSTOMERS_URL, TASKS_URL, USERS_URL } from "../../helpers/ApiEndpoints"
 import { InputField } from "../fields/InputField"
 import { Modal } from "react-bootstrap"
 import { toast } from "react-toastify"
-import { useContext, useEffect, useState } from "react"
+import { useContext, useEffect, useMemo, useState } from "react"
 import { LoadingComponent } from "../common/LoadingComponent"
 import { AppContext } from "../../providers/AppProvider"
 import { TextAreaField } from "../fields/TextAreaField"
@@ -15,17 +15,20 @@ import { formatDate } from "../../helpers/Utils"
 import { priorities } from "../../helpers/Variables"
 import { SelectField } from "../fields/SelectField"
 
-const TaskCreateForm = ({show, toggleShow, updateList}: any) => {
+const TaskCreateForm = () => {
+    const [show, setShow] = useState(false)
     const [loading, setLoading] = useState(false)
     const [customerOptions, setCustomerOptions] = useState([])
     const [assigneeOptions, setAssigneeOptions] = useState([])
+    const [customers, setCustomers] = useState([])
+    const [users, setUsers] = useState([])
 
-    const { idForUpdate, setIdForUpdate } = useContext(AppContext)
+    const { idForTaskUpdate, setIdForTaskUpdate, showCreateTask, setShowCreateTask } = useContext(AppContext)
 
     const priorityOptions = priorities
 
-    const customers = Query('team-types', CUSTOMERS_URL, 'pageSize=all')
-    const users = Query('users', USERS_URL, 'pageSize=all')
+    const customersQuery = Query('all-customers', CUSTOMERS_URL, 'pageSize=all')
+    const usersQuery = Query('all-users', USERS_URL, 'pageSize=all')
 
     const formik = useFormik({
         initialValues: {
@@ -41,7 +44,7 @@ const TaskCreateForm = ({show, toggleShow, updateList}: any) => {
             due_date: Yup.string().required('Due date is required'),
             priority: Yup.number().required('Priority is required'),
         }),
-        onSubmit: async (values, {setSubmitting}) => {console.log(values)
+        onSubmit: async (values, {setSubmitting}) => {
             setSubmitting(true)
             const formData = JSON.parse(JSON.stringify(values))
             Object.keys(formData).forEach((key) => {
@@ -54,19 +57,17 @@ const TaskCreateForm = ({show, toggleShow, updateList}: any) => {
                 }
             })
             try {
-                if(idForUpdate === 0){
+                if(idForTaskUpdate === 0){
                     await createRequest(TASKS_URL,formData).then((response) => {
                         if(response?.status===201){
                             toast.success('Task Created Successfully')
-                            updateList()
                             closeModal()
                         }
                     })
                 }else{
-                    await updateRequest(`${TASKS_URL}/${idForUpdate}`,formData).then((response) => {
+                    await updateRequest(`${TASKS_URL}/${idForTaskUpdate}`,formData).then((response) => {
                         if(response?.status===200){
                             toast.success('Task Updated Successfully')
-                            updateList()
                             closeModal()
                         }
                     })
@@ -79,29 +80,39 @@ const TaskCreateForm = ({show, toggleShow, updateList}: any) => {
         },
     })
 
-    useEffect(() => {
-        if(customers?.data?.length > 0){
-            const array = customers?.data?.map((item: any) => {
-                return { label: item?.name, value: item?.id }
-            })
-            setCustomerOptions(array)
-        }
-    },[customers])
+    const toggleShow = (val: boolean) => {
+        setShow(val)
+    }
 
     useEffect(() => {
-        if(users?.data?.length > 0){
-            const array = users?.data?.map((item: any) => {
-                return { label: item?.name, value: item?.id }
-            })
-            setAssigneeOptions(array)
+        if(JSON.stringify(customersQuery?.data) !== JSON.stringify(customers)){
+            setCustomers(customersQuery?.data)
+            if(customersQuery?.data?.length > 0){
+                const array = customersQuery?.data?.map((item: any) => {
+                    return { label: item?.name, value: item?.id }
+                })
+                setCustomerOptions(array)
+            }
         }
-    },[users])
+    }, [customersQuery]);
 
     useEffect(() => {
-        if(idForUpdate > 0){
+        if(JSON.stringify(usersQuery?.data) !== JSON.stringify(users)){
+            setUsers(usersQuery?.data)
+            if(usersQuery?.data?.length > 0){
+                const array = usersQuery?.data?.map((item: any) => {
+                    return { label: item?.name, value: item?.id }
+                })
+                setAssigneeOptions(array)
+            }
+        }
+    }, [usersQuery]);
+
+    useEffect(() => {
+        if(idForTaskUpdate > 0){
             toggleShow(true)
             setLoading(true)
-            getRequest(`${TASKS_URL}/${idForUpdate}`).then((response) => {
+            getRequest(`${TASKS_URL}/${idForTaskUpdate}`).then((response) => {
                 formik.setFieldValue("title",response.title)
                 formik.setFieldValue("description",response.description || "")
                 formik.setFieldValue("due_date",formatDate(response.due_date, 'input'))
@@ -112,19 +123,24 @@ const TaskCreateForm = ({show, toggleShow, updateList}: any) => {
                 setLoading(false)
             })
         }
-    },[idForUpdate])
+    },[idForTaskUpdate])
+
+    useEffect(() => {
+        toggleShow(showCreateTask)
+    },[showCreateTask])
 
     const closeModal = () => {
         formik.resetForm()
         toggleShow(false)
-        setIdForUpdate(0)
+        setIdForTaskUpdate(0)
+        setShowCreateTask(false)
     }
 
     return (
         <Modal className="fade" aria-hidden='true' show={show} centered animation>
             <div className="modal-content">
                 <div className='modal-header'>
-                    <h2 className='fw-bolder'>{idForUpdate === 0 ? 'Create' : 'Update'} Task</h2>
+                    <h2 className='fw-bolder'>{idForTaskUpdate === 0 ? 'Create' : 'Update'} Task</h2>
                     <div className='btn btn-icon btn-sm btn-active-icon-primary' onClick={() => closeModal()}>
                         <i className="fa fa-times fs-2"></i>
                     </div>
