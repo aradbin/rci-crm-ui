@@ -7,8 +7,10 @@ import { Modal } from "react-bootstrap"
 import { toast } from "react-toastify"
 import { useContext, useEffect, useState } from "react"
 import { AppContext } from "../../providers/AppProvider"
+import { useAuth } from "../../modules/auth"
 
 const EmailSettingsCreateForm = () => {
+    const { currentUser, setCurrentUser } = useAuth()
     const [show, setShow] = useState(false)
     const { showCreateEmailSettings, setShowCreateEmailSettings } = useContext(AppContext)
 
@@ -20,14 +22,17 @@ const EmailSettingsCreateForm = () => {
         },
         validationSchema: Yup.object().shape({
             host: Yup.string().required('Host address is required'),
-            username: Yup.string().required('Email address is required'),
+            username: Yup.string().email('Please provide valid email address').required('Email address is required'),
             password: Yup.string().required('Password is required'),
         }),
         onSubmit: async (values, {setSubmitting}) => {
             setSubmitting(true)
             try {
-                await createRequest(EMAIL_SETTINGS_URL,values).then((response) => {
+                await createRequest(EMAIL_SETTINGS_URL,{...values, user_id: currentUser?.id}).then((response) => {
                     if(response?.status===201){
+                        const user = JSON.parse(JSON.stringify(currentUser))
+                        user.emailSettings = response?.data
+                        setCurrentUser(user)
                         toast.success('Email Configured Successfully')
                         closeModal()
                     }

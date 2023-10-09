@@ -17,23 +17,11 @@ export interface UserCommunicationModel {
 }
 
 export interface UserEmailSettingsModel {
-  emailNotification?: boolean
-  sendCopyToPersonalEmail?: boolean
-  activityRelatesEmail?: {
-    youHaveNewNotifications?: boolean
-    youAreSentADirectMessage?: boolean
-    someoneAddsYouAsAsAConnection?: boolean
-    uponNewOrder?: boolean
-    newMembershipApproval?: boolean
-    memberRegistration?: boolean
-  }
-  updatesFromKeenthemes?: {
-    newsAboutKeenthemesProductsAndFeatureUpdates?: boolean
-    tipsOnGettingMoreOutOfKeen?: boolean
-    thingsYouMissedSindeYouLastLoggedIntoKeen?: boolean
-    newsAboutStartOnPartnerProductsAndOtherServices?: boolean
-    tipsOnStartBusinessProducts?: boolean
-  }
+  id: number
+  host: string
+  username: string
+  password: string
+  user_id: number
 }
 
 export interface UserSocialNetworksModel {
@@ -51,7 +39,7 @@ export interface UserModel {
   name?: string
   contact?: string
   avatar?: string
-  emailSettings?: UserEmailSettingsModel
+  emailSettings?: UserEmailSettingsModel | undefined
   userSettings?: any
   auth?: AuthModel
 }
