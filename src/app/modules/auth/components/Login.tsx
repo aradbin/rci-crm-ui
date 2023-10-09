@@ -1,57 +1,44 @@
 /* eslint-disable jsx-a11y/anchor-is-valid */
 import {useState} from 'react'
 import * as Yup from 'yup'
-import clsx from 'clsx'
 import {Link} from 'react-router-dom'
 import {useFormik} from 'formik'
-import {getUserByToken, login} from '../core/_requests'
-import {toAbsoluteUrl} from '../../../../_metronic/helpers'
 import {useAuth} from '../core/Auth'
+import axios from 'axios'
+import { AUTH_URL } from '../../../helpers/ApiEndpoints'
 
 const loginSchema = Yup.object().shape({
-  email: Yup.string()
-    .email('Wrong email format')
-    .min(3, 'Minimum 3 symbols')
-    .max(50, 'Maximum 50 symbols')
-    .required('Email is required'),
-  password: Yup.string()
-    .min(3, 'Minimum 3 symbols')
-    .max(50, 'Maximum 50 symbols')
-    .required('Password is required'),
+  email: Yup.string().required('Email is required'),
+  password: Yup.string().required('Password is required'),
 })
 
 const initialValues = {
-  email: 'admin@demo.com',
-  password: 'demo',
+  email: 'user@email.com',
+  password: 'user',
 }
-
-/*
-  Formik+YUP+Typescript:
-  https://jaredpalmer.com/formik/docs/tutorial#getfieldprops
-  https://medium.com/@maurice.de.beijer/yup-validation-and-typescript-and-formik-6c342578a20e
-*/
 
 export function Login() {
   const [loading, setLoading] = useState(false)
+  const [hasError, setHasError] = useState()
   const {saveAuth, setCurrentUser} = useAuth()
 
   const formik = useFormik({
     initialValues,
     validationSchema: loginSchema,
-    onSubmit: async (values, {setStatus, setSubmitting}) => {
+    onSubmit: async (values, {setSubmitting}) => {
       setLoading(true)
-      try {
-        const {data: auth} = await login(values.email, values.password)
-        saveAuth(auth)
-        const {data: user} = await getUserByToken(auth.api_token)
-        setCurrentUser(user)
-      } catch (error) {
-        console.error(error)
+      await axios.post(`${AUTH_URL}/login`, values).then(async (response) => {
+        if(response?.status===201){
+          saveAuth({accessToken: response?.data?.accessToken})
+          setCurrentUser({...response?.data?.user})
+        }
+      }).catch((error) => {
+        setHasError(error?.response?.data?.message)
         saveAuth(undefined)
-        setStatus('The login details are incorrect')
+      }).finally(() => {
         setSubmitting(false)
         setLoading(false)
-      }
+      })
     },
   })
 
@@ -74,20 +61,16 @@ export function Login() {
         <input
           placeholder='Email'
           {...formik.getFieldProps('email')}
-          className={clsx(
-            'form-control bg-transparent',
-            {'is-invalid': formik.touched.email && formik.errors.email},
-            {
-              'is-valid': formik.touched.email && !formik.errors.email,
-            }
-          )}
+          className='form-control bg-transparent'
           type='email'
           name='email'
           autoComplete='off'
         />
         {formik.touched.email && formik.errors.email && (
           <div className='fv-plugins-message-container'>
-            <span role='alert'>{formik.errors.email}</span>
+            <div className='fv-help-block'>
+              <span role='alert'>{formik.errors.email}</span>
+            </div>
           </div>
         )}
       </div>
@@ -100,15 +83,7 @@ export function Login() {
           type='password'
           autoComplete='off'
           {...formik.getFieldProps('password')}
-          className={clsx(
-            'form-control bg-transparent',
-            {
-              'is-invalid': formik.touched.password && formik.errors.password,
-            },
-            {
-              'is-valid': formik.touched.password && !formik.errors.password,
-            }
-          )}
+          className='form-control bg-transparent'
         />
         {formik.touched.password && formik.errors.password && (
           <div className='fv-plugins-message-container'>
@@ -150,6 +125,12 @@ export function Login() {
         </button>
       </div>
       {/* end::Action */}
+
+      {hasError && <div className="alert alert-danger d-flex align-items-center p-5 mb-10">
+        <div className="d-flex flex-column">
+          <span>{hasError}</span>
+        </div>
+      </div>}
 
       {/* <div className='text-gray-500 text-center fw-semibold fs-6'>
         Not a Member yet?{' '}
