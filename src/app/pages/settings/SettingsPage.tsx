@@ -8,7 +8,7 @@ import { settingsColumns } from "../../columns/settingsColumns"
 import { SettingCreateForm } from "../../components/forms/SettingCreateForm"
 
 const breadCrumbs = [
-    { title: 'Settings', path: '/apps/chat/private-chat', isSeparator: false },
+    { title: 'Settings', path: '/settings', isSeparator: false },
     { isSeparator: true },
 ]
 

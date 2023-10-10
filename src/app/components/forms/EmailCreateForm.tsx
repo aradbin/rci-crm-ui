@@ -50,7 +50,7 @@ const EmailCreateForm = () => {
 
     useEffect(() => {
         if(idForEmail !== ""){
-            if(!currentUser?.emailSettings){
+            if(!currentUser?.emailSettings?.id){
                 closeModal()
                 setShowCreateEmailSettings(true)
             }else{

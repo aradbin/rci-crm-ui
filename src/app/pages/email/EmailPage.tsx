@@ -1,5 +1,5 @@
 import { useContext, useState } from "react"
-import { KTCard, KTCardBody } from "../../../_metronic/helpers"
+import { KTCard, KTCardBody, KTIcon } from "../../../_metronic/helpers"
 import { TableComponent } from "../../components/common/TableComponent"
 import { EMAIL_URL } from "../../helpers/ApiEndpoints"
 import { ToolbarComponent } from "../../components/common/ToolbarComponent"
@@ -14,10 +14,14 @@ const EmailPage = () => {
     const [params, setParams] = useState("")
     const [refetch, setRefetch] = useState(0)
 
-    const { setShowCreateEmail } = useContext(AppContext)
+    const { setShowCreateEmail, setShowCreateEmailSettings } = useContext(AppContext)
 
     const toggleShowCreate = (show: boolean) => {
         setShowCreateEmail(show)
+    }
+    
+    const toggleShowSettingsCreate = (show: boolean) => {
+        setShowCreateEmailSettings(show)
     }
 
     const updateList = () => {
@@ -27,6 +31,9 @@ const EmailPage = () => {
     return (
         <>
             <ToolbarComponent title="Email" breadCrumbs={breadCrumbs} handleButtonClick={toggleShowCreate}>
+                <button className='btn btn-sm fw-bold btn-outline btn-outline-dashed btn-outline-primary' onClick={() => toggleShowSettingsCreate(true)}>
+                    <KTIcon iconName='setting-4' className='fs-3' /> Config
+                </button>
             </ToolbarComponent>
             <KTCard className="mb-5 mb-xl-8">
                 <KTCardBody className='py-3'>

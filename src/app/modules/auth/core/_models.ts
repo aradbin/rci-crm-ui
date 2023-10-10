@@ -18,6 +18,7 @@ export interface UserCommunicationModel {
 
 export interface UserEmailSettingsModel {
   id: number
+  name: string
   host: string
   username: string
   password: string
