@@ -4,6 +4,7 @@ import { TableComponent } from "../../components/common/TableComponent"
 import { EMAIL_URL } from "../../helpers/ApiEndpoints"
 import { ToolbarComponent } from "../../components/common/ToolbarComponent"
 import { WhatsAppCreateForm } from "../../components/forms/WhatsAppCreateForm"
+import { ChatBox } from "../../components/whatsapp/ChatBox"
 
 const breadCrumbs = [
     { title: 'WhatsApp', path: '/whatsapp', isSeparator: false },
@@ -25,13 +26,9 @@ const WhatsAppPage = () => {
 
     return (
         <>
-            <ToolbarComponent title="WhatsApp" breadCrumbs={breadCrumbs} handleButtonClick={toggleShowCreate}>
-            </ToolbarComponent>
-            <KTCard className="mb-5 mb-xl-8">
-                <KTCardBody className='py-3'>
-                    {/* <TableComponent queryKey="email" url={EMAIL_URL} params={params} columns={[]} refetch={refetch} /> */}
-                </KTCardBody>
-            </KTCard>
+            {/* <ToolbarComponent title="WhatsApp" breadCrumbs={breadCrumbs} handleButtonClick={toggleShowCreate}>
+            </ToolbarComponent> */}
+            <ChatBox />
             <WhatsAppCreateForm show={showCreate} toggleShow={toggleShowCreate} updateList={() => {}} />
         </>
     )
