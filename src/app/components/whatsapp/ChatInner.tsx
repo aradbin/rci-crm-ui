@@ -55,7 +55,7 @@ const ChatInner = () => {
         data-kt-scroll-dependencies='#kt_header, #kt_app_header, #kt_app_toolbar, #kt_toolbar, #kt_footer, #kt_app_footer, #kt_chat_messenger_header, #kt_chat_messenger_footer'
         data-kt-scroll-wrappers='#kt_content, #kt_app_content, #kt_chat_messenger_body'
         data-kt-scroll-offset='5px'
-        style={{ height: 'calc(100vh - 400px)' }}
+        style={{ height: 'calc(100vh - 338px)' }}
       >
         {messages.map((message, index) => {
           const userInfo = userInfos[message.user]

@@ -64,7 +64,7 @@ const ChatBox = () => {
               data-kt-scroll-dependencies='#kt_header, #kt_toolbar, #kt_footer, #kt_chat_contacts_header'
               data-kt-scroll-wrappers='#kt_content, #kt_chat_contacts_body'
               data-kt-scroll-offset='0px'
-              style={{ height: 'calc(100vh - 344px)' }}
+              style={{ height: 'calc(100vh - 278px)' }}
             >
               {users?.map((item,index) =>
                 <div className='d-flex flex-stack py-4' key={index}>
