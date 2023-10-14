@@ -4,6 +4,41 @@ import { useContext, useEffect, useState } from "react";
 import { getRequest } from "../../helpers/Requests";
 import { USERS_URL } from "../../helpers/ApiEndpoints";
 import { AppContext } from "../../providers/AppProvider";
+import { UserCreateForm } from "../../components/forms/UserCreateForm";
+
+const ProfileOverview = ({ user }: any) => {
+    const { setIdForUpdate, setIdForEmail } = useContext(AppContext)
+    return (
+        <div className='card mb-5 mb-xl-10' id='kt_profile_details_view'>
+            <div className='card-header'>
+                <div className='card-title m-0'>
+                    <h3 className='fw-bolder m-0'>Profile Details</h3>
+                </div>
+                <button className='btn btn-sm btn-primary align-self-center' onClick={() => setIdForUpdate(user?.id)}>Edit Profile</button>
+            </div>
+            <div className='card-body p-9'>
+                <div className='row mb-7'>
+                    <label className='col-lg-4 fw-bold text-muted'>Name</label>
+                    <div className='col-lg-8'>
+                        <span className='fw-bolder fs-6 text-dark'>{user?.name}</span>
+                    </div>
+                </div>
+                <div className='row mb-7'>
+                    <label className='col-lg-4 fw-bold text-muted'>Email</label>
+                    <div className='col-lg-8'>
+                        <span onClick={() => setIdForEmail(user?.email)} className='fw-bolder fs-6 text-dark text-hover-primary cursor-pointer'>{user?.email}</span>
+                    </div>
+                </div>
+                <div className='row mb-7'>
+                    <label className='col-lg-4 fw-bold text-muted'>Contact</label>
+                    <div className='col-lg-8'>
+                        <a href={`tel:${user?.contact}`} className='fw-bolder fs-6 text-dark text-hover-primary'>{user?.contact}</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    )
+}
 
 const ProfileTabs = () => {
     return (
@@ -11,6 +46,11 @@ const ProfileTabs = () => {
             <ul className='nav nav-stretch nav-line-tabs nav-line-tabs-2x border-transparent fs-5 fw-bolder flex-nowrap'>
                 <li className='nav-item'>
                     <span className='nav-link text-active-primary me-6 cursor-pointer active'>
+                        Overview
+                    </span>
+                </li>
+                <li className='nav-item'>
+                    <span className='nav-link text-active-primary me-6 cursor-pointer'>
                         Tasks
                     </span>
                 </li>
@@ -92,8 +132,13 @@ const UsersProfilePage = () => {
     const { id } = useParams()
     const navigate = useNavigate();
     const [user, setUser] = useState({})
+    const [showCreate, setShowCreate] = useState(false)
 
     useEffect(() => {
+        getUser()
+    },[id])
+
+    const getUser = () => {
         getRequest(`${USERS_URL}/${id}`).then((response) => {
             if(response){
                 setUser(response)
@@ -103,7 +148,11 @@ const UsersProfilePage = () => {
         }).finally(() => {
 
         })
-    },[id])
+    }
+
+    const toggleShowCreate = (show: boolean) => {
+        setShowCreate(show)
+    }
     
     return (
         <>
@@ -113,6 +162,8 @@ const UsersProfilePage = () => {
                     <ProfileTabs />
                 </div>
             </div>
+            <ProfileOverview user={user}/>
+            <UserCreateForm show={showCreate} toggleShow={toggleShowCreate} updateList={getUser} />
         </>
     )
 }
