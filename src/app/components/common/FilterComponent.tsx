@@ -1,5 +1,5 @@
 import { Field, FormikProvider, useFormik } from "formik"
-import * as Yup from 'yup'
+// import * as Yup from 'yup'
 import { InputField } from "../fields/InputField"
 import { SelectField } from "../fields/SelectField"
 import { KTIcon } from "../../../_metronic/helpers"
@@ -14,9 +14,9 @@ const FilterComponent = ({filter, submit}: any) => {
 
     return (
         <div className='m-0'>
-            <a href='#' className='btn btn-sm btn-flex fw-bold btn-outline btn-outline-dashed btn-outline-primary' data-kt-menu-trigger='click' data-kt-menu-placement='bottom-end'>
-                <KTIcon iconName='filter' className='fs-6 text-muted me-1' /> Filter
-            </a>
+            <button className='btn btn-sm btn-flex fw-bold btn-outline btn-outline-dashed btn-outline-primary' data-kt-menu-trigger='click' data-kt-menu-placement='bottom-end'>
+                <KTIcon iconName='filter' className='fs-6 text-primary me-1' /> Filter
+            </button>
             <div className='menu menu-sub menu-sub-dropdown w-250px w-md-300px' data-kt-menu='true'>
                 <FormikProvider value={formik}>
                     <form className="form" onSubmit={formik.handleSubmit} noValidate>

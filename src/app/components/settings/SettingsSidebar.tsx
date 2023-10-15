@@ -18,12 +18,12 @@ const SettingsSidebar = ({type, setType}: any) => {
                     {settings.map((item, index) => {
                         return (
                             <React.Fragment key={index}>
-                                <div className='d-flex align-items-center py-4' onClick={() => setType(item)}>
+                                <div className='d-flex align-items-center py-4 cursor-pointer' onClick={() => setType(item)}>
                                     <div>
                                         <span><i className={`fa-solid fa-screwdriver-wrench fs-4 pt-1 ${type.value===item.value ? 'text-primary' : 'text-gray-900'}`}></i></span>
                                     </div>
                                     <div className='ms-5'>
-                                        <span className={`fs-4 fw-bolder text-hover-primary mb-2 ${type.value===item.value ? 'text-primary' : 'text-gray-900'}`}>
+                                        <span className={`fs-4 fw-bolder mb-2 ${type.value===item.value ? 'text-primary' : 'text-gray-900'}`}>
                                         {item.label}
                                         </span>
                                     </div>
