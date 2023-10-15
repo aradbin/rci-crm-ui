@@ -14,8 +14,8 @@ const ShortcutComponent = () => {
     return (
         <div className="d-flex flex-column gap-2 bg-transparent w-auto" style={{
             position: 'fixed',
-            bottom: '40px',
-            right: '40px',
+            bottom: '10px',
+            right: '10px',
         }}>
             {show && 
             <OverlayTrigger placement="left" trigger={['hover', 'focus']} overlay={<Tooltip placement="left">Create Task</Tooltip>}>
