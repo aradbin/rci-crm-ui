@@ -9,11 +9,12 @@ import { useContext, useEffect, useState } from "react"
 import { TextAreaField } from "../fields/TextAreaField"
 import { AppContext } from "../../providers/AppProvider"
 import { useAuth } from "../../modules/auth"
+import { getSettingsFromUserSettings } from "../../helpers/Utils"
 
 const EmailCreateForm = () => {
     const { currentUser } = useAuth()
     const [show, setShow] = useState(false)
-    const { idForEmail, setIdForEmail, showCreateEmail, setShowCreateEmail, setShowCreateEmailSettings } = useContext(AppContext)
+    const { idForEmail, setIdForEmail, showCreateEmail, setShowCreateEmail } = useContext(AppContext)
 
     const formik = useFormik({
         initialValues: {
@@ -50,30 +51,26 @@ const EmailCreateForm = () => {
 
     useEffect(() => {
         if(idForEmail !== ""){
-            if(!currentUser?.emailSettings?.id){
-                closeModal()
-                setShowCreateEmailSettings(true)
-            }else{
-                toggleShow(true)
-                formik.setFieldValue("toEmail", idForEmail)
-            }
+            toggleShow(true)
+            formik.setFieldValue("toEmail", idForEmail)
         }else{
             formik.setFieldValue("toEmail", "")
+            closeModal()
         }
     },[idForEmail])
 
     useEffect(() => {
-        if(showCreateEmail){
-            if(!currentUser?.emailSettings){
-                closeModal()
-                setShowCreateEmailSettings(true)
-            }else{
-                toggleShow(showCreateEmail)
-            }
-        }else{
-            toggleShow(showCreateEmail)
-        }
+        toggleShow(showCreateEmail)
     },[showCreateEmail])
+
+    const hasEmailSettings = () => {
+        let has = false
+        if(getSettingsFromUserSettings(currentUser?.userSettings, 'email').value){
+            has = true
+        }
+
+        return has
+    }
 
     const closeModal = () => {
         formik.resetForm()
@@ -91,7 +88,7 @@ const EmailCreateForm = () => {
                         <i className="fa fa-times fs-2"></i>
                     </div>
                 </div>
-                <FormikProvider value={formik}>
+                {hasEmailSettings() ? <FormikProvider value={formik}>
                     <form className="form" onSubmit={formik.handleSubmit} noValidate>
                         <div className="modal-body scroll-y mx-2 mx-xl-2 my-2">
                             <div className='d-flex flex-column'>
@@ -138,6 +135,11 @@ const EmailCreateForm = () => {
                         </div>
                     </form>
                 </FormikProvider>
+                :
+                <div className="modal-body scroll-y mx-2 mx-xl-2 my-2 text-center">
+                    There's no email address assigned to you. Please assign one or contact to your admin
+                </div>
+                }
             </div>
         </Modal>
     )

@@ -1,17 +1,26 @@
 import { Field, FormikProvider, useFormik } from "formik"
 import * as Yup from 'yup'
 import { createRequest, getRequest, updateRequest } from "../../helpers/Requests"
-import { USERS_URL } from "../../helpers/ApiEndpoints"
+import { SETTINGS_URL, USERS_URL } from "../../helpers/ApiEndpoints"
 import { InputField } from "../fields/InputField"
 import { Modal } from "react-bootstrap"
 import { toast } from "react-toastify"
 import { useContext, useEffect, useState } from "react"
 import { AppContext } from "../../providers/AppProvider"
 import { LoadingComponent } from "../common/LoadingComponent"
+import { Query } from "../../helpers/Queries"
+import { SearchableSelectField } from "../fields/SearchableSelectField"
+import { getSettingsFromUserSettings } from "../../helpers/Utils"
 
 const UserCreateForm = ({show, toggleShow, updateList}: any) => {
     const [loading, setLoading] = useState(false)
+    const [settings, setSettings] = useState([])
+    const [emailOptions, setEmailOptions] = useState([])
+    const [departmentOptions, setDepartmentOptions] = useState([])
+    const [deisgnationOptions, setDeisgnationOptions] = useState([])
     const { idForUpdate, setIdForUpdate } = useContext(AppContext)
+
+    const settingsQuery = Query('all-settings', SETTINGS_URL, 'pageSize=all')
 
     const formik = useFormik({
         initialValues: {
@@ -19,6 +28,9 @@ const UserCreateForm = ({show, toggleShow, updateList}: any) => {
             email: "",
             contact: "",
             password: "",
+            department_id: "",
+            designation_id: "",
+            email_id: "",
         },
         validationSchema: Yup.object().shape({
             name: Yup.string().required('Name is required'),
@@ -32,8 +44,25 @@ const UserCreateForm = ({show, toggleShow, updateList}: any) => {
         onSubmit: async (values, {setSubmitting}) => {
             setSubmitting(true)
             try {
+                const formData: any = {
+                    name: values.name,
+                    email: values.email,
+                    contact: values.contact,
+                    password: values.password,
+                }
+                const settings_id: number[] = []
+                if(values.department_id !== ''){
+                    settings_id.push(parseInt(values.department_id))
+                }
+                if(values.designation_id !== ''){
+                    settings_id.push(parseInt(values.designation_id))
+                }
+                if(values.email_id !== ''){
+                    settings_id.push(parseInt(values.email_id))
+                }
+                formData.settings_id = settings_id
                 if(idForUpdate === 0){
-                    await createRequest(USERS_URL,values).then((response) => {
+                    await createRequest(USERS_URL, formData).then(async (response) => {
                         if(response?.status===201){
                             toast.success('User Created Successfully')
                             updateList()
@@ -41,7 +70,8 @@ const UserCreateForm = ({show, toggleShow, updateList}: any) => {
                         }
                     })
                 }else{
-                    await updateRequest(`${USERS_URL}/${idForUpdate}`,values).then((response) => {
+                    delete formData.password
+                    await updateRequest(`${USERS_URL}/${idForUpdate}`, formData).then((response) => {
                         if(response?.status===200){
                             toast.success('User Updated Successfully')
                             updateList()
@@ -65,11 +95,48 @@ const UserCreateForm = ({show, toggleShow, updateList}: any) => {
                 formik.setFieldValue("name",response.name)
                 formik.setFieldValue("email",response.email)
                 formik.setFieldValue("contact",response.contact)
+                const department_id = getSettingsFromUserSettings(response.userSettings, 'department')
+                if(department_id.value){
+                    formik.setFieldValue("department_id", department_id.value)
+                }
+                const designation_id = getSettingsFromUserSettings(response.userSettings, 'designation')
+                if(designation_id.value){
+                    formik.setFieldValue("designation_id", designation_id.value)
+                }
+                const email_id = getSettingsFromUserSettings(response.userSettings, 'email')
+                if(email_id.value){
+                    formik.setFieldValue("email_id", email_id.value)
+                }
             }).finally(() => {
                 setLoading(false)
             })
         }
     },[idForUpdate])
+
+    useEffect(() => {
+        if(JSON.stringify(settingsQuery?.data) !== JSON.stringify(settings)){
+            setSettings(settingsQuery?.data)
+            if(settingsQuery?.data?.length > 0){
+                const emails: any = []
+                const departments: any = []
+                const designations: any = []
+                settingsQuery?.data?.map((item: any) => {
+                    if(item.type === 'email'){
+                        emails.push({ label: `${item?.name} (${item.metadata.username})`, value: item?.id })
+                    }
+                    if(item.type === 'department'){
+                        departments.push({ label: item?.name, value: item?.id })
+                    }
+                    if(item.type === 'designation'){
+                        designations.push({ label: item?.name, value: item?.id })
+                    }
+                })
+                setEmailOptions(emails)
+                setDepartmentOptions(departments)
+                setDeisgnationOptions(designations)
+            }
+        }
+    }, [settingsQuery]);
 
     const closeModal = () => {
         formik.resetForm()
@@ -122,6 +189,27 @@ const UserCreateForm = ({show, toggleShow, updateList}: any) => {
                                     component={InputField}
                                     size="sm"
                                 />}
+                                <Field
+                                    label="Department"
+                                    name="department_id"
+                                    options={departmentOptions}
+                                    component={SearchableSelectField}
+                                    size="sm"
+                                />
+                                <Field
+                                    label="Designation"
+                                    name="designation_id"
+                                    options={deisgnationOptions}
+                                    component={SearchableSelectField}
+                                    size="sm"
+                                />
+                                <Field
+                                    label="Assign Email"
+                                    name="email_id"
+                                    options={emailOptions}
+                                    component={SearchableSelectField}
+                                    size="sm"
+                                />
                             </div>
                         </div>
                         <div className="modal-footer">

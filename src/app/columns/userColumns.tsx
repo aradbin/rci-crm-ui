@@ -1,7 +1,7 @@
 import { Link } from "react-router-dom"
 import { toAbsoluteUrl } from "../../_metronic/helpers"
 import { UserActionCell } from "../components/cells/UserActionCell"
-import { formatDate } from "../helpers/Utils"
+import { formatDate, getSettingsFromUserSettings } from "../helpers/Utils"
 
 export const userColumns = [
   {
@@ -24,6 +24,14 @@ export const userColumns = [
   {
     Header: "Contact",
     accessor: "contact"
+  },
+  {
+    Header: "Department",
+    Cell: ({row}: any) => getSettingsFromUserSettings(row?.original?.userSettings, 'department').label
+  },
+  {
+    Header: "Designation",
+    Cell: ({row}: any) => getSettingsFromUserSettings(row?.original?.userSettings, 'designation').label
   },
   {
     Header: "Created At",

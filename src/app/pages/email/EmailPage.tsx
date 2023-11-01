@@ -14,14 +14,10 @@ const EmailPage = () => {
     const [params, setParams] = useState("")
     const [refetch, setRefetch] = useState(0)
 
-    const { setShowCreateEmail, setShowCreateEmailSettings } = useContext(AppContext)
+    const { setShowCreateEmail } = useContext(AppContext)
 
     const toggleShowCreate = (show: boolean) => {
         setShowCreateEmail(show)
-    }
-    
-    const toggleShowSettingsCreate = (show: boolean) => {
-        setShowCreateEmailSettings(show)
     }
 
     const updateList = () => {
@@ -31,9 +27,6 @@ const EmailPage = () => {
     return (
         <>
             <ToolbarComponent title="Email" breadCrumbs={breadCrumbs} handleButtonClick={toggleShowCreate}>
-                <button className='btn btn-sm fw-bold btn-outline btn-outline-dashed btn-outline-primary' onClick={() => toggleShowSettingsCreate(true)}>
-                    <KTIcon iconName='setting-4' className='fs-3' /> Config
-                </button>
             </ToolbarComponent>
             <KTCard className="mb-5 mb-xl-8">
                 <KTCardBody className='py-3'>

@@ -20,7 +20,7 @@ const SettingsSidebar = ({type, setType}: any) => {
                             <React.Fragment key={index}>
                                 <div className='d-flex align-items-center py-4 cursor-pointer' onClick={() => setType(item)}>
                                     <div>
-                                        <span><i className={`fa-solid fa-screwdriver-wrench fs-4 pt-1 ${type.value===item.value ? 'text-primary' : 'text-gray-900'}`}></i></span>
+                                        <span><i className={`${item.icon} fs-4 pt-1 ${type.value===item.value ? 'text-primary' : 'text-gray-900'}`}></i></span>
                                     </div>
                                     <div className='ms-5'>
                                         <span className={`fs-4 fw-bolder mb-2 ${type.value===item.value ? 'text-primary' : 'text-gray-900'}`}>

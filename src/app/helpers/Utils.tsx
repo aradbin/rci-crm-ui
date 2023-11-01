@@ -24,7 +24,7 @@ const formatDate = (value: any, type="") => {
   return ""
 }
 
-const firstLetterUpper = (string: string) => {
+const firstLetterUpperCase = (string: string) => {
   return string.charAt(0).toUpperCase() + string.slice(1);
 }
 
@@ -54,4 +54,24 @@ const getTaskStatusBadge = (value: string) => {
   return ''
 }
 
-export { stringifyRequestQuery, formatDate, firstLetterUpper, getTaskPriorityBadge, getTaskStatusBadge }
+const getSettingsFromUserSettings = (userSettings: any, type: string) => {
+  let settings: any = { label: null, value: null }
+  userSettings?.map((item: any) => {
+    if(item?.deleted_at === null && item?.settings?.type === type){
+      if(type === 'email'){
+        settings = {
+          label: `${item?.settings?.name} (${item?.settings?.metadata?.username})`,
+          value: item?.settings?.id
+        }
+      }else{
+        settings = {
+          label: item?.settings?.name,
+          value: item?.settings?.id
+        }
+      }
+    }
+  })
+  return settings
+}
+
+export { stringifyRequestQuery, formatDate, firstLetterUpperCase, getTaskPriorityBadge, getTaskStatusBadge, getSettingsFromUserSettings }

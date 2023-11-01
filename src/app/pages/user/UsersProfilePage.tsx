@@ -5,6 +5,7 @@ import { getRequest } from "../../helpers/Requests";
 import { USERS_URL } from "../../helpers/ApiEndpoints";
 import { AppContext } from "../../providers/AppProvider";
 import { UserCreateForm } from "../../components/forms/UserCreateForm";
+import { getSettingsFromUserSettings } from "../../helpers/Utils";
 
 const ProfileOverview = ({ user }: any) => {
     const { setIdForUpdate, setIdForEmail } = useContext(AppContext)
@@ -33,6 +34,24 @@ const ProfileOverview = ({ user }: any) => {
                     <label className='col-lg-4 fw-bold text-muted'>Contact</label>
                     <div className='col-lg-8'>
                         <a href={`tel:${user?.contact}`} className='fw-bolder fs-6 text-dark text-hover-primary'>{user?.contact}</a>
+                    </div>
+                </div>
+                <div className='row mb-7'>
+                    <label className='col-lg-4 fw-bold text-muted'>Department</label>
+                    <div className='col-lg-8'>
+                        <span className='fw-bolder fs-6 text-dark'>{getSettingsFromUserSettings(user?.userSettings, 'department').label}</span>
+                    </div>
+                </div>
+                <div className='row mb-7'>
+                    <label className='col-lg-4 fw-bold text-muted'>Designation</label>
+                    <div className='col-lg-8'>
+                        <span className='fw-bolder fs-6 text-dark'>{getSettingsFromUserSettings(user?.userSettings, 'designation').label}</span>
+                    </div>
+                </div>
+                <div className='row mb-7'>
+                    <label className='col-lg-4 fw-bold text-muted'>Assigned Email</label>
+                    <div className='col-lg-8'>
+                        <span className='fw-bolder fs-6 text-dark'>{getSettingsFromUserSettings(user?.userSettings, 'email').label}</span>
                     </div>
                 </div>
             </div>
@@ -93,6 +112,12 @@ const ProfileHeader = ({ user }: any) => {
                             <span className='d-flex align-items-center text-gray-400 text-hover-primary me-5 mb-2 gap-2 cursor-pointer' onClick={() => setIdForEmail(user?.email)}>
                                 <i className="fa-solid fa-envelope"></i> {user?.email}
                             </span>
+                            {getSettingsFromUserSettings(user?.userSettings, 'department').label && <span className='d-flex align-items-center text-gray-400 text-hover-primary me-5 mb-2 gap-2 cursor-pointer'>
+                                <i className="fa-solid fa-building"></i> {getSettingsFromUserSettings(user?.userSettings, 'department').label}
+                            </span>}
+                            {getSettingsFromUserSettings(user?.userSettings, 'designation').label && <span className='d-flex align-items-center text-gray-400 text-hover-primary me-5 mb-2 gap-2 cursor-pointer'>
+                                <i className="fa-solid fa-user-tie"></i> {getSettingsFromUserSettings(user?.userSettings, 'designation').label}
+                            </span>}
                         </div>
                     </div>
                 </div>

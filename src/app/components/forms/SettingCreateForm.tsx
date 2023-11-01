@@ -7,7 +7,7 @@ import { Modal } from "react-bootstrap"
 import { toast } from "react-toastify"
 import { useContext, useEffect, useState } from "react"
 import { LoadingComponent } from "../common/LoadingComponent"
-import { firstLetterUpper } from "../../helpers/Utils"
+import { firstLetterUpperCase } from "../../helpers/Utils"
 import { AppContext } from "../../providers/AppProvider"
 
 const SettingCreateForm = ({show, toggleShow, updateList, type}: any) => {
@@ -17,18 +17,40 @@ const SettingCreateForm = ({show, toggleShow, updateList, type}: any) => {
     const formik = useFormik({
         initialValues: {
             name: "",
+            host: "",
+            username: "",
+            password: "",
         },
         validationSchema: Yup.object().shape({
             name: Yup.string().required('Name is required'),
+            host: Yup.string().when({
+                is: () => type === 'email',
+                then: (schema) => schema.required('Host is required')
+            }),
+            username: Yup.string().when({
+                is: () => type === 'email',
+                then: (schema) => schema.required('Username is required')
+            }),
+            password: Yup.string().when({
+                is: () => type === 'email',
+                then: (schema) => schema.required('Password is required')
+            }),
         }),
         onSubmit: async (values, {setSubmitting}) => {
             setSubmitting(true)
             try {
-                const formData = {...values, type: type}
+                const formData = { name: values.name, type: type, metadata: {}}
+                if(type === 'email'){
+                    formData.metadata = {
+                        host: values.host,
+                        username: values.username,
+                        password: values.password,
+                    }
+                }
                 if(idForUpdate === 0){
                     await createRequest(SETTINGS_URL,formData).then((response) => {
                         if(response?.status===201){
-                            toast.success(`${firstLetterUpper(type)} Created Successfully`)
+                            toast.success(`${firstLetterUpperCase(type)} Created Successfully`)
                             updateList()
                             closeModal()
                         }
@@ -36,7 +58,7 @@ const SettingCreateForm = ({show, toggleShow, updateList, type}: any) => {
                 }else{
                     await updateRequest(`${SETTINGS_URL}/${idForUpdate}`,formData).then((response) => {
                         if(response?.status===200){
-                            toast.success(`${firstLetterUpper(type)} Updated Successfully`)
+                            toast.success(`${firstLetterUpperCase(type)} Updated Successfully`)
                             updateList()
                             closeModal()
                         }
@@ -56,6 +78,11 @@ const SettingCreateForm = ({show, toggleShow, updateList, type}: any) => {
             setLoading(true)
             getRequest(`${SETTINGS_URL}/${idForUpdate}`).then((response) => {
                 formik.setFieldValue("name",response.name)
+                if(type === 'email'){
+                    formik.setFieldValue("host", response?.metadata?.host)
+                    formik.setFieldValue("username", response?.metadata?.username)
+                    formik.setFieldValue("password", response?.metadata?.password)
+                }
             }).finally(() => {
                 setLoading(false)
             })
@@ -72,7 +99,7 @@ const SettingCreateForm = ({show, toggleShow, updateList, type}: any) => {
         <Modal className="fade" aria-hidden='true' show={show} centered animation>
             <div className="modal-content">
                 <div className='modal-header'>
-                    <h2 className='fw-bolder'>{idForUpdate === 0 ? 'Create' : 'Update'} {firstLetterUpper(type)}</h2>
+                    <h2 className='fw-bolder'>{idForUpdate === 0 ? 'Create' : 'Update'} {firstLetterUpperCase(type)}</h2>
                     <div className='btn btn-icon btn-sm btn-active-icon-primary' onClick={() => closeModal()}>
                         <i className="fa fa-times fs-2"></i>
                     </div>
@@ -89,6 +116,32 @@ const SettingCreateForm = ({show, toggleShow, updateList, type}: any) => {
                                     component={InputField}
                                     size="sm"
                                 />
+                                {type === 'email' && <>
+                                <Field
+                                    label="Host"
+                                    name="host"
+                                    type="text"
+                                    required="required"
+                                    component={InputField}
+                                    size="sm"
+                                />
+                                <Field
+                                    label="Email"
+                                    name="username"
+                                    type="email"
+                                    required="required"
+                                    component={InputField}
+                                    size="sm"
+                                />
+                                <Field
+                                    label="Password"
+                                    name="password"
+                                    type="password"
+                                    required="required"
+                                    component={InputField}
+                                    size="sm"
+                                />
+                                </>}
                             </div>
                         </div>
                         <div className="modal-footer">

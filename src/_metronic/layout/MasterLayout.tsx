@@ -5,17 +5,14 @@ import {ScrollTop} from './components/scroll-top'
 import {Content} from './components/content'
 import {FooterWrapper} from './components/footer'
 import {Sidebar} from './components/sidebar'
-import {InviteUsers, UpgradePlan} from '../partials'
 import {PageDataProvider} from './core'
 import {reInitMenu} from '../helpers'
-import {ToolbarWrapper} from './components/toolbar'
 import { ToastContainer } from 'react-toastify'
 
 import 'react-toastify/dist/ReactToastify.css'
 import { ShortcutComponent } from '../../app/components/common/ShortcutComponent'
 import { EmailCreateForm } from '../../app/components/forms/EmailCreateForm'
 import { TaskCreateForm } from '../../app/components/forms/TaskCreateForm'
-import { EmailSettingsCreateForm } from '../../app/components/forms/EmailSettingsCreateForm'
 
 const MasterLayout = () => {
   const location = useLocation()
@@ -45,7 +42,6 @@ const MasterLayout = () => {
       <ShortcutComponent />
 
       <EmailCreateForm />
-      <EmailSettingsCreateForm />
       <TaskCreateForm />
       
       <ToastContainer
