@@ -16,6 +16,7 @@ const UserCreateForm = ({show, toggleShow, updateList}: any) => {
     const [loading, setLoading] = useState(false)
     const [settings, setSettings] = useState([])
     const [emailOptions, setEmailOptions] = useState([])
+    const [whatsAppOptions, setWhatsAppOptions] = useState([])
     const [departmentOptions, setDepartmentOptions] = useState([])
     const [deisgnationOptions, setDeisgnationOptions] = useState([])
     const { idForUpdate, setIdForUpdate } = useContext(AppContext)
@@ -31,6 +32,7 @@ const UserCreateForm = ({show, toggleShow, updateList}: any) => {
             department_id: "",
             designation_id: "",
             email_id: "",
+            whatsapp_id: "",
         },
         validationSchema: Yup.object().shape({
             name: Yup.string().required('Name is required'),
@@ -59,6 +61,9 @@ const UserCreateForm = ({show, toggleShow, updateList}: any) => {
                 }
                 if(values.email_id !== ''){
                     settings_id.push(parseInt(values.email_id))
+                }
+                if(values.whatsapp_id !== ''){
+                    settings_id.push(parseInt(values.whatsapp_id))
                 }
                 formData.settings_id = settings_id
                 if(idForUpdate === 0){
@@ -107,6 +112,10 @@ const UserCreateForm = ({show, toggleShow, updateList}: any) => {
                 if(email_id.value){
                     formik.setFieldValue("email_id", email_id.value)
                 }
+                const whatsapp_id = getSettingsFromUserSettings(response.userSettings, 'whatsapp')
+                if(whatsapp_id.value){
+                    formik.setFieldValue("whatsapp_id", whatsapp_id.value)
+                }
             }).finally(() => {
                 setLoading(false)
             })
@@ -118,11 +127,15 @@ const UserCreateForm = ({show, toggleShow, updateList}: any) => {
             setSettings(settingsQuery?.data)
             if(settingsQuery?.data?.length > 0){
                 const emails: any = []
+                const whatsapps: any = []
                 const departments: any = []
                 const designations: any = []
                 settingsQuery?.data?.map((item: any) => {
                     if(item.type === 'email'){
                         emails.push({ label: `${item?.name} (${item.metadata.username})`, value: item?.id })
+                    }
+                    if(item.type === 'whatsapp'){
+                        whatsapps.push({ label: `${item?.name} (${item.metadata.phone_number})`, value: item?.id })
                     }
                     if(item.type === 'department'){
                         departments.push({ label: item?.name, value: item?.id })
@@ -132,6 +145,7 @@ const UserCreateForm = ({show, toggleShow, updateList}: any) => {
                     }
                 })
                 setEmailOptions(emails)
+                setWhatsAppOptions(whatsapps)
                 setDepartmentOptions(departments)
                 setDeisgnationOptions(designations)
             }
@@ -207,6 +221,13 @@ const UserCreateForm = ({show, toggleShow, updateList}: any) => {
                                     label="Assign Email"
                                     name="email_id"
                                     options={emailOptions}
+                                    component={SearchableSelectField}
+                                    size="sm"
+                                />
+                                <Field
+                                    label="Assign WhatsApp"
+                                    name="whatsapp_id"
+                                    options={whatsAppOptions}
                                     component={SearchableSelectField}
                                     size="sm"
                                 />

@@ -63,6 +63,11 @@ const getSettingsFromUserSettings = (userSettings: any, type: string) => {
           label: `${item?.settings?.name} (${item?.settings?.metadata?.username})`,
           value: item?.settings?.id
         }
+      }else if(type === 'whatsapp'){
+        settings = {
+          label: `${item?.settings?.name} (${item?.settings?.metadata?.phone_number})`,
+          value: item?.settings?.id
+        }
       }else{
         settings = {
           label: item?.settings?.name,

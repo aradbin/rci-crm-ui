@@ -54,6 +54,12 @@ const ProfileOverview = ({ user }: any) => {
                         <span className='fw-bolder fs-6 text-dark'>{getSettingsFromUserSettings(user?.userSettings, 'email').label}</span>
                     </div>
                 </div>
+                <div className='row mb-7'>
+                    <label className='col-lg-4 fw-bold text-muted'>Assigned WhatsApp</label>
+                    <div className='col-lg-8'>
+                        <span className='fw-bolder fs-6 text-dark'>{getSettingsFromUserSettings(user?.userSettings, 'whatsapp').label}</span>
+                    </div>
+                </div>
             </div>
         </div>
     )
