@@ -18,6 +18,7 @@ const CustomerCreateForm = ({show, toggleShow, updateList}: any) => {
             name: "",
             email: "",
             contact: "",
+            optional_contact: ""
         },
         validationSchema: Yup.object().shape({
             name: Yup.string().required('Name is required'),
@@ -60,6 +61,7 @@ const CustomerCreateForm = ({show, toggleShow, updateList}: any) => {
                 formik.setFieldValue("name",response.name)
                 formik.setFieldValue("email",response.email)
                 formik.setFieldValue("contact",response.contact)
+                formik.setFieldValue("optional_contact",response.optional_contact)
             }).finally(() => {
                 setLoading(false)
             })
@@ -104,6 +106,14 @@ const CustomerCreateForm = ({show, toggleShow, updateList}: any) => {
                                 <Field
                                     label="Contact"
                                     name="contact"
+                                    type="text"
+                                    required="required"
+                                    component={InputField}
+                                    size="sm"
+                                />
+                                <Field
+                                    label="Alternative Contact"
+                                    name="optional_contact"
                                     type="text"
                                     required="required"
                                     component={InputField}
