@@ -5,12 +5,16 @@ import { WHATSAPP_URL } from "../../helpers/ApiEndpoints"
 import { InputField } from "../fields/InputField"
 import { Modal } from "react-bootstrap"
 import { toast } from "react-toastify"
-import { useContext, useEffect } from "react"
+import { useContext, useEffect, useState } from "react"
 import { TextAreaField } from "../fields/TextAreaField"
 import { AppContext } from "../../providers/AppProvider"
+import { useAuth } from "../../modules/auth"
+import { getSettingsFromUserSettings } from "../../helpers/Utils"
 
-const WhatsAppCreateForm = ({show, toggleShow, updateList}: any) => {
-    const { idForEmail, setIdForEmail } = useContext(AppContext)
+const WhatsAppCreateForm = () => {
+    const { currentUser } = useAuth()
+    const [show, setShow] = useState(false)
+    const { idForWhatsApp, setIdForWhatsApp, showCreateWhatsApp, setShowCreateWhatsApp } = useContext(AppContext)
 
     const formik = useFormik({
         initialValues: {
@@ -29,7 +33,6 @@ const WhatsAppCreateForm = ({show, toggleShow, updateList}: any) => {
                 await createRequest(`${WHATSAPP_URL}/send-message`,values).then((response) => {
                     if(response?.status===200){
                         toast.success('Message Sent Successfully')
-                        updateList()
                         closeModal()
                     }
                 })
@@ -41,19 +44,37 @@ const WhatsAppCreateForm = ({show, toggleShow, updateList}: any) => {
         },
     })
 
+    const toggleShow = (val: boolean) => {
+        setShow(val)
+    }
+
     useEffect(() => {
-        if(idForEmail !== ""){
+        if(idForWhatsApp !== ""){
             toggleShow(true)
-            formik.setFieldValue("toEmail", idForEmail)
+            formik.setFieldValue("to", idForWhatsApp)
         }else{
-            formik.setFieldValue("toEmail", "")
+            formik.setFieldValue("to", "")
         }
-    },[idForEmail])
+    },[idForWhatsApp])
+
+    useEffect(() => {
+        toggleShow(showCreateWhatsApp)
+    },[showCreateWhatsApp])
+    
+    const hasWhatsAppSettings = () => {
+        let has = false
+        if(getSettingsFromUserSettings(currentUser?.userSettings, 'whatsapp').value){
+            has = true
+        }
+
+        return has
+    }
 
     const closeModal = () => {
         formik.resetForm()
         toggleShow(false)
-        setIdForEmail("")
+        setIdForWhatsApp("")
+        setShowCreateWhatsApp(false)
     }
 
     return (
@@ -65,7 +86,7 @@ const WhatsAppCreateForm = ({show, toggleShow, updateList}: any) => {
                         <i className="fa fa-times fs-2"></i>
                     </div>
                 </div>
-                <FormikProvider value={formik}>
+                {hasWhatsAppSettings() ? <FormikProvider value={formik}>
                     <form className="form" onSubmit={formik.handleSubmit} noValidate>
                         <div className="modal-body scroll-y mx-2 mx-xl-2 my-2">
                             <div className='d-flex flex-column'>
@@ -104,6 +125,11 @@ const WhatsAppCreateForm = ({show, toggleShow, updateList}: any) => {
                         </div>
                     </form>
                 </FormikProvider>
+                :
+                <div className="modal-body scroll-y mx-2 mx-xl-2 my-2 text-center">
+                    There's no whatsapp number assigned to you. Please assign one or contact to your admin
+                </div>
+                }
             </div>
         </Modal>
     )

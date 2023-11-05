@@ -5,7 +5,7 @@ import { AppContext } from "../../providers/AppProvider"
 const ShortcutComponent = () => {
     const [show, setShow] = useState(false)
 
-    const { setShowCreateTask, setShowCreateEmail } = useContext(AppContext)
+    const { setShowCreateTask, setShowCreateEmail, setShowCreateWhatsApp } = useContext(AppContext)
 
     const toggleShow = () => {
         setShow(!show)
@@ -44,7 +44,9 @@ const ShortcutComponent = () => {
                 <button className="btn btn-success btn-icon" style={{
                     borderRadius: '50px',
                     animation: 'animationFadeIn 0.2s ease-in-out'
-                }}><i className="fa-brands fa-whatsapp p-0 fs-1"></i></button>
+                }} onClick={() => setShowCreateWhatsApp(true)}>
+                    <i className="fa-brands fa-whatsapp p-0 fs-1"></i>
+                </button>
             </OverlayTrigger>
             }
 

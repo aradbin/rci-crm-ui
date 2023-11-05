@@ -13,6 +13,7 @@ import 'react-toastify/dist/ReactToastify.css'
 import { ShortcutComponent } from '../../app/components/common/ShortcutComponent'
 import { EmailCreateForm } from '../../app/components/forms/EmailCreateForm'
 import { TaskCreateForm } from '../../app/components/forms/TaskCreateForm'
+import { WhatsAppCreateForm } from '../../app/components/forms/WhatsAppCreateForm'
 
 const MasterLayout = () => {
   const location = useLocation()
@@ -43,6 +44,7 @@ const MasterLayout = () => {
 
       <EmailCreateForm />
       <TaskCreateForm />
+      <WhatsAppCreateForm />
       
       <ToastContainer
         position="bottom-center"

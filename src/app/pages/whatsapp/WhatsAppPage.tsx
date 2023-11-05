@@ -3,7 +3,6 @@ import { KTCard, KTCardBody } from "../../../_metronic/helpers"
 import { TableComponent } from "../../components/common/TableComponent"
 import { EMAIL_URL } from "../../helpers/ApiEndpoints"
 import { ToolbarComponent } from "../../components/common/ToolbarComponent"
-import { WhatsAppCreateForm } from "../../components/forms/WhatsAppCreateForm"
 import { ChatBox } from "../../components/whatsapp/ChatBox"
 
 const breadCrumbs = [
@@ -29,7 +28,6 @@ const WhatsAppPage = () => {
             {/* <ToolbarComponent title="WhatsApp" breadCrumbs={breadCrumbs} handleButtonClick={toggleShowCreate}>
             </ToolbarComponent> */}
             <ChatBox />
-            <WhatsAppCreateForm show={showCreate} toggleShow={toggleShowCreate} updateList={() => {}} />
         </>
     )
 }

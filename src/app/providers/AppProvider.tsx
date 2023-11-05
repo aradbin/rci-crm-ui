@@ -7,6 +7,9 @@ const AppContext = createContext({
     idForEmail: "", setIdForEmail: (id: string) => {},
     showCreateEmail: false, setShowCreateEmail: (val: boolean) => {},
 
+    idForWhatsApp: "", setIdForWhatsApp: (id: string) => {},
+    showCreateWhatsApp: false, setShowCreateWhatsApp: (val: boolean) => {},
+
     idForTaskUpdate: 0, setIdForTaskUpdate: (id: number) => {},
     idForTaskDelete: 0, setIdForTaskDelete: (id: number) => {},
     showCreateTask: false, setShowCreateTask: (val: boolean) => {},
@@ -19,6 +22,9 @@ const AppProvider = ({children}: any) => {
     const [idForEmail, setIdForEmail] = useState("")
     const [showCreateEmail, setShowCreateEmail] = useState(false)
 
+    const [idForWhatsApp, setIdForWhatsApp] = useState("")
+    const [showCreateWhatsApp, setShowCreateWhatsApp] = useState(false)
+
     const [idForTaskUpdate, setIdForTaskUpdate] = useState(0)
     const [idForTaskDelete, setIdForTaskDelete] = useState(0)
     const [showCreateTask, setShowCreateTask] = useState(false)
@@ -30,6 +36,9 @@ const AppProvider = ({children}: any) => {
 
             idForEmail, setIdForEmail,
             showCreateEmail, setShowCreateEmail,
+
+            idForWhatsApp, setIdForWhatsApp,
+            showCreateWhatsApp, setShowCreateWhatsApp,
 
             idForTaskUpdate, setIdForTaskUpdate,
             idForTaskDelete, setIdForTaskDelete,
