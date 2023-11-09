@@ -1,43 +1,27 @@
 /* eslint-disable jsx-a11y/anchor-is-valid */
-import { useEffect, useState } from 'react'
+import { useContext, useEffect, useState } from 'react'
 import { toAbsoluteUrl } from '../../../_metronic/helpers'
 import { Dropdown1 } from '../../../_metronic/partials'
-import { USERS_URL } from '../../helpers/ApiEndpoints'
+import { USERS_URL, WHATSAPP_URL } from '../../helpers/ApiEndpoints'
 import { Query } from '../../helpers/Queries'
 import { ChatInner } from './ChatInner'
+import { formatDateTime } from '../../helpers/Utils'
+import { AppContext } from '../../providers/AppProvider'
+import { getRequest } from '../../helpers/Requests'
 
-const users = [
-  { id: 1 },
-  { id: 1 },
-  { id: 1 },
-  { id: 1 },
-  { id: 1 },
-  { id: 1 },
-  { id: 1 },
-  { id: 1 },
-  { id: 1 },
-  { id: 1 },
-  { id: 1 },
-  { id: 1 },
-  { id: 1 },
-  { id: 1 },
-  { id: 1 },
-  { id: 1 },
-  { id: 1 },
-  { id: 1 },
-  { id: 1 },
-  { id: 1 },
-]
 const ChatBox = () => {
-//   const usersQuery = Query('all-users', USERS_URL, 'pageSize=all')
+  const { setShowCreateWhatsApp } = useContext(AppContext)
 
-//   const [users, setUsers] = useState([])
+  const [conversations, setConversations] = useState([])
+  const [selectedConversation, setSelectedConversation]: any = useState()
 
-//   useEffect(() => {
-//     if(JSON.stringify(usersQuery?.data) !== JSON.stringify(users)){
-//         setUsers(usersQuery?.data)
-//     }
-// }, [usersQuery]);
+  const conversationsQuery = Query('whatsapp-conversations', WHATSAPP_URL, 'pageSize=all&sortBy=updated_at&orderBy=desc')
+
+  useEffect(() => {
+    if(JSON.stringify(conversationsQuery?.data) !== JSON.stringify(conversations)){
+        setConversations(conversationsQuery?.data)
+    }
+  }, [conversationsQuery]);
 
   return (
     <div className='d-flex flex-column flex-lg-row'>
@@ -55,7 +39,8 @@ const ChatBox = () => {
             </form>
           </div>
 
-          <div className='card-body pt-5' id='kt_chat_contacts_body'>
+          <div className='card-body pt-2' id='kt_chat_contacts_body'>
+            <button className='btn btn-primary btn-sm w-100 mb-2' type='button' onClick={() => setShowCreateWhatsApp(true)}>New Chat</button>
             <div
               className='scroll-y me-n5 pe-5'
               data-kt-scroll='true'
@@ -64,25 +49,23 @@ const ChatBox = () => {
               data-kt-scroll-dependencies='#kt_header, #kt_toolbar, #kt_footer, #kt_chat_contacts_header'
               data-kt-scroll-wrappers='#kt_content, #kt_chat_contacts_body'
               data-kt-scroll-offset='0px'
-              style={{ height: 'calc(100vh - 278px)' }}
+              style={{ height: 'calc(100vh - 310px)' }}
             >
-              {users?.map((item,index) =>
-                <div className='d-flex flex-stack py-4' key={index}>
+              {conversations?.map((item: any) =>
+                <div className='d-flex flex-stack py-2 cursor-pointer' key={item?.id} onClick={() => setSelectedConversation(item)}>
                   <div className='d-flex align-items-center'>
                     <div className='symbol symbol-45px symbol-circle'>
-                      <img alt='Pic' src={toAbsoluteUrl('/media/avatars/300-1.jpg')} />
+                      <img alt='Avatar' src={item?.customer?.avatar || toAbsoluteUrl('/media/avatars/blank.png')} />
                     </div>
-
                     <div className='ms-5'>
-                      <a href='#' className='fs-5 fw-bolder text-gray-900 text-hover-primary mb-2'>
-                        Max Smith
-                      </a>
-                      <div className='fw-bold text-gray-400'>+88012343546547</div>
+                      <span className='fs-5 fw-bolder text-gray-900 text-hover-primary mb-2'>
+                        {item?.customer?.name || item?.recipient_number}
+                      </span>
+                      {item?.customer?.name && <div className='fw-bold text-gray-400'>{item?.recipient_number}</div>}
                     </div>
                   </div>
-
                   <div className='d-flex flex-column align-items-end ms-2'>
-                    <span className='text-muted fs-7 mb-1'>20 hrs</span>
+                    <span className='text-muted fs-7 mb-1'>{item?.updated_at ? formatDateTime(item?.updated_at) : formatDateTime(item?.created_at)}</span>
                   </div>
                 </div>
               )}              
@@ -92,38 +75,7 @@ const ChatBox = () => {
       </div>
 
       <div className='flex-lg-row-fluid ms-lg-7 ms-xl-10'>
-        <div className='card' id='kt_chat_messenger'>
-          <div className='card-header px-5' id='kt_chat_messenger_header'>
-            <div className='d-flex align-items-center'>
-              <div className='symbol symbol-45px symbol-circle'>
-                <img alt='Pic' src={toAbsoluteUrl('/media/avatars/300-1.jpg')} />
-              </div>
-
-              <div className='ms-5'>
-                <a href='#' className='fs-5 fw-bolder text-gray-900 text-hover-primary mb-2'>
-                  Max Smith
-                </a>
-                <div className='fw-bold text-gray-400'>+88012343546547</div>
-              </div>
-            </div>
-
-            {/* <div className='card-toolbar'>
-              <div className='me-n3'>
-                <button
-                  className='btn btn-sm btn-icon btn-active-light-primary'
-                  data-kt-menu-trigger='click'
-                  data-kt-menu-placement='bottom-end'
-                  data-kt-menu-flip='top-end'
-                >
-                  <i className='bi bi-three-dots fs-2'></i>
-                </button>
-                <Dropdown1 />
-              </div>
-            </div> */}
-
-          </div>
-          <ChatInner />
-        </div>
+        {selectedConversation && <ChatInner conversation={selectedConversation} />}
       </div>
     </div>
   )

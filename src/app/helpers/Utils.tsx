@@ -24,6 +24,16 @@ const formatDate = (value: any, type="") => {
   return ""
 }
 
+const formatDateTime = (value: any, type="") => {
+  if(value && moment(value).isValid()){
+    if(type==='input'){
+      return moment(value).format('YYYY-MM-DD')
+    }
+    return moment(value).format('DD-MM-YYYY HH:MM A')
+  }
+  return ""
+}
+
 const firstLetterUpperCase = (string: string) => {
   return string.charAt(0).toUpperCase() + string.slice(1);
 }
@@ -66,7 +76,8 @@ const getSettingsFromUserSettings = (userSettings: any, type: string) => {
       }else if(type === 'whatsapp'){
         settings = {
           label: `${item?.settings?.name} (${item?.settings?.metadata?.phone_number})`,
-          value: item?.settings?.id
+          value: item?.settings?.id,
+          phone_number: item?.settings?.metadata?.phone_number
         }
       }else{
         settings = {
@@ -79,4 +90,4 @@ const getSettingsFromUserSettings = (userSettings: any, type: string) => {
   return settings
 }
 
-export { stringifyRequestQuery, formatDate, firstLetterUpperCase, getTaskPriorityBadge, getTaskStatusBadge, getSettingsFromUserSettings }
+export { stringifyRequestQuery, formatDate, formatDateTime, firstLetterUpperCase, getTaskPriorityBadge, getTaskStatusBadge, getSettingsFromUserSettings }

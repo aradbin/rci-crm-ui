@@ -1,9 +1,7 @@
-import { useState } from "react"
-import { KTCard, KTCardBody } from "../../../_metronic/helpers"
-import { TableComponent } from "../../components/common/TableComponent"
-import { EMAIL_URL } from "../../helpers/ApiEndpoints"
+import { useContext, useState } from "react"
 import { ToolbarComponent } from "../../components/common/ToolbarComponent"
 import { ChatBox } from "../../components/whatsapp/ChatBox"
+import { AppContext } from "../../providers/AppProvider"
 
 const breadCrumbs = [
     { title: 'WhatsApp', path: '/whatsapp', isSeparator: false },
@@ -11,21 +9,13 @@ const breadCrumbs = [
 ]
 
 const WhatsAppPage = () => {
-    const [params, setParams] = useState("")
     const [refetch, setRefetch] = useState(0)
-    const [showCreate, setShowCreate] = useState(false)
 
-    const toggleShowCreate = (show: boolean) => {
-        setShowCreate(show)
-    }
-
-    const updateList = () => {
-        setRefetch(refetch+1)
-    }
+    const { setShowCreateWhatsApp } = useContext(AppContext)
 
     return (
         <>
-            {/* <ToolbarComponent title="WhatsApp" breadCrumbs={breadCrumbs} handleButtonClick={toggleShowCreate}>
+            {/* <ToolbarComponent title="WhatsApp" breadCrumbs={breadCrumbs} handleButtonClick={() => setShowCreateWhatsApp(true)}>
             </ToolbarComponent> */}
             <ChatBox />
         </>

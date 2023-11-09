@@ -18,20 +18,21 @@ const WhatsAppCreateForm = () => {
 
     const formik = useFormik({
         initialValues: {
-            to: "8801748419892",
+            sender_number: getSettingsFromUserSettings(currentUser?.userSettings, 'whatsapp').phone_number,
+            recipient_number: "",
             msg_body: "",
             template_name: "",
             message_type: "text",
         },
         validationSchema: Yup.object().shape({
-            to: Yup.string().required('Receiver is required'),
+            recipient_number: Yup.string().required('Recipient Number is required'),
             msg_body: Yup.string().required('Message is required'),
         }),
         onSubmit: async (values, {setSubmitting}) => {
             setSubmitting(true)
             try {
-                await createRequest(`${WHATSAPP_URL}/send-message`,values).then((response) => {
-                    if(response?.status===200){
+                await createRequest(WHATSAPP_URL, values).then((response) => {
+                    if(response?.status===201){
                         toast.success('Message Sent Successfully')
                         closeModal()
                     }
@@ -92,8 +93,8 @@ const WhatsAppCreateForm = () => {
                             <div className='d-flex flex-column'>
                                 <Field
                                     label="To"
-                                    name="to"
-                                    type="number"
+                                    name="recipient_number"
+                                    type="text"
                                     required="required"
                                     component={InputField}
                                     size="sm"
