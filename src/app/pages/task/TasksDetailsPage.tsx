@@ -7,6 +7,7 @@ import { AppContext } from "../../providers/AppProvider";
 import { formatDate, getTaskPriorityBadge, getTaskStatusBadge } from "../../helpers/Utils";
 import { LoadingComponent } from "../../components/common/LoadingComponent";
 import TaskStatusField from "../../components/fields/TaskStatusField";
+import { Query } from "../../helpers/Queries";
 
 const TaskOverview = ({ task }: any) => {
     const { setIdForTaskUpdate } = useContext(AppContext)
@@ -30,7 +31,6 @@ const TaskActions = ({ task }: any) => {
         <div className='card mb-5 mb-xl-10'>
             <div className='card-header justify-content-center'>
                 <div className='card-title m-0'>
-                    {/* <h3 className='m-0'>{getTaskStatusBadge(task?.status)}</h3> */}
                     <TaskStatusField task={task} />
                 </div>
             </div>
@@ -98,26 +98,15 @@ const TaskActions = ({ task }: any) => {
 
 const TasksDetailsPage = () => {
     const { id } = useParams()
-    const navigate = useNavigate();
-    const [loading, setLoading] = useState(false)
     const [task, setTask] = useState({})
 
-    useEffect(() => {
-        getTask()
-    },[id])
+    const {isLoading, data} = Query(`task-${id}`, `${TASKS_URL}/${id}`)
 
-    const getTask = () => {
-        setLoading(true)
-        getRequest(`${TASKS_URL}/${id}`).then((response) => {
-            if(response){
-                setTask(response)
-            }else{
-                navigate('/tasks')
-            }
-        }).finally(() => {
-            setLoading(false)
-        })
-    }
+    useEffect(() => {
+        if(JSON.stringify(data) !== JSON.stringify(task)){
+            setTask(data)
+        }
+    }, [data]);
     
     return (
         <div className="d-flex gap-5 flex-column flex-lg-row">
@@ -127,7 +116,7 @@ const TasksDetailsPage = () => {
             <div className="w-100 w-lg-40">
                 <TaskActions task={task} />
             </div>
-            {loading && <LoadingComponent />}
+            {isLoading && <LoadingComponent />}
         </div>
     )
 }
