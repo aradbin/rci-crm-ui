@@ -1,3 +1,4 @@
+import { Link } from "react-router-dom"
 import { TaskActionCell } from "../components/cells/TaskActionCell"
 import { formatDate, getTaskPriorityBadge, getTaskStatusBadge } from "../helpers/Utils"
 
@@ -8,7 +9,11 @@ export const taskColumns = [
   },
   {
     Header: "Title",
-    accessor: "title",
+    Cell: ({ row }: any) => { return (
+      <Link to={`/tasks/${row?.original?.id}`} className='text-dark text-hover-primary'>
+        {row?.original?.title}
+      </Link>
+    )}
   },
   {
     Header: "Customer",

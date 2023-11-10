@@ -6,6 +6,7 @@ import { USERS_URL } from "../../helpers/ApiEndpoints";
 import { AppContext } from "../../providers/AppProvider";
 import { UserCreateForm } from "../../components/forms/UserCreateForm";
 import { getSettingsFromUserSettings } from "../../helpers/Utils";
+import { LoadingComponent } from "../../components/common/LoadingComponent";
 
 const ProfileOverview = ({ user }: any) => {
     const { setIdForUpdate, setIdForEmail } = useContext(AppContext)
@@ -162,6 +163,7 @@ const ProfileHeader = ({ user }: any) => {
 const UsersProfilePage = () => {
     const { id } = useParams()
     const navigate = useNavigate();
+    const [loading, setLoading] = useState(false)
     const [user, setUser] = useState({})
     const [showCreate, setShowCreate] = useState(false)
 
@@ -170,6 +172,7 @@ const UsersProfilePage = () => {
     },[id])
 
     const getUser = () => {
+        setLoading(true)
         getRequest(`${USERS_URL}/${id}`).then((response) => {
             if(response){
                 setUser(response)
@@ -177,7 +180,7 @@ const UsersProfilePage = () => {
                 navigate('/users')
             }
         }).finally(() => {
-
+            setLoading(false)
         })
     }
 
@@ -195,6 +198,7 @@ const UsersProfilePage = () => {
             </div>
             <ProfileOverview user={user}/>
             <UserCreateForm show={showCreate} toggleShow={toggleShowCreate} updateList={getUser} />
+            {loading && <LoadingComponent />}
         </>
     )
 }

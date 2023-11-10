@@ -5,6 +5,7 @@ import { getRequest } from "../../helpers/Requests";
 import { CUSTOMERS_URL } from "../../helpers/ApiEndpoints";
 import { AppContext } from "../../providers/AppProvider";
 import { CustomerCreateForm } from "../../components/forms/CustomerCreateForm";
+import { LoadingComponent } from "../../components/common/LoadingComponent";
 
 const ProfileOverview = ({ customer }: any) => {
     const { setIdForUpdate, setIdForEmail } = useContext(AppContext)
@@ -137,6 +138,7 @@ const ProfileHeader = ({ customer }: any) => {
 const CustomersProfilePage = () => {
     const { id } = useParams()
     const navigate = useNavigate();
+    const [loading, setLoading] = useState(false)
     const [customer, setCustomer] = useState({})
     const [showCreate, setShowCreate] = useState(false)
 
@@ -145,6 +147,7 @@ const CustomersProfilePage = () => {
     },[id])
 
     const getCustomer = () => {
+        setLoading(true)
         getRequest(`${CUSTOMERS_URL}/${id}`).then((response) => {
             if(response){
                 setCustomer(response)
@@ -152,7 +155,7 @@ const CustomersProfilePage = () => {
                 navigate('/customers')
             }
         }).finally(() => {
-
+            setLoading(false)
         })
     }
 
@@ -170,6 +173,7 @@ const CustomersProfilePage = () => {
             </div>
             <ProfileOverview customer={customer}/>
             <CustomerCreateForm show={showCreate} toggleShow={toggleShowCreate} updateList={getCustomer} />
+            {loading && <LoadingComponent />}
         </>
     )
 }
