@@ -6,6 +6,15 @@ import { CUSTOMERS_URL } from "../../helpers/ApiEndpoints";
 import { AppContext } from "../../providers/AppProvider";
 import { CustomerCreateForm } from "../../components/forms/CustomerCreateForm";
 import { LoadingComponent } from "../../components/common/LoadingComponent";
+import TaskList from "../../components/task/TaskList";
+
+const ProfileTasks = ({ customer }: any) => {
+    return (
+        <div className='card mb-5 mb-xl-10' id='kt_profile_details_view'>
+            <TaskList filterParams={{ customer_id: customer?.id }} />
+        </div>
+    )
+}
 
 const ProfileOverview = ({ customer }: any) => {
     const { setIdForUpdate, setIdForEmail } = useContext(AppContext)
@@ -47,30 +56,24 @@ const ProfileOverview = ({ customer }: any) => {
     )
 }
 
-const ProfileTabs = () => {
+const ProfileTabs = ({tab, setTab}: any) => {
+    const tabs = [
+        { label: 'Overview', value: 'overview' },
+        { label: 'Tasks', value: 'tasks' },
+        // { label: 'Emails', value: 'emails' },
+        // { label: 'WhatsApp', value: 'whatsapp' },
+    ]
+
     return (
         <div className='d-flex overflow-auto h-55px'>
             <ul className='nav nav-stretch nav-line-tabs nav-line-tabs-2x border-transparent fs-5 fw-bolder flex-nowrap'>
-                <li className='nav-item'>
-                    <span className='nav-link text-active-primary me-6 cursor-pointer active'>
-                        Overview
-                    </span>
-                </li>
-                <li className='nav-item'>
-                    <span className='nav-link text-active-primary me-6 cursor-pointer'>
-                        Tasks
-                    </span>
-                </li>
-                <li className='nav-item'>
-                    <span className='nav-link text-active-primary me-6 cursor-pointer'>
-                        Emails
-                    </span>
-                </li>
-                <li className='nav-item'>
-                    <span className='nav-link text-active-primary me-6 cursor-pointer'>
-                        WhatsApp
-                    </span>
-                </li>
+                {tabs?.map((item) => 
+                    <li className='nav-item' key={item.value} onClick={() => setTab(item.value)}>
+                        <span className={`nav-link text-active-primary me-6 cursor-pointer ${item.value === tab && 'active'}`}>
+                            {item.label}
+                        </span> 
+                    </li>
+                )}
             </ul>
         </div>
     )
@@ -141,6 +144,7 @@ const CustomersProfilePage = () => {
     const [loading, setLoading] = useState(false)
     const [customer, setCustomer] = useState({})
     const [showCreate, setShowCreate] = useState(false)
+    const [tab, setTab] = useState("overview")
 
     useEffect(() => {
         getCustomer()
@@ -168,10 +172,11 @@ const CustomersProfilePage = () => {
             <div className='card mb-5 mb-xl-10'>
                 <div className='card-body pt-9 pb-0'>
                     <ProfileHeader customer={customer}/>
-                    <ProfileTabs />
+                    <ProfileTabs tab={tab} setTab={setTab} />
                 </div>
             </div>
-            <ProfileOverview customer={customer}/>
+            {tab === 'overview' && <ProfileOverview customer={customer}/>}
+            {tab === 'tasks' && <ProfileTasks customer={customer} />}
             <CustomerCreateForm show={showCreate} toggleShow={toggleShowCreate} updateList={getCustomer} />
             {loading && <LoadingComponent />}
         </>

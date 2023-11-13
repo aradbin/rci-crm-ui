@@ -1,12 +1,8 @@
 import { useContext, useState } from "react"
-import { KTCard, KTCardBody } from "../../../_metronic/helpers"
-import { TableComponent } from "../../components/common/TableComponent"
-import { TASKS_URL } from "../../helpers/ApiEndpoints"
 import { ToolbarComponent } from "../../components/common/ToolbarComponent"
-import { stringifyRequestQuery } from "../../helpers/Utils"
 import { FilterComponent } from "../../components/common/FilterComponent"
-import { taskColumns } from "../../columns/taskColumns"
 import { AppContext } from "../../providers/AppProvider"
+import TaskList from "../../components/task/TaskList"
 
 const breadCrumbs = [
     { title: 'Task Management', path: '/tasks', isSeparator: false },
@@ -30,8 +26,7 @@ const filter = {
 }
 
 const TasksPage = () => {
-    const [params, setParams] = useState("")
-    const [refetch, setRefetch] = useState(0)
+    const [params, setParams] = useState<any>({})
 
     const { setShowCreateTask } = useContext(AppContext)
 
@@ -47,15 +42,11 @@ const TasksPage = () => {
             }
             delete formData.sort;
         }
-        setParams(stringifyRequestQuery(formData))
+        setParams(formData)
     }
 
     const toggleShowCreate = (show: boolean) => {
         setShowCreateTask(show)
-    }
-
-    const updateList = () => {
-        setRefetch(refetch+1)
     }
 
     return (
@@ -63,11 +54,9 @@ const TasksPage = () => {
             <ToolbarComponent title="Tasks" breadCrumbs={breadCrumbs} handleButtonClick={toggleShowCreate}>
                 <FilterComponent filter={filter} submit={handleFilterSubmit}/>
             </ToolbarComponent>
-            <KTCard className="mb-5 mb-xl-8">
-                <KTCardBody className='py-3'>
-                    <TableComponent queryKey="tasks" url={TASKS_URL} params={params} columns={taskColumns} refetch={refetch} />
-                </KTCardBody>
-            </KTCard>
+            <div className="card mb-5 mb-xl-8">
+                <TaskList filterParams={params} />
+            </div>
         </>
     )
 }
