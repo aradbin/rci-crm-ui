@@ -33,7 +33,6 @@ const UsersPage = () => {
     const [params, setParams] = useState("")
     const [refetch, setRefetch] = useState(0)
     const [showCreate, setShowCreate] = useState(false)
-    const [showEmail, setShowEmail] = useState(false)
 
     const handleFilterSubmit = (values: any) => {
         setParams(stringifyRequestQuery({...values}))
@@ -41,10 +40,6 @@ const UsersPage = () => {
 
     const toggleShowCreate = (show: boolean) => {
         setShowCreate(show)
-    }
-
-    const toggleShowEmail = (show: boolean) => {
-        setShowEmail(show)
     }
 
     const updateList = () => {
