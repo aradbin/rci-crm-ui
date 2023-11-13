@@ -17,11 +17,30 @@ export const taskColumns = [
   },
   {
     Header: "Customer",
-    accessor: "customer.name",
+    Cell: ({ row }: any) => {
+      if(row?.original?.customer_id){
+        return (
+          <Link to={`/customers/${row?.original?.customer_id}`} className='text-dark text-hover-primary'>
+            {row?.original?.customer?.name}
+          </Link>
+        )
+      }
+      return ""
+    }
   },
   {
     Header: "Assignee",
     accessor: "assignee.name",
+    Cell: ({ row }: any) => {
+      if(row?.original?.assignee_id){
+        return (
+          <Link to={`/users/${row?.original?.assignee_id}`} className='text-dark text-hover-primary'>
+            {row?.original?.assignee?.name}
+          </Link>
+        )
+      }
+      return ""
+    }
   },
   {
     Header: "Priority",

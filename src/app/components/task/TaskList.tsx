@@ -1,13 +1,16 @@
-import { useEffect, useState } from "react"
+import { useContext, useEffect, useState } from "react"
 import { statuses } from "../../helpers/Variables"
 import { TableComponent } from "../common/TableComponent"
 import { TASKS_URL } from "../../helpers/ApiEndpoints"
 import { stringifyRequestQuery } from "../../helpers/Utils"
 import { taskColumns } from "../../columns/taskColumns"
+import { AppContext } from "../../providers/AppProvider"
 
 const TaskList = ({ filterParams }: any) => {
     const [params, setParams] = useState<any>({...filterParams})
     const [status, setStatus] = useState("")
+
+    const { refetchTask } = useContext(AppContext)
 
     useEffect(() => {
         const formData = { ...filterParams }
@@ -24,7 +27,7 @@ const TaskList = ({ filterParams }: any) => {
             )}
         </div>
         <div className='card-body py-3'>
-            <TableComponent queryKey="tasks" url={TASKS_URL} params={stringifyRequestQuery(params)} columns={taskColumns} refetch="0" />
+            <TableComponent queryKey="tasks" url={TASKS_URL} params={stringifyRequestQuery(params)} columns={taskColumns} refetch={refetchTask} />
         </div>
     </>)
 }

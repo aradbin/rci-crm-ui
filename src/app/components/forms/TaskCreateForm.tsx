@@ -14,6 +14,7 @@ import { Query } from "../../helpers/Queries"
 import { formatDate } from "../../helpers/Utils"
 import { priorities } from "../../helpers/Variables"
 import { SelectField } from "../fields/SelectField"
+import { useQueryClient } from "react-query"
 
 const TaskCreateForm = () => {
     const [show, setShow] = useState(false)
@@ -23,7 +24,8 @@ const TaskCreateForm = () => {
     const [customers, setCustomers] = useState([])
     const [users, setUsers] = useState([])
 
-    const { idForTaskUpdate, setIdForTaskUpdate, showCreateTask, setShowCreateTask } = useContext(AppContext)
+    const queryClient = useQueryClient()
+    const { idForTaskUpdate, setIdForTaskUpdate, showCreateTask, setShowCreateTask, refetchTask, setRefetchTask } = useContext(AppContext)
 
     const priorityOptions = priorities
 
@@ -60,6 +62,8 @@ const TaskCreateForm = () => {
                 if(idForTaskUpdate === 0){
                     await createRequest(TASKS_URL,formData).then((response) => {
                         if(response?.status===201){
+                            const refetch = refetchTask + 1
+                            setRefetchTask(refetch)
                             toast.success('Task Created Successfully')
                             closeModal()
                         }
@@ -67,6 +71,9 @@ const TaskCreateForm = () => {
                 }else{
                     await updateRequest(`${TASKS_URL}/${idForTaskUpdate}`,formData).then((response) => {
                         if(response?.status===200){
+                            const refetch = refetchTask + 1
+                            setRefetchTask(refetch)
+                            queryClient.invalidateQueries({ queryKey: `task-${idForTaskUpdate}` })
                             toast.success('Task Updated Successfully')
                             closeModal()
                         }
