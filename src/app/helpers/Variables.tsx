@@ -1,8 +1,17 @@
 const settings = [
+    { label: 'Services', value: 'service', icon: 'fa-solid fa-briefcase' },
     { label: 'Departments', value: 'department', icon: 'fa-solid fa-building' },
     { label: 'Designations', value: 'designation', icon: 'fa-solid fa-user-tie' },
     { label: 'Emails', value: 'email', icon: 'fa-solid fa-envelope' },
     { label: 'WhatsApps', value: 'whatsapp', icon: 'fa-brands fa-whatsapp' },
+]
+
+const cycles = [
+    { name: "Daily", id: "daily" },
+    { name: "Weekly", id: "weekly" },
+    { name: "Monthly", id: "monthly" },
+    { name: "Quarterly", id: "quarterly" },
+    { name: "Yearly", id: "yearly" },
 ]
 
 const priorities = [
@@ -18,4 +27,4 @@ const statuses = [
     { label: "Done", value: "done", color: "success" },
 ]
 
-export { settings, priorities, statuses }
+export { settings, cycles, priorities, statuses }

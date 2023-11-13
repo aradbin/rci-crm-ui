@@ -13,10 +13,9 @@ const breadCrumbs = [
 ]
 
 const SettingsPage = () => {
-    const [params, setParams] = useState("")
     const [refetch, setRefetch] = useState(0)
     const [showCreate, setShowCreate] = useState(false)
-    const [type, setType] = useState({ label: 'Departments', value: 'department' })
+    const [type, setType] = useState({ label: 'Services', value: 'service' })
 
     const toggleShowCreate = (show: boolean) => {
         setShowCreate(show)

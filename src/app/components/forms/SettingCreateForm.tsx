@@ -9,6 +9,8 @@ import { useContext, useEffect, useState } from "react"
 import { LoadingComponent } from "../common/LoadingComponent"
 import { firstLetterUpperCase } from "../../helpers/Utils"
 import { AppContext } from "../../providers/AppProvider"
+import { SelectField } from "../fields/SelectField"
+import { cycles } from "../../helpers/Variables"
 
 const SettingCreateForm = ({show, toggleShow, updateList, type}: any) => {
     const [loading, setLoading] = useState(false)
@@ -26,6 +28,8 @@ const SettingCreateForm = ({show, toggleShow, updateList, type}: any) => {
             phone_number: "",
             phone_number_id: "",
             whatsapp_business_account_id: "",
+            // for service
+            cycle: "",
         },
         validationSchema: Yup.object().shape({
             name: Yup.string().required('Name is required'),
@@ -57,6 +61,10 @@ const SettingCreateForm = ({show, toggleShow, updateList, type}: any) => {
                 is: () => type === 'whatsapp',
                 then: (schema) => schema.required('Whatsapp Business Account ID is required')
             }),
+            cycle: Yup.string().when({
+                is: () => type === 'service',
+                then: (schema) => schema.required('Service Cycle is required')
+            }),
         }),
         onSubmit: async (values, {setSubmitting}) => {
             setSubmitting(true)
@@ -75,6 +83,11 @@ const SettingCreateForm = ({show, toggleShow, updateList, type}: any) => {
                         phone_number: values.phone_number,
                         phone_number_id: values.phone_number_id,
                         whatsapp_business_account_id: values.whatsapp_business_account_id,
+                    }
+                }
+                if(type === 'service'){
+                    formData.metadata = {
+                        cycle: values.cycle,
                     }
                 }
                 if(idForUpdate === 0){
@@ -118,6 +131,9 @@ const SettingCreateForm = ({show, toggleShow, updateList, type}: any) => {
                     formik.setFieldValue("phone_number", response?.metadata?.phone_number)
                     formik.setFieldValue("phone_number_id", response?.metadata?.phone_number_id)
                     formik.setFieldValue("whatsapp_business_account_id", response?.metadata?.whatsapp_business_account_id)
+                }
+                if(type === 'service'){
+                    formik.setFieldValue("cycle", response?.metadata?.cycle)
                 }
             }).finally(() => {
                 setLoading(false)
@@ -209,6 +225,16 @@ const SettingCreateForm = ({show, toggleShow, updateList, type}: any) => {
                                     type="text"
                                     required="required"
                                     component={InputField}
+                                    size="sm"
+                                />
+                                </>}
+                                {type === 'service' && <>
+                                <Field
+                                    label="Cycle"
+                                    name="cycle"
+                                    options={cycles}
+                                    required="required"
+                                    component={SelectField}
                                     size="sm"
                                 />
                                 </>}
