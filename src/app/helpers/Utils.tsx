@@ -6,7 +6,7 @@ const stringifyRequestQuery = (values: any) => {
       ? Object.entries(values as Object)
           .filter((obj) => isNotEmpty(obj[1]))
           .map((obj) => {
-            return `${obj[0]}=${obj[1]}`
+            return `${encodeURIComponent(obj[0])}=${encodeURIComponent(obj[1])}`
           })
           .join('&')
       : ''

@@ -12,7 +12,7 @@ const priorities = [
 ]
 
 const statuses = [
-    { label: "To Do", value: "todo", color: "secondary" },
+    { label: "To Do", value: "todo", color: "dark" },
     { label: "In Progress", value: "inprogress", color: "info" },
     { label: "In Review", value: "inreview", color: "warning" },
     { label: "Done", value: "done", color: "success" },

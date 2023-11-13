@@ -71,7 +71,7 @@ const TableInstance = ({tableData, tableColumns}: any) => {
     );
 }
 
-const TableComponent = ({queryKey, url, params, columns, refetch, canExpand=''}: any) => {
+const TableComponent = ({queryKey, url, params='', columns, refetch, canExpand=''}: any) => {
     const queryClient = useQueryClient()
 
     const [page, setPage] = useState(1)
