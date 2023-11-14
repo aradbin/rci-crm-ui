@@ -23,7 +23,7 @@ const TaskList = ({ filterParams }: any) => {
     return (<>
         <div className="card-header justify-content-end align-items-center gap-2">
             {statuses?.map((item) =>
-                <button key={item?.value} className={`btn btn-sm btn-outline btn-outline-dashed ${item?.value === status ? `btn-${item?.color}` : `btn-outline-${item?.color}`}`} onClick={() => item?.value !== status ? setStatus(item?.value) : setStatus("")}>{item?.label}</button>
+                <button key={item?.value} className={`btn btn-sm btn-outline ${item?.value === status ? `btn-${item?.color}` : `btn-outline-${item?.color}`}`} onClick={() => item?.value !== status ? setStatus(item?.value) : setStatus("")}>{item?.label}</button>
             )}
         </div>
         <div className='card-body py-3'>

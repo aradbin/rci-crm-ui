@@ -104,15 +104,19 @@ const ProfileTabs = ({tab, setTab}: any) => {
 const ProfileHeader = ({ user }: any) => {
     const { setIdForEmail, refetchTask } = useContext(AppContext)
     const [counts, setCounts] = useState<any>([])
+    const [loading, setLoading] = useState(true)
 
     useEffect(() => {
         if(user?.id){
-            const count = {}
+            setLoading(true)
             getRequest(`${TASKS_URL}/count`, `assignee_id=${user?.id}`).then((response) => {
+                const count = {}
                 response?.map((item: any) => {
                     count[item?.status] = item?.count
                 })
                 setCounts(count)
+            }).finally(() => {
+                setLoading(false)
             })
         }
     },[user, refetchTask])
@@ -155,7 +159,9 @@ const ProfileHeader = ({ user }: any) => {
                                 <div className={`border border-${item?.color} border-dashed rounded min-w-125px py-3 px-4 me-6 mb-3`}>
                                     <div className='d-flex align-items-center'>
                                         <i className={`bi bi-check2-square fs-3 text-${item?.color} me-3`}></i>
-                                        <div className={`fs-2 fw-bolder text-${item?.color}`}>{counts[item?.value] || 0}</div>
+                                        <div className={`fs-2 fw-bolder text-${item?.color}`}>
+                                            {loading ? <span className='spinner-border align-middle' style={{ width: '1.5rem', height: '1.5rem' }}></span> : <span>{counts[item?.value] || 0}</span>}
+                                        </div>
                                     </div>
                                     <div className={`fw-bold fs-6 text-${item?.color}`}>{item?.label}</div>
                                 </div>

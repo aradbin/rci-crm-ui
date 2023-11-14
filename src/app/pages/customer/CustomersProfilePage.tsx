@@ -2,11 +2,12 @@ import { useNavigate, useParams } from "react-router-dom";
 import { toAbsoluteUrl } from "../../../_metronic/helpers";
 import { useContext, useEffect, useState } from "react";
 import { getRequest } from "../../helpers/Requests";
-import { CUSTOMERS_URL } from "../../helpers/ApiEndpoints";
+import { CUSTOMERS_URL, TASKS_URL } from "../../helpers/ApiEndpoints";
 import { AppContext } from "../../providers/AppProvider";
 import { CustomerCreateForm } from "../../components/forms/CustomerCreateForm";
 import { LoadingComponent } from "../../components/common/LoadingComponent";
 import TaskList from "../../components/task/TaskList";
+import { statuses } from "../../helpers/Variables";
 
 const ProfileTasks = ({ customer }: any) => {
     return (
@@ -80,7 +81,25 @@ const ProfileTabs = ({tab, setTab}: any) => {
 }
 
 const ProfileHeader = ({ customer }: any) => {
-    const { setIdForEmail } = useContext(AppContext)
+    const { setIdForEmail, refetchTask } = useContext(AppContext)
+    const [counts, setCounts] = useState<any>([])
+    const [loading, setLoading] = useState(true)
+
+    useEffect(() => {
+        if(customer?.id){
+            setLoading(true)
+            getRequest(`${TASKS_URL}/count`, `customer_id=${customer?.id}`).then((response) => {
+                const count = {}
+                response?.map((item: any) => {
+                    count[item?.status] = item?.count
+                })
+                setCounts(count)
+            }).finally(() => {
+                setLoading(false)
+            })
+        }
+    },[customer, refetchTask])
+
     return (
         <div className='d-flex flex-wrap flex-sm-nowrap mb-3'>
             <div className='me-7 mb-4'>
@@ -109,27 +128,17 @@ const ProfileHeader = ({ customer }: any) => {
                 <div className='d-flex flex-wrap flex-stack'>
                     <div className='d-flex flex-column flex-grow-1 pe-8'>
                         <div className='d-flex flex-wrap'>
-                            <div className='border border-gray-300 border-dashed rounded min-w-125px py-3 px-4 me-6 mb-3'>
-                                <div className='d-flex align-items-center'>
-                                    <i className="bi bi-check2-square fs-3 text-warning me-3"></i>
-                                    <div className='fs-2 fw-bolder'>123</div>
+                            {statuses?.map((item) =>
+                                <div className={`border border-${item?.color} border-dashed rounded min-w-125px py-3 px-4 me-6 mb-3`}>
+                                    <div className='d-flex align-items-center'>
+                                        <i className={`bi bi-check2-square fs-3 text-${item?.color} me-3`}></i>
+                                        <div className={`fs-2 fw-bolder text-${item?.color}`}>
+                                            {loading ? <span className='spinner-border align-middle' style={{ width: '1.5rem', height: '1.5rem' }}></span> : <span>{counts[item?.value] || 0}</span>}
+                                        </div>
+                                    </div>
+                                    <div className={`fw-bold fs-6 text-${item?.color}`}>{item?.label}</div>
                                 </div>
-                                <div className='fw-bold fs-6 text-gray-400'>In Progress</div>
-                            </div>
-                            <div className='border border-gray-300 border-dashed rounded min-w-125px py-3 px-4 me-6 mb-3'>
-                                <div className='d-flex align-items-center'>
-                                    <i className="bi bi-check2-square fs-3 text-danger me-3"></i>
-                                    <div className='fs-2 fw-bolder'>123</div>
-                                </div>
-                                <div className='fw-bold fs-6 text-gray-400'>Pending</div>
-                            </div>
-                            <div className='border border-gray-300 border-dashed rounded min-w-125px py-3 px-4 me-6 mb-3'>
-                                <div className='d-flex align-items-center'>
-                                    <i className="bi bi-check2-square fs-3 text-success me-3"></i>
-                                    <div className='fs-2 fw-bolder'>123</div>
-                                </div>
-                                <div className='fw-bold fs-6 text-gray-400'>Completed</div>
-                            </div>
+                            )}
                         </div>
                     </div>
                 </div>

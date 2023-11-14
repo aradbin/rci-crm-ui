@@ -1,5 +1,6 @@
 import moment from "moment"
 import { isNotEmpty } from "../../_metronic/helpers"
+import { statuses } from "./Variables"
 
 const stringifyRequestQuery = (values: any) => {
     const filter = values
@@ -52,16 +53,9 @@ const getTaskPriorityBadge = (value: number) => {
 }
 
 const getTaskStatusBadge = (value: string) => {
-  if(value==='todo'){
-    return <span className="badge badge-secondary">To Do</span>
-  }
-  if(value==='inprogress'){
-    return <span className="badge badge-info">In Progress</span>
-  }
-  if(value==='done'){
-    return <span className="badge badge-success">Done</span>
-  }
-  return ''
+  const status = statuses.find(item => item.value === value)
+  
+  return <span className={`badge badge-${status?.color}`}>{status?.label}</span>
 }
 
 const getSettingsFromUserSettings = (userSettings: any, type: string) => {
