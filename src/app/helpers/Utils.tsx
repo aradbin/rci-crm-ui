@@ -58,6 +58,31 @@ const getTaskStatusBadge = (value: string) => {
   return <span className={`badge badge-${status?.color}`}>{status?.label}</span>
 }
 
+const getTaskTime = (logs: any) => {
+  let milliseconds = 0
+  let start = null
+  logs?.map((item: any) => {
+    if(item?.action === 'start'){
+      start = item.created_at
+    }else{
+      if(start){
+        milliseconds += moment(item?.created_at).diff(moment(start))
+      }
+      start = null
+    }
+  })
+  
+  if(start){
+    milliseconds += moment().diff(moment(start))
+  }
+
+  return milliseconds
+}
+
+const getTaskTimeString = (milliseconds: number) => {
+  return moment.utc(moment.duration(milliseconds).as('milliseconds')).format('HH:mm:ss')
+}
+
 const getSettingsFromUserSettings = (userSettings: any, type: string) => {
   let settings: any = { label: null, value: null }
   userSettings?.map((item: any) => {
@@ -84,4 +109,4 @@ const getSettingsFromUserSettings = (userSettings: any, type: string) => {
   return settings
 }
 
-export { stringifyRequestQuery, formatDate, formatDateTime, firstLetterUpperCase, getTaskPriorityBadge, getTaskStatusBadge, getSettingsFromUserSettings }
+export { stringifyRequestQuery, formatDate, formatDateTime, firstLetterUpperCase, getTaskPriorityBadge, getTaskStatusBadge, getTaskTime, getTaskTimeString, getSettingsFromUserSettings }

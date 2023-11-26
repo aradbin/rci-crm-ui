@@ -13,6 +13,7 @@ import {AuthModel, UserModel} from './_models'
 import * as authHelper from './AuthHelpers'
 import {getUserByToken} from './_requests'
 import {WithChildren} from '../../../../_metronic/helpers'
+import { AppContext } from '../../../providers/AppProvider'
 
 type AuthContextProps = {
   auth: AuthModel | undefined
@@ -62,6 +63,7 @@ const AuthProvider: FC<WithChildren> = ({children}) => {
 
 const AuthInit: FC<WithChildren> = ({children}) => {
   const {auth, logout, setCurrentUser} = useAuth()
+  const {setIdForTaskRunning} = useContext(AppContext)
   const didRequest = useRef(false)
   const [showSplashScreen, setShowSplashScreen] = useState(true)
   // We should request user by authToken (IN OUR EXAMPLE IT'S API_TOKEN) before rendering the application
@@ -72,6 +74,7 @@ const AuthInit: FC<WithChildren> = ({children}) => {
           const {data} = await getUserByToken()
           if (data) {
             setCurrentUser(data)
+            setIdForTaskRunning(data?.runningTask?.id || 0)
           }
         }
       } catch (error) {

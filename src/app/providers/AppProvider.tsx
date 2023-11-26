@@ -10,6 +10,7 @@ const AppContext = createContext({
     idForWhatsApp: "", setIdForWhatsApp: (id: string) => {},
     showCreateWhatsApp: false, setShowCreateWhatsApp: (val: boolean) => {},
 
+    idForTaskRunning: 0, setIdForTaskRunning: (id: number) => {},
     idForTaskUpdate: 0, setIdForTaskUpdate: (id: number) => {},
     idForTaskDelete: 0, setIdForTaskDelete: (id: number) => {},
     showCreateTask: false, setShowCreateTask: (val: boolean) => {},
@@ -26,6 +27,7 @@ const AppProvider = ({children}: any) => {
     const [idForWhatsApp, setIdForWhatsApp] = useState("")
     const [showCreateWhatsApp, setShowCreateWhatsApp] = useState(false)
 
+    const [idForTaskRunning, setIdForTaskRunning] = useState(0)
     const [idForTaskUpdate, setIdForTaskUpdate] = useState(0)
     const [idForTaskDelete, setIdForTaskDelete] = useState(0)
     const [showCreateTask, setShowCreateTask] = useState(false)
@@ -42,6 +44,7 @@ const AppProvider = ({children}: any) => {
             idForWhatsApp, setIdForWhatsApp,
             showCreateWhatsApp, setShowCreateWhatsApp,
 
+            idForTaskRunning, setIdForTaskRunning,
             idForTaskUpdate, setIdForTaskUpdate,
             idForTaskDelete, setIdForTaskDelete,
             showCreateTask, setShowCreateTask,

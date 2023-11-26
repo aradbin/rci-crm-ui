@@ -1,8 +1,9 @@
-import { useEffect, useState } from "react"
+import { useContext, useEffect, useState } from "react"
 import { statuses } from "../../helpers/Variables"
 import { updateRequest } from "../../helpers/Requests"
 import { TASKS_URL } from "../../helpers/ApiEndpoints"
 import { useQueryClient } from "react-query"
+import { AppContext } from "../../providers/AppProvider"
 
 const TaskStatusField = ({task}: any) => {
     const queryClient = useQueryClient()
@@ -10,11 +11,18 @@ const TaskStatusField = ({task}: any) => {
     const [color, setColor] = useState("")
     const [label, setLabel] = useState("")
 
+    const { setIdForTaskRunning } = useContext(AppContext)
+
     useEffect(() => {
         const status = statuses.find((item: any) => item.value === task?.status)
         if(status){
             setColor(status.color)
             setLabel(status.label)
+        }
+        if(task?.status === 'inprogress' && task?.running){
+            setIdForTaskRunning(task?.id)
+        }else{
+            setIdForTaskRunning(0)
         }
     },[task])
 

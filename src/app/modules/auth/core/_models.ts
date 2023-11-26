@@ -43,4 +43,5 @@ export interface UserModel {
   emailSettings?: UserEmailSettingsModel | undefined
   userSettings?: any
   auth?: AuthModel
+  runningTask: any
 }

@@ -13,12 +13,12 @@ const App = () => {
       <I18nProvider>
         <LayoutProvider>
           <ThemeModeProvider>
-            <AuthInit>
-              <AppProvider>
+            <AppProvider>
+              <AuthInit>
                 <Outlet />
                 <MasterInit />
-              </AppProvider>
-            </AuthInit>
+              </AuthInit>
+            </AppProvider>
           </ThemeModeProvider>
         </LayoutProvider>
       </I18nProvider>

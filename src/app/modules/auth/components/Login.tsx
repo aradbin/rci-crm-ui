@@ -1,11 +1,12 @@
 /* eslint-disable jsx-a11y/anchor-is-valid */
-import {useState} from 'react'
+import {useContext, useState} from 'react'
 import * as Yup from 'yup'
 import {Link} from 'react-router-dom'
 import {useFormik} from 'formik'
 import {useAuth} from '../core/Auth'
 import axios from 'axios'
 import { AUTH_URL } from '../../../helpers/ApiEndpoints'
+import { AppContext } from '../../../providers/AppProvider'
 
 const loginSchema = Yup.object().shape({
   email: Yup.string().required('Email is required'),
@@ -21,6 +22,7 @@ export function Login() {
   const [loading, setLoading] = useState(false)
   const [hasError, setHasError] = useState()
   const {saveAuth, setCurrentUser} = useAuth()
+  const {setIdForTaskRunning} = useContext(AppContext)
 
   const formik = useFormik({
     initialValues,
@@ -31,6 +33,7 @@ export function Login() {
         if(response?.status===201){
           saveAuth({accessToken: response?.data?.accessToken})
           setCurrentUser({...response?.data?.user})
+          setIdForTaskRunning(response?.data?.user?.runningTask?.id || 0)
         }
       }).catch((error) => {
         setHasError(error?.response?.data?.message)
