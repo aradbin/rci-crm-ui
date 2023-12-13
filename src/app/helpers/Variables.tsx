@@ -4,6 +4,7 @@ const settings = [
     { label: 'Designations', value: 'designation', icon: 'fa-solid fa-user-tie' },
     { label: 'Emails', value: 'email', icon: 'fa-solid fa-envelope' },
     { label: 'WhatsApps', value: 'whatsapp', icon: 'fa-brands fa-whatsapp' },
+    { label: 'VoIP', value: 'voip', icon: 'fa-solid fa-headphones' },
 ]
 
 const cycles = [
