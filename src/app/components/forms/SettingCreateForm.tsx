@@ -30,6 +30,8 @@ const SettingCreateForm = ({show, toggleShow, updateList, type}: any) => {
             whatsapp_business_account_id: "",
             // for service
             cycle: "",
+            // for voip
+            number: "",
         },
         validationSchema: Yup.object().shape({
             name: Yup.string().required('Name is required'),
@@ -65,6 +67,10 @@ const SettingCreateForm = ({show, toggleShow, updateList, type}: any) => {
                 is: () => type === 'service',
                 then: (schema) => schema.required('Service Cycle is required')
             }),
+            number: Yup.string().when({
+                is: () => type === 'voip',
+                then: (schema) => schema.required('VoIP Number is required')
+            }),
         }),
         onSubmit: async (values, {setSubmitting}) => {
             setSubmitting(true)
@@ -88,6 +94,11 @@ const SettingCreateForm = ({show, toggleShow, updateList, type}: any) => {
                 if(type === 'service'){
                     formData.metadata = {
                         cycle: values.cycle,
+                    }
+                }
+                if(type === 'voip'){
+                    formData.metadata = {
+                        number: values.number,
                     }
                 }
                 if(idForUpdate === 0){
@@ -134,6 +145,9 @@ const SettingCreateForm = ({show, toggleShow, updateList, type}: any) => {
                 }
                 if(type === 'service'){
                     formik.setFieldValue("cycle", response?.metadata?.cycle)
+                }
+                if(type === 'voip'){
+                    formik.setFieldValue("number", response?.metadata?.number)
                 }
             }).finally(() => {
                 setLoading(false)
@@ -235,6 +249,16 @@ const SettingCreateForm = ({show, toggleShow, updateList, type}: any) => {
                                     options={cycles}
                                     required="required"
                                     component={SelectField}
+                                    size="sm"
+                                />
+                                </>}
+                                {type === 'voip' && <>
+                                <Field
+                                    label="Number"
+                                    name="number"
+                                    type="text"
+                                    required="required"
+                                    component={InputField}
                                     size="sm"
                                 />
                                 </>}
