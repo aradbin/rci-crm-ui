@@ -16,7 +16,7 @@ const PrivateRoutes = () => {
   const EmailPage = lazy(() => import('../pages/email/EmailPage'))
   const WhatsAppPage = lazy(() => import('../pages/whatsapp/WhatsAppPage'))
   const SettingsPage = lazy(() => import('../pages/settings/SettingsPage'))
-  const VoipLogsPage = lazy(() => import('../pages/voip/VoipLogsPage'))
+  const VoipPage = lazy(() => import('../pages/voip/VoipPage'))
 
   return (
     <Routes>
@@ -104,7 +104,7 @@ const PrivateRoutes = () => {
           path='voip'
           element={
             <SuspensedView>
-              <VoipLogsPage />
+              <VoipPage />
             </SuspensedView>
           }
         />

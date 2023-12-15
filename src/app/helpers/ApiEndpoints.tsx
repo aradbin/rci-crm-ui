@@ -1,4 +1,4 @@
-const API_URL_LOCAL = 'http://localhost:8080'
+const API_URL_LOCAL = 'http://54.179.73.207:8080'
 
 const BASE_URL = API_URL_LOCAL
 
@@ -8,7 +8,7 @@ const CUSTOMERS_URL = `${BASE_URL}/customers`
 const TASKS_URL = `${BASE_URL}/tasks`
 const EMAIL_URL = `${BASE_URL}/email`
 const WHATSAPP_URL = `${BASE_URL}/whatsapp`
+const VOIP_URL = `${BASE_URL}/voip/list`
 const SETTINGS_URL = `${BASE_URL}/settings`
-const VOIP_LOGS_URL = `${BASE_URL}/voip/log/list`
 
-export { AUTH_URL, USERS_URL, CUSTOMERS_URL, TASKS_URL, EMAIL_URL, WHATSAPP_URL, SETTINGS_URL, VOIP_LOGS_URL }
+export { AUTH_URL, USERS_URL, CUSTOMERS_URL, TASKS_URL, EMAIL_URL, WHATSAPP_URL, VOIP_URL, SETTINGS_URL }
