@@ -14,6 +14,7 @@ import { ShortcutComponent } from '../../app/components/common/ShortcutComponent
 import { EmailCreateForm } from '../../app/components/forms/EmailCreateForm'
 import { TaskCreateForm } from '../../app/components/forms/TaskCreateForm'
 import { WhatsAppCreateForm } from '../../app/components/forms/WhatsAppCreateForm'
+import { MessagePage } from '../../app/pages/message/MessagePage'
 
 const MasterLayout = () => {
   const location = useLocation()
@@ -45,6 +46,7 @@ const MasterLayout = () => {
       <EmailCreateForm />
       <TaskCreateForm />
       <WhatsAppCreateForm />
+      <MessagePage />
       
       <ToastContainer
         position="bottom-center"
