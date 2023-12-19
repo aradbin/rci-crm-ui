@@ -1,28 +1,17 @@
 /* eslint-disable jsx-a11y/anchor-is-valid */
-import { useContext, useEffect, useState } from 'react'
+import { useContext } from 'react'
 import { toAbsoluteUrl } from '../../../_metronic/helpers'
-import { Dropdown1 } from '../../../_metronic/partials'
-import { USERS_URL, WHATSAPP_URL } from '../../helpers/ApiEndpoints'
+import { MESSAGES_URL } from '../../helpers/ApiEndpoints'
 import { Query } from '../../helpers/Queries'
 import { formatDateTime } from '../../helpers/Utils'
 import { AppContext } from '../../providers/AppProvider'
-import { getRequest } from '../../helpers/Requests'
 
-const MessageBox = () => {
-  const { setShowCreateWhatsApp } = useContext(AppContext)
+const MessageBox = ({setSelectedUser}: any) => {
+    const { users } = useContext(AppContext)
 
-  const [conversations, setConversations] = useState([])
-  const [selectedConversation, setSelectedConversation]: any = useState()
+    const messagesQuery = Query('messages', MESSAGES_URL, 'pageSize=all&sortBy=updated_at&orderBy=desc')
 
-  const conversationsQuery = Query('whatsapp-conversations', WHATSAPP_URL, 'pageSize=all&sortBy=updated_at&orderBy=desc')
-
-  useEffect(() => {
-    if(JSON.stringify(conversationsQuery?.data) !== JSON.stringify(conversations)){
-        setConversations(conversationsQuery?.data)
-    }
-  }, [conversationsQuery]);
-
-  return (
+    return (
         <>
             <div className='card-header pe-5' id='kt_drawer_chat_messenger_header'>
                 <div className='card-title'>Messages</div>
@@ -38,7 +27,6 @@ const MessageBox = () => {
                     <span className='fa fa-search fs-6 text-lg-1 text-gray-500 position-absolute top-50 ms-5 translate-middle-y'></span>
                     <input type='text' className='form-control form-control-solid px-15' name='search' placeholder='Search' />
                 </form>
-                <button className='btn btn-primary btn-sm w-100 mb-2' type='button' onClick={() => setShowCreateWhatsApp(true)}>New Chat</button>
                 <div
                     className='scroll-y me-n5 pe-5'
                     data-kt-scroll='true'
@@ -49,28 +37,51 @@ const MessageBox = () => {
                     data-kt-scroll-offset='0px'
                     style={{ height: 'calc(100vh - 310px)' }}
                 >
-                    {conversations?.map((item: any) =>
-                        <div className='d-flex flex-stack py-2 cursor-pointer' key={item?.id} onClick={() => setSelectedConversation(item)}>
-                        <div className='d-flex align-items-center'>
-                            <div className='symbol symbol-45px symbol-circle'>
-                            <img alt='Avatar' src={item?.customer?.avatar || toAbsoluteUrl('/media/avatars/blank.png')} />
+                    {messagesQuery?.data?.length > 0 && <p className='fs-7 fw-semibold text-muted my-2'>Recent</p>}
+                    {messagesQuery?.data?.map((item: any) =>
+                        <div className='d-flex flex-stack py-2 cursor-pointer' key={item?.id} onClick={() => setSelectedUser({
+                            user: item.recipient,
+                            conversation_id: item.id
+                        })}>
+                            <div className='d-flex align-items-center'>
+                                <div className='symbol symbol-45px symbol-circle'>
+                                    <img alt='Avatar' src={item?.recipient?.avatar || toAbsoluteUrl('/media/avatars/blank.png')} />
+                                </div>
+                                <div className='ms-5'>
+                                    <span className='fs-5 fw-bolder text-gray-900 text-hover-primary mb-2'>
+                                    {item?.recipient?.name}
+                                    </span>
+                                    <div className='fw-bold text-gray-400'>{item?.recipient?.email}</div>
+                                </div>
                             </div>
-                            <div className='ms-5'>
-                            <span className='fs-5 fw-bolder text-gray-900 text-hover-primary mb-2'>
-                                {item?.customer?.name || item?.recipient_number}
-                            </span>
-                            {item?.customer?.name && <div className='fw-bold text-gray-400'>{item?.recipient_number}</div>}
+                            <div className='d-flex flex-column align-items-end ms-2'>
+                                <span className='text-muted fs-7 mb-1'>{item?.updated_at ? formatDateTime(item?.updated_at) : formatDateTime(item?.created_at)}</span>
                             </div>
                         </div>
-                        <div className='d-flex flex-column align-items-end ms-2'>
-                            <span className='text-muted fs-7 mb-1'>{item?.updated_at ? formatDateTime(item?.updated_at) : formatDateTime(item?.created_at)}</span>
-                        </div>
+                    )}
+                    <p className='fs-7 fw-semibold text-muted my-2'>All Users</p>
+                    {users?.map((item: any) =>
+                        <div className='d-flex flex-stack my-2 cursor-pointer' key={item?.id} onClick={() => setSelectedUser({
+                            user: item,
+                            conversation_id: null
+                        })}>
+                            <div className='d-flex align-items-center'>
+                                <div className='symbol symbol-45px symbol-circle'>
+                                    <img alt='Avatar' src={item?.avatar || toAbsoluteUrl('/media/avatars/blank.png')} />
+                                </div>
+                                <div className='ms-5'>
+                                    <span className='fs-5 fw-bolder text-gray-900 text-hover-primary mb-2'>
+                                        {item?.name}
+                                    </span>
+                                    <div className='fw-bold text-gray-400'>{item?.email}</div>
+                                </div>
+                            </div>
                         </div>
                     )}              
                 </div>
             </div>
         </>
-  )
+    )
 }
 
 export {MessageBox}
