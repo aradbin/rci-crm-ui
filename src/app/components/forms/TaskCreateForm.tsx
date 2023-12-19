@@ -1,7 +1,7 @@
 import { Field, FormikProvider, useFormik } from "formik"
 import * as Yup from 'yup'
 import { createRequest, getRequest, updateRequest } from "../../helpers/Requests"
-import { CUSTOMERS_URL, TASKS_URL, USERS_URL } from "../../helpers/ApiEndpoints"
+import { TASKS_URL } from "../../helpers/ApiEndpoints"
 import { InputField } from "../fields/InputField"
 import { Modal } from "react-bootstrap"
 import { toast } from "react-toastify"
@@ -10,27 +10,24 @@ import { LoadingComponent } from "../common/LoadingComponent"
 import { AppContext } from "../../providers/AppProvider"
 import { TextAreaField } from "../fields/TextAreaField"
 import { SearchableSelectField } from "../fields/SearchableSelectField"
-import { Query } from "../../helpers/Queries"
 import { formatDate } from "../../helpers/Utils"
 import { priorities } from "../../helpers/Variables"
 import { SelectField } from "../fields/SelectField"
 import { useQueryClient } from "react-query"
 
+type assigneeOptionType = { label: string, value: number }
+type customerOptionType = { label: string, value: number }
+
 const TaskCreateForm = () => {
     const [show, setShow] = useState(false)
     const [loading, setLoading] = useState(false)
-    const [customerOptions, setCustomerOptions] = useState([])
-    const [assigneeOptions, setAssigneeOptions] = useState([])
-    const [customers, setCustomers] = useState([])
-    const [users, setUsers] = useState([])
+    const [customerOptions, setCustomerOptions] = useState<customerOptionType[]>([])
+    const [assigneeOptions, setAssigneeOptions] = useState<assigneeOptionType[]>([])
 
     const queryClient = useQueryClient()
-    const { idForTaskUpdate, setIdForTaskUpdate, showCreateTask, setShowCreateTask, refetchTask, setRefetchTask } = useContext(AppContext)
+    const { idForTaskUpdate, setIdForTaskUpdate, showCreateTask, setShowCreateTask, refetchTask, setRefetchTask, users, customers } = useContext(AppContext)
 
     const priorityOptions = priorities
-
-    const customersQuery = Query('all-customers', CUSTOMERS_URL, 'pageSize=all')
-    const usersQuery = Query('all-users', USERS_URL, 'pageSize=all')
 
     const formik = useFormik({
         initialValues: {
@@ -92,28 +89,24 @@ const TaskCreateForm = () => {
     }
 
     useEffect(() => {
-        if(JSON.stringify(customersQuery?.data) !== JSON.stringify(customers)){
-            setCustomers(customersQuery?.data)
-            if(customersQuery?.data?.length > 0){
-                const array = customersQuery?.data?.map((item: any) => {
-                    return { label: item?.name, value: item?.id }
-                })
-                setCustomerOptions(array)
-            }
+        let array: customerOptionType[] = [];
+        if(customers?.length > 0){
+            array = customers?.map((item: any) => {
+                return { label: item?.name, value: item?.id }
+            })
         }
-    }, [customersQuery]);
+        setCustomerOptions(array)
+    }, [customers]);
 
     useEffect(() => {
-        if(JSON.stringify(usersQuery?.data) !== JSON.stringify(users)){
-            setUsers(usersQuery?.data)
-            if(usersQuery?.data?.length > 0){
-                const array = usersQuery?.data?.map((item: any) => {
-                    return { label: item?.name, value: item?.id }
-                })
-                setAssigneeOptions(array)
-            }
+        let array: assigneeOptionType[] = [];
+        if(users?.length > 0){
+            array = users.map((item: any) => {
+                return { label: item?.name, value: item?.id }
+            })
         }
-    }, [usersQuery]);
+        setAssigneeOptions(array)
+    }, [users]);
 
     useEffect(() => {
         if(idForTaskUpdate > 0){
