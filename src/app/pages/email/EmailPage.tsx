@@ -4,6 +4,7 @@ import { TableComponent } from "../../components/common/TableComponent"
 import { EMAIL_URL } from "../../helpers/ApiEndpoints"
 import { ToolbarComponent } from "../../components/common/ToolbarComponent"
 import { AppContext } from "../../providers/AppProvider"
+import { emailColumns } from "../../columns/emailColumns"
 
 const breadCrumbs = [
     { title: 'Email', path: '/email', isSeparator: false },
@@ -26,11 +27,11 @@ const EmailPage = () => {
 
     return (
         <>
-            <ToolbarComponent title="Email" breadCrumbs={breadCrumbs} handleButtonClick={toggleShowCreate}>
+            <ToolbarComponent title="Email Inbox" breadCrumbs={breadCrumbs} handleButtonClick={toggleShowCreate}>
             </ToolbarComponent>
             <KTCard className="mb-5 mb-xl-8">
                 <KTCardBody className='py-3'>
-                    {/* <TableComponent queryKey="email" url={EMAIL_URL} params={params} columns={[]} refetch={refetch} /> */}
+                    <TableComponent queryKey="email" url={EMAIL_URL} params={params} columns={emailColumns} refetch={refetch} />
                 </KTCardBody>
             </KTCard>
         </>

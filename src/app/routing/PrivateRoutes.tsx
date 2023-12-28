@@ -16,6 +16,7 @@ const PrivateRoutes = () => {
   const EmailPage = lazy(() => import('../pages/email/EmailPage'))
   const WhatsAppPage = lazy(() => import('../pages/whatsapp/WhatsAppPage'))
   const SettingsPage = lazy(() => import('../pages/settings/SettingsPage'))
+  const VoipPage = lazy(() => import('../pages/voip/VoipPage'))
 
   return (
     <Routes>
@@ -26,57 +27,84 @@ const PrivateRoutes = () => {
         <Route path='dashboard' element={<DashboardWrapper />} />
 
         {/* Lazy Modules */}
-        <Route path='users' element={
+        <Route
+          path='users'
+          element={
             <SuspensedView>
               <UsersPage />
             </SuspensedView>
           }
         />
-        <Route path='users/:id' element={
+        <Route
+          path='users/:id'
+          element={
             <SuspensedView>
               <UsersProfilePage />
             </SuspensedView>
           }
         />
-        <Route path='customers' element={
+        <Route
+          path='customers'
+          element={
             <SuspensedView>
               <CustomersPage />
             </SuspensedView>
           }
         />
-        <Route path='customers/:id' element={
+        <Route
+          path='customers/:id'
+          element={
             <SuspensedView>
               <CustomersProfilePage />
             </SuspensedView>
           }
         />
-        <Route path='tasks' element={
+        <Route
+          path='tasks'
+          element={
             <SuspensedView>
               <TasksPage />
             </SuspensedView>
           }
         />
-        <Route path='tasks/:id' element={
+        <Route
+          path='tasks/:id'
+          element={
             <SuspensedView>
               <TasksDetailsPage />
             </SuspensedView>
           }
         />
-        <Route path='email' element={
+        <Route
+          path='email'
+          element={
             <SuspensedView>
               <EmailPage />
             </SuspensedView>
           }
         />
-        <Route path='whatsapp' element={
+        <Route
+          path='whatsapp'
+          element={
             <SuspensedView>
               <WhatsAppPage />
             </SuspensedView>
           }
         />
-        <Route path='settings' element={
+        <Route
+          path='settings'
+          element={
             <SuspensedView>
               <SettingsPage />
+            </SuspensedView>
+          }
+        />
+
+        <Route
+          path='voip'
+          element={
+            <SuspensedView>
+              <VoipPage />
             </SuspensedView>
           }
         />

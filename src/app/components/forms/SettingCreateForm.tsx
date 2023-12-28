@@ -31,7 +31,7 @@ const SettingCreateForm = ({show, toggleShow, updateList, type}: any) => {
             // for service
             cycle: "",
             // for voip
-            number: ""
+            number: "",
         },
         validationSchema: Yup.object().shape({
             name: Yup.string().required('Name is required'),
@@ -69,7 +69,7 @@ const SettingCreateForm = ({show, toggleShow, updateList, type}: any) => {
             }),
             number: Yup.string().when({
                 is: () => type === 'voip',
-                then: (schema) => schema.required('VoIP number is required')
+                then: (schema) => schema.required('VoIP Number is required')
             }),
         }),
         onSubmit: async (values, {setSubmitting}) => {

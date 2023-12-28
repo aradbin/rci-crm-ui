@@ -23,6 +23,7 @@ const SidebarMenuMain = () => {
       </div>
       <SidebarMenuItem to='/email' icon='messages' iconColor='text-warning' title='Email' fontIcon='bi-layers' />
       <SidebarMenuItem to='/whatsapp' icon='whatsapp' iconColor='text-success' title='WhatsApp' fontIcon='bi-layers' />
+      <SidebarMenuItem to='/voip' icon='monitor-mobile' iconColor='text-info' title='VoIP' fontIcon='bi-layers' />
     </>
   )
 }

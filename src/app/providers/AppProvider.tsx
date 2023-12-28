@@ -1,6 +1,9 @@
 import { createContext, useState } from "react";
 
 const AppContext = createContext({
+    users: [], setUsers: (arr: []) => {},
+    customers: [], setCustomers: (arr: []) => {},
+
     idForUpdate: 0, setIdForUpdate: (id: number) => {},
     idForDelete: 0, setIdForDelete: (id: number) => {},
 
@@ -18,6 +21,9 @@ const AppContext = createContext({
 })
 
 const AppProvider = ({children}: any) => {
+    const [users, setUsers] = useState([])
+    const [customers, setCustomers] = useState([])
+
     const [idForUpdate, setIdForUpdate] = useState(0)
     const [idForDelete, setIdForDelete] = useState(0)
 
@@ -35,6 +41,9 @@ const AppProvider = ({children}: any) => {
     
     return (
         <AppContext.Provider value={{
+            users, setUsers,
+            customers, setCustomers,
+
             idForUpdate, setIdForUpdate,
             idForDelete, setIdForDelete,
 

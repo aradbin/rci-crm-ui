@@ -1,4 +1,4 @@
-import {useEffect} from 'react'
+import {useContext, useEffect} from 'react'
 import {Outlet, useLocation} from 'react-router-dom'
 import {HeaderWrapper} from './components/header'
 import {ScrollTop} from './components/scroll-top'
@@ -14,12 +14,33 @@ import { ShortcutComponent } from '../../app/components/common/ShortcutComponent
 import { EmailCreateForm } from '../../app/components/forms/EmailCreateForm'
 import { TaskCreateForm } from '../../app/components/forms/TaskCreateForm'
 import { WhatsAppCreateForm } from '../../app/components/forms/WhatsAppCreateForm'
+import { MessagePage } from '../../app/pages/message/MessagePage'
+import { AppContext } from '../../app/providers/AppProvider'
+import { CUSTOMERS_URL, USERS_URL } from '../../app/helpers/ApiEndpoints'
+import { Query } from '../../app/helpers/Queries'
 
 const MasterLayout = () => {
   const location = useLocation()
+  const { users, setUsers, customers, setCustomers } = useContext(AppContext)
+  
+  const usersQuery = Query('all-users', USERS_URL, 'pageSize=all')
+  const customersQuery = Query('all-customers', CUSTOMERS_URL, 'pageSize=all')
+  
   useEffect(() => {
     reInitMenu()
   }, [location.key])
+
+  useEffect(() => {
+    if(JSON.stringify(usersQuery?.data) !== JSON.stringify(users)){
+      setUsers(usersQuery?.data)
+    }
+  }, [usersQuery]);
+  
+  useEffect(() => {
+    if(JSON.stringify(customersQuery?.data) !== JSON.stringify(customers)){
+        setCustomers(customersQuery?.data)
+    }
+  }, [customersQuery]);
 
   return (
     <PageDataProvider>
@@ -45,6 +66,7 @@ const MasterLayout = () => {
       <EmailCreateForm />
       <TaskCreateForm />
       <WhatsAppCreateForm />
+      <MessagePage />
       
       <ToastContainer
         position="bottom-center"

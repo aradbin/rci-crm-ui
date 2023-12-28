@@ -40,10 +40,6 @@ const ShortcutComponent = () => {
         }
     }, [time])
 
-    const toggleShow = () => {
-        setShow(!show)
-    }
-
     const update = (value: boolean) => {
         setLoading(true)
         updateRequest(`${TASKS_URL}/${runningTask?.id}`, { running: value }).then((response) => {
@@ -61,7 +57,7 @@ const ShortcutComponent = () => {
             bottom: '10px',
             right: '10px',
         }}>
-            <button className="btn btn-info btn-icon" style={{ borderRadius: '50px' }} data-kt-menu-trigger='click' data-kt-menu-placement='top-end' onClick={() => toggleShow()}><i className={`fa-solid fa-${show ? 'times' : 'plus'} p-0 fs-1`}></i></button>
+            <button className="btn btn-info btn-icon" style={{ borderRadius: '50px' }} data-kt-menu-trigger='click' data-kt-menu-placement='top-end'><i className={`fa-solid fa-${show ? 'times' : 'plus'} p-0 fs-1`}></i></button>
 
             <div className='menu menu-sub menu-sub-dropdown gap-1 bg-transparent w-auto pb-1 shadow-none' data-kt-menu='true'>
                 <OverlayTrigger placement="left" trigger={['hover', 'focus']} overlay={<Tooltip placement="left">Create Task</Tooltip>}>
