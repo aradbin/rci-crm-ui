@@ -15,7 +15,7 @@ const HeaderUserMenu: FC = () => {
       <div className='menu-item px-3'>
         <div className='menu-content d-flex align-items-center px-3'>
           <div className='symbol symbol-50px me-5'>
-            <img alt='Logo' src={toAbsoluteUrl('/media/avatars/300-3.jpg')} />
+            <img alt='Logo' src={currentUser?.avatar || toAbsoluteUrl('/media/avatars/blank.png')} />
           </div>
 
           <div className='d-flex flex-column'>
@@ -33,14 +33,14 @@ const HeaderUserMenu: FC = () => {
       <div className='separator my-2'></div>
 
       <div className='menu-item px-5'>
-        <Link to={'/crafted/pages/profile'} className='menu-link px-5'>
+        <Link to={'/users/'+currentUser?.id} className='menu-link px-5'>
           My Profile
         </Link>
       </div>
 
       <div className='menu-item px-5'>
         <a href='#' className='menu-link px-5'>
-          <span className='menu-text'>My Projects</span>
+          <span className='menu-text'>My Tasks</span>
           <span className='menu-badge'>
             <span className='badge badge-light-danger badge-circle fw-bolder fs-7'>3</span>
           </span>
@@ -117,11 +117,11 @@ const HeaderUserMenu: FC = () => {
 
       {/* <Languages /> */}
 
-      <div className='menu-item px-5 my-1'>
+      {/* <div className='menu-item px-5 my-1'>
         <Link to='/crafted/account/settings' className='menu-link px-5'>
           Account Settings
         </Link>
-      </div>
+      </div> */}
 
       <div className='menu-item px-5'>
         <a onClick={logout} className='menu-link px-5'>
