@@ -11,10 +11,12 @@ import { firstLetterUpperCase } from "../../helpers/Utils"
 import { AppContext } from "../../providers/AppProvider"
 import { SelectField } from "../fields/SelectField"
 import { cycles } from "../../helpers/Variables"
+import { useQueryClient } from "react-query"
 
 const SettingCreateForm = ({show, toggleShow, updateList, type}: any) => {
     const [loading, setLoading] = useState(false)
     const { idForUpdate, setIdForUpdate } = useContext(AppContext)
+    const queryClient = useQueryClient()
 
     const formik = useFormik({
         initialValues: {
@@ -105,7 +107,7 @@ const SettingCreateForm = ({show, toggleShow, updateList, type}: any) => {
                     await createRequest(SETTINGS_URL,formData).then((response) => {
                         if(response?.status===201){
                             toast.success(`${firstLetterUpperCase(type)} Created Successfully`)
-                            updateList()
+                            updateListHandler()
                             closeModal()
                         }
                     })
@@ -113,7 +115,7 @@ const SettingCreateForm = ({show, toggleShow, updateList, type}: any) => {
                     await updateRequest(`${SETTINGS_URL}/${idForUpdate}`,formData).then((response) => {
                         if(response?.status===200){
                             toast.success(`${firstLetterUpperCase(type)} Updated Successfully`)
-                            updateList()
+                            updateListHandler()
                             closeModal()
                         }
                     })
@@ -159,6 +161,11 @@ const SettingCreateForm = ({show, toggleShow, updateList, type}: any) => {
         formik.resetForm()
         toggleShow(false)
         setIdForUpdate(0)
+    }
+
+    const updateListHandler = () => {
+        queryClient.invalidateQueries({ queryKey: ['all-settings', 'pageSize=all'] })
+        updateList()
     }
 
     return (

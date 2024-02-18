@@ -8,10 +8,12 @@ import { toast } from "react-toastify"
 import { useContext, useEffect, useState } from "react"
 import { LoadingComponent } from "../common/LoadingComponent"
 import { AppContext } from "../../providers/AppProvider"
+import { useQueryClient } from "react-query"
 
 const CustomerCreateForm = ({show, toggleShow, updateList}: any) => {
     const [loading, setLoading] = useState(false)
     const { idForUpdate, setIdForUpdate } = useContext(AppContext)
+    const queryClient = useQueryClient()
 
     const formik = useFormik({
         initialValues: {
@@ -32,7 +34,7 @@ const CustomerCreateForm = ({show, toggleShow, updateList}: any) => {
                     await createRequest(CUSTOMERS_URL,values).then((response) => {
                         if(response?.status===201){
                             toast.success('Customer Created Successfully')
-                            updateList()
+                            updateListHandler()
                             closeModal()
                         }
                     })
@@ -40,7 +42,7 @@ const CustomerCreateForm = ({show, toggleShow, updateList}: any) => {
                     await updateRequest(`${CUSTOMERS_URL}/${idForUpdate}`,values).then((response) => {
                         if(response?.status===200){
                             toast.success('Customer Updated Successfully')
-                            updateList()
+                            updateListHandler()
                             closeModal()
                         }
                     })
@@ -72,6 +74,11 @@ const CustomerCreateForm = ({show, toggleShow, updateList}: any) => {
         formik.resetForm()
         toggleShow(false)
         setIdForUpdate(0)
+    }
+
+    const updateListHandler = () => {
+        queryClient.invalidateQueries({ queryKey: ['all-customers', 'pageSize=all'] })
+        updateList()
     }
 
     return (

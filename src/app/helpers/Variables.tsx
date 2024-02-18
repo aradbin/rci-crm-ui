@@ -1,5 +1,6 @@
 const settings = [
     { label: 'Services', value: 'service', icon: 'fa-solid fa-briefcase' },
+    { label: 'Task Types', value: 'task', icon: 'fa-solid fa-list-check' },
     { label: 'Departments', value: 'department', icon: 'fa-solid fa-building' },
     { label: 'Designations', value: 'designation', icon: 'fa-solid fa-user-tie' },
     { label: 'Emails', value: 'email', icon: 'fa-solid fa-envelope' },

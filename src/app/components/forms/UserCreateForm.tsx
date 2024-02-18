@@ -11,18 +11,17 @@ import { LoadingComponent } from "../common/LoadingComponent"
 import { Query } from "../../helpers/Queries"
 import { SearchableSelectField } from "../fields/SearchableSelectField"
 import { getSettingsFromUserSettings } from "../../helpers/Utils"
+import { useQueryClient } from "react-query"
 
 const UserCreateForm = ({show, toggleShow, updateList}: any) => {
     const [loading, setLoading] = useState(false)
-    const [settings, setSettings] = useState([])
     const [emailOptions, setEmailOptions] = useState([])
     const [whatsAppOptions, setWhatsAppOptions] = useState([])
     const [voipOptions, setVoipOptions] = useState([])
     const [departmentOptions, setDepartmentOptions] = useState([])
     const [deisgnationOptions, setDeisgnationOptions] = useState([])
-    const { idForUpdate, setIdForUpdate } = useContext(AppContext)
-
-    const settingsQuery = Query('all-settings', SETTINGS_URL, 'pageSize=all')
+    const { idForUpdate, setIdForUpdate, settings } = useContext(AppContext)
+    const queryClient = useQueryClient()
 
     const formik = useFormik({
         initialValues: {
@@ -75,7 +74,7 @@ const UserCreateForm = ({show, toggleShow, updateList}: any) => {
                     await createRequest(USERS_URL, formData).then(async (response) => {
                         if(response?.status===201){
                             toast.success('User Created Successfully')
-                            updateList()
+                            updateListHandler()
                             closeModal()
                         }
                     })
@@ -84,7 +83,7 @@ const UserCreateForm = ({show, toggleShow, updateList}: any) => {
                     await updateRequest(`${USERS_URL}/${idForUpdate}`, formData).then((response) => {
                         if(response?.status===200){
                             toast.success('User Updated Successfully')
-                            updateList()
+                            updateListHandler()
                             closeModal()
                         }
                     })
@@ -132,44 +131,46 @@ const UserCreateForm = ({show, toggleShow, updateList}: any) => {
     },[idForUpdate])
 
     useEffect(() => {
-        if(JSON.stringify(settingsQuery?.data) !== JSON.stringify(settings)){
-            setSettings(settingsQuery?.data)
-            if(settingsQuery?.data?.length > 0){
-                const emails: any = []
-                const whatsapps: any = []
-                const voips: any = []
-                const departments: any = []
-                const designations: any = []
-                settingsQuery?.data?.map((item: any) => {
-                    if(item.type === 'email'){
-                        emails.push({ label: `${item?.name} (${item.metadata.username})`, value: item?.id })
-                    }
-                    if(item.type === 'whatsapp'){
-                        whatsapps.push({ label: `${item?.name} (${item.metadata.phone_number})`, value: item?.id })
-                    }
-                    if(item.type === 'voip'){
-                        voips.push({ label: `${item?.name} (${item.metadata.number})`, value: item?.id })
-                    }
-                    if(item.type === 'department'){
-                        departments.push({ label: item?.name, value: item?.id })
-                    }
-                    if(item.type === 'designation'){
-                        designations.push({ label: item?.name, value: item?.id })
-                    }
-                })
-                setEmailOptions(emails)
-                setWhatsAppOptions(whatsapps)
-                setVoipOptions(voips)
-                setDepartmentOptions(departments)
-                setDeisgnationOptions(designations)
-            }
+        if(settings?.length > 0){
+            const emails: any = []
+            const whatsapps: any = []
+            const voips: any = []
+            const departments: any = []
+            const designations: any = []
+            settings?.map((item: any) => {
+                if(item.type === 'email'){
+                    emails.push({ label: `${item?.name} (${item.metadata.username})`, value: item?.id })
+                }
+                if(item.type === 'whatsapp'){
+                    whatsapps.push({ label: `${item?.name} (${item.metadata.phone_number})`, value: item?.id })
+                }
+                if(item.type === 'voip'){
+                    voips.push({ label: `${item?.name} (${item.metadata.number})`, value: item?.id })
+                }
+                if(item.type === 'department'){
+                    departments.push({ label: item?.name, value: item?.id })
+                }
+                if(item.type === 'designation'){
+                    designations.push({ label: item?.name, value: item?.id })
+                }
+            })
+            setEmailOptions(emails)
+            setWhatsAppOptions(whatsapps)
+            setVoipOptions(voips)
+            setDepartmentOptions(departments)
+            setDeisgnationOptions(designations)
         }
-    }, [settingsQuery]);
+    }, [settings]);
 
     const closeModal = () => {
         formik.resetForm()
         toggleShow(false)
         setIdForUpdate(0)
+    }
+
+    const updateListHandler = () => {
+        queryClient.invalidateQueries({ queryKey: ['all-users', 'pageSize=all'] })
+        updateList()
     }
 
     return (

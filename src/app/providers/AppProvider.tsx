@@ -3,6 +3,7 @@ import { createContext, useState } from "react";
 const AppContext = createContext({
     users: [], setUsers: (arr: []) => {},
     customers: [], setCustomers: (arr: []) => {},
+    settings: [], setSettings: (arr: []) => {},
 
     idForUpdate: 0, setIdForUpdate: (id: number) => {},
     idForDelete: 0, setIdForDelete: (id: number) => {},
@@ -23,6 +24,7 @@ const AppContext = createContext({
 const AppProvider = ({children}: any) => {
     const [users, setUsers] = useState([])
     const [customers, setCustomers] = useState([])
+    const [settings, setSettings] = useState([])
 
     const [idForUpdate, setIdForUpdate] = useState(0)
     const [idForDelete, setIdForDelete] = useState(0)
@@ -43,6 +45,7 @@ const AppProvider = ({children}: any) => {
         <AppContext.Provider value={{
             users, setUsers,
             customers, setCustomers,
+            settings, setSettings,
 
             idForUpdate, setIdForUpdate,
             idForDelete, setIdForDelete,

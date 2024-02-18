@@ -17,26 +17,31 @@ import { useQueryClient } from "react-query"
 
 type assigneeOptionType = { label: string, value: number }
 type customerOptionType = { label: string, value: number }
+type typeOptionType = { label: string, value: number }
 
 const TaskCreateForm = () => {
     const [show, setShow] = useState(false)
     const [loading, setLoading] = useState(false)
     const [customerOptions, setCustomerOptions] = useState<customerOptionType[]>([])
     const [assigneeOptions, setAssigneeOptions] = useState<assigneeOptionType[]>([])
+    const [typeOptions, setTypeOptions] = useState<typeOptionType[]>([])
 
     const queryClient = useQueryClient()
-    const { idForTaskUpdate, setIdForTaskUpdate, showCreateTask, setShowCreateTask, refetchTask, setRefetchTask, users, customers } = useContext(AppContext)
+    const { idForTaskUpdate, setIdForTaskUpdate, showCreateTask, setShowCreateTask, refetchTask, setRefetchTask, users, customers, settings } = useContext(AppContext)
 
     const priorityOptions = priorities
 
     const formik = useFormik({
         initialValues: {
             title: "",
+            type_id: "",
             description: "",
             due_date: "",
+            estimation: "",
             priority: "",
             customer_id: "",
-            assignee_id: ""
+            assignee_id: "",
+            reporter_id: "",
         },
         validationSchema: Yup.object().shape({
             title: Yup.string().required('Title is required'),
@@ -89,6 +94,18 @@ const TaskCreateForm = () => {
     }
 
     useEffect(() => {
+        let array: typeOptionType[] = [];
+        if(settings?.length > 0){
+            settings?.map((item: any) => {
+                if(item.type === 'task'){
+                    array.push({ label: item?.name, value: item?.id })
+                }
+            })
+        }
+        setTypeOptions(array)
+    }, [settings]);
+
+    useEffect(() => {
         let array: customerOptionType[] = [];
         if(customers?.length > 0){
             array = customers?.map((item: any) => {
@@ -114,11 +131,14 @@ const TaskCreateForm = () => {
             setLoading(true)
             getRequest(`${TASKS_URL}/${idForTaskUpdate}`).then((response) => {
                 formik.setFieldValue("title",response.title)
+                formik.setFieldValue("type_id",response.type_id)
                 formik.setFieldValue("description",response.description || "")
                 formik.setFieldValue("due_date",formatDate(response.due_date, 'input'))
+                formik.setFieldValue("estimation",response.estimation)
                 formik.setFieldValue("priority",response.priority)
                 formik.setFieldValue("customer_id",response.customer_id)
                 formik.setFieldValue("assignee_id",response.assignee_id)
+                formik.setFieldValue("reporter_id",response.reporter_id)
             }).finally(() => {
                 setLoading(false)
             })
@@ -158,6 +178,13 @@ const TaskCreateForm = () => {
                                     size="sm"
                                 />
                                 <Field
+                                    label="Type"
+                                    name="type_id"
+                                    options={typeOptions}
+                                    component={SearchableSelectField}
+                                    size="sm"
+                                />
+                                <Field
                                     label="Description"
                                     name="description"
                                     type="text"
@@ -173,8 +200,16 @@ const TaskCreateForm = () => {
                                     size="sm"
                                 />
                                 <Field
+                                    label="Estimated Hour"
+                                    name="estimation"
+                                    type="text"
+                                    component={InputField}
+                                    size="sm"
+                                />
+                                <Field
                                     label="Priority"
                                     name="priority"
+                                    required="required"
                                     options={priorityOptions}
                                     component={SelectField}
                                     size="sm"
@@ -189,6 +224,13 @@ const TaskCreateForm = () => {
                                 <Field
                                     label="Assignee"
                                     name="assignee_id"
+                                    options={assigneeOptions}
+                                    component={SearchableSelectField}
+                                    size="sm"
+                                />
+                                <Field
+                                    label="Reporter"
+                                    name="reporter_id"
                                     options={assigneeOptions}
                                     component={SearchableSelectField}
                                     size="sm"

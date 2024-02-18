@@ -16,19 +16,6 @@ export const taskColumns = [
     )}
   },
   {
-    Header: "Customer",
-    Cell: ({ row }: any) => {
-      if(row?.original?.customer_id){
-        return (
-          <Link to={`/customers/${row?.original?.customer_id}`} className='text-dark text-hover-primary'>
-            {row?.original?.customer?.name}
-          </Link>
-        )
-      }
-      return ""
-    }
-  },
-  {
     Header: "Assignee",
     accessor: "assignee.name",
     Cell: ({ row }: any) => {
@@ -36,6 +23,32 @@ export const taskColumns = [
         return (
           <Link to={`/users/${row?.original?.assignee_id}`} className='text-dark text-hover-primary'>
             {row?.original?.assignee?.name}
+          </Link>
+        )
+      }
+      return ""
+    }
+  },
+  {
+    Header: "Reporter",
+    Cell: ({ row }: any) => {
+      if(row?.original?.reporter_id){
+        return (
+          <Link to={`/users/${row?.original?.reporter_id}`} className='text-dark text-hover-primary'>
+            {row?.original?.reporter?.name}
+          </Link>
+        )
+      }
+      return ""
+    }
+  },
+  {
+    Header: "Customer",
+    Cell: ({ row }: any) => {
+      if(row?.original?.customer_id){
+        return (
+          <Link to={`/customers/${row?.original?.customer_id}`} className='text-dark text-hover-primary'>
+            {row?.original?.customer?.name}
           </Link>
         )
       }
@@ -55,8 +68,8 @@ export const taskColumns = [
     Cell: ({row}: any) => formatDate(row?.original?.due_date)
   },
   {
-    Header: "Created At",
-    Cell: ({row}: any) => formatDate(row?.original?.created_at)
+    Header: "Completed At",
+    Cell: ({row}: any) => formatDate(row?.original?.updated_at)
   },
   {
     Header: "Actions",

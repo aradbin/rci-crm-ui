@@ -16,15 +16,16 @@ import { TaskCreateForm } from '../../app/components/forms/TaskCreateForm'
 import { WhatsAppCreateForm } from '../../app/components/forms/WhatsAppCreateForm'
 import { MessagePage } from '../../app/pages/message/MessagePage'
 import { AppContext } from '../../app/providers/AppProvider'
-import { CUSTOMERS_URL, USERS_URL } from '../../app/helpers/ApiEndpoints'
+import { CUSTOMERS_URL, SETTINGS_URL, USERS_URL } from '../../app/helpers/ApiEndpoints'
 import { Query } from '../../app/helpers/Queries'
 
 const MasterLayout = () => {
   const location = useLocation()
-  const { users, setUsers, customers, setCustomers } = useContext(AppContext)
+  const { users, setUsers, customers, setCustomers, settings, setSettings } = useContext(AppContext)
   
   const usersQuery = Query('all-users', USERS_URL, 'pageSize=all')
   const customersQuery = Query('all-customers', CUSTOMERS_URL, 'pageSize=all')
+  const settingsQuery = Query('all-settings', SETTINGS_URL, 'pageSize=all')
   
   useEffect(() => {
     reInitMenu()
@@ -41,6 +42,12 @@ const MasterLayout = () => {
         setCustomers(customersQuery?.data)
     }
   }, [customersQuery]);
+
+  useEffect(() => {
+    if(JSON.stringify(settingsQuery?.data) !== JSON.stringify(settings)){
+      setSettings(settingsQuery?.data)
+    }
+  }, [settingsQuery]);
 
   return (
     <PageDataProvider>

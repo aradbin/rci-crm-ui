@@ -50,20 +50,6 @@ const TaskActions = ({ task }: any) => {
                 </div>
                 <div className="separator separator-dashed"></div>
                 <div className="d-flex justify-content-between gap-4">
-                    <span>Customer</span>
-                    <span>
-                        <Link to={`/customers/${task?.customer?.id}`} className='d-flex align-items-center text-dark text-hover-primary'>
-                            {/* <div className='symbol symbol-30px me-5'>
-                                <img src={task?.customer?.avatar || toAbsoluteUrl('/media/avatars/blank.png')} alt='Avatar' />
-                            </div> */}
-                            <div className='d-flex justify-content-start flex-column'>
-                                <span className='fw-bold fs-7'>{task?.customer?.name}</span>
-                            </div>
-                        </Link>
-                    </span>
-                </div>
-                <div className="separator separator-dashed"></div>
-                <div className="d-flex justify-content-between gap-4">
                     <span>Reporter</span>
                     <span>
                         <Link to={`/users/${task?.reporter?.id}`} className='d-flex align-items-center text-dark text-hover-primary'>
@@ -72,6 +58,20 @@ const TaskActions = ({ task }: any) => {
                             </div> */}
                             <div className='d-flex justify-content-start flex-column'>
                                 <span className='fw-bold fs-7'>{task?.reporter?.name}</span>
+                            </div>
+                        </Link>
+                    </span>
+                </div>
+                <div className="separator separator-dashed"></div>
+                <div className="d-flex justify-content-between gap-4">
+                    <span>Customer</span>
+                    <span>
+                        <Link to={`/customers/${task?.customer?.id}`} className='d-flex align-items-center text-dark text-hover-primary'>
+                            {/* <div className='symbol symbol-30px me-5'>
+                                <img src={task?.customer?.avatar || toAbsoluteUrl('/media/avatars/blank.png')} alt='Avatar' />
+                            </div> */}
+                            <div className='d-flex justify-content-start flex-column'>
+                                <span className='fw-bold fs-7'>{task?.customer?.name}</span>
                             </div>
                         </Link>
                     </span>
