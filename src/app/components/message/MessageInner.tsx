@@ -1,30 +1,66 @@
 /* eslint-disable jsx-a11y/anchor-is-valid */
-import {FC, useEffect, useState} from 'react'
+import React, {useContext, useEffect, useState} from 'react'
 import clsx from 'clsx'
-import { UserInfoModel, defaultMessages, defaultUserInfos, messageFromClient, toAbsoluteUrl } from '../../../_metronic/helpers'
+import { toAbsoluteUrl } from '../../../_metronic/helpers'
 import { getRequest } from '../../helpers/Requests'
 import { MESSAGES_URL } from '../../helpers/ApiEndpoints'
 import { useAuth } from '../../modules/auth'
 import { formatDateTime } from '../../helpers/Utils'
-
-const bufferMessages = defaultMessages
+import { SocketContext } from '../../providers/SocketProvider'
 
 const MessageInner = ({selectedUser, setSelectedUser}: any) => {
   const { currentUser } = useAuth()
-  const [chatUpdateFlag, toggleChatUpdateFlat] = useState<boolean>(false)
+  const { socket, messages, setMessages } = useContext(SocketContext)
+
   const [message, setMessage] = useState<string>('')
-  const [messages, setMessages] = useState<any>([])
-  const [userInfos] = useState<UserInfoModel[]>(defaultUserInfos)
+
+  useEffect(() => {
+    if(selectedUser?.conversation_id){
+      getRequest(`${MESSAGES_URL}/${selectedUser?.conversation_id}`).then((response) => {
+        setMessages(prevMessages => {
+          const currentMessages = [...prevMessages]
+          const conversationIndex = currentMessages.findIndex(item => item?.id === selectedUser?.conversation_id)
+          if (conversationIndex !== -1) {
+            const updatedConversation = {
+              ...currentMessages[conversationIndex],
+              messages: response?.results
+            }
+            currentMessages[conversationIndex] = updatedConversation
+          } else {
+            currentMessages.push({
+              id: response?.conversation_id,
+              messages: [{...response}]
+            })
+          }
+          return currentMessages
+        })
+      })
+    }
+  },[selectedUser])
 
   const sendMessage = () => {
-    const currentMessages = messages
-    currentMessages.push({
-      message_body: message,
-      user: currentUser,
-      created_at: new Date().toDateString()
-    })
-    setMessages(currentMessages)
-    setMessage('')
+    if(socket){
+      socket.emit('message', { sender: currentUser?.id, receiver: selectedUser?.user?.id, message }, (response: any) => {
+        setMessages(prevMessages => {
+          const currentMessages = [...prevMessages]
+          const conversationIndex = currentMessages.findIndex(item => item?.id === response?.conversation_id)
+          if (conversationIndex !== -1) {
+            const updatedConversation = {
+              ...currentMessages[conversationIndex],
+              messages: [...currentMessages[conversationIndex].messages, response]
+            }
+            currentMessages[conversationIndex] = updatedConversation
+          } else {
+            currentMessages.push({
+              id: response?.conversation_id,
+              messages: [{...response}]
+            })
+          }
+          return currentMessages
+        })
+        setMessage('')
+      })
+    }
   }
 
   const onEnterPress = (e: React.KeyboardEvent<HTMLTextAreaElement>) => {
@@ -33,14 +69,6 @@ const MessageInner = ({selectedUser, setSelectedUser}: any) => {
       sendMessage()
     }
   }
-
-  useEffect(() => {
-    if(selectedUser?.conversation_id){
-      getRequest(`${MESSAGES_URL}/${selectedUser?.conversation_id}`).then((response) => {
-        setMessages(response?.results)
-      })
-    }
-  },[selectedUser])
 
   return (<>
     <div className='card' id='kt_chat_messenger'>
@@ -83,60 +111,62 @@ const MessageInner = ({selectedUser, setSelectedUser}: any) => {
           data-kt-scroll-offset='5px'
           style={{ height: 'calc(100vh - 160px)' }}
         >
-          {messages.map((item: any, index: number) => {
-            const state = item?.user ? 'primary' : 'info'
-            const contentClass = `d-flex justify-content-${item?.user ? 'end' : 'start'} mb-10`
-            return (
-              <div
-                key={index}
-                className={clsx('d-flex', contentClass, 'mb-10')}
-              >
+          {messages?.map((conversation, conversationIndex) => <React.Fragment key={conversationIndex}>
+            {conversation.id === selectedUser?.conversation_id && conversation?.messages?.slice().reverse().map((item: any, index: number) => {
+              const state = item?.created_by === currentUser?.id ? 'primary' : 'info'
+              const contentClass = `d-flex justify-content-${item?.created_by === currentUser?.id ? 'end' : 'start'} mb-10`
+              return (
                 <div
-                  className={clsx('d-flex flex-column align-items', `align-items-${item.user ? 'end' : 'start'}`
-                  )}
+                  key={index}
+                  className={clsx('d-flex', contentClass, 'mb-10')}
                 >
-                  <div className='d-flex align-items-center mb-2'>
-                    {item?.user ? (
-                      <>
-                        <div className='me-3'>
-                          <span className='text-muted fs-7 mb-1'>{formatDateTime(item.created_at)}</span>
-                          <a href='#' className='fs-5 fw-bolder text-gray-900 text-hover-primary ms-1'>
-                            {item?.user?.name}
-                          </a>
-                        </div>
-                        <div className='symbol  symbol-35px symbol-circle '>
-                          <img alt='Avatar' src={item?.user?.avatar || toAbsoluteUrl('/media/avatars/blank.png')} />
-                        </div>
-                      </>
-                    ) : (
-                      <>
-                        <div className='symbol  symbol-35px symbol-circle '>
-                          <img alt='Avatar' src={selectedUser?.user?.avatar || toAbsoluteUrl('/media/avatars/blank.png')} />
-                        </div>
-                        <div className='ms-3'>
-                          <a href='#' className='fs-5 fw-bolder text-gray-900 text-hover-primary me-1'>
-                            {selectedUser?.user?.name}
-                          </a>
-                          <span className='text-muted fs-7 mb-1'>{formatDateTime(item?.created_at)}</span>
-                        </div>
-                      </>
-                    )}
-                  </div>
-
                   <div
-                    className={clsx(
-                      'p-5 rounded',
-                      `bg-light-${state}`,
-                      'text-dark fw-bold mw-lg-400px',
-                      `text-${item?.user ? 'end' : 'start'}`
+                    className={clsx('d-flex flex-column align-items', `align-items-${item?.created_by === currentUser?.id ? 'end' : 'start'}`
                     )}
-                    data-kt-element='message-text'
-                    dangerouslySetInnerHTML={{__html: item?.message_body}}
-                  ></div>
+                  >
+                    <div className='d-flex align-items-center mb-2'>
+                      {item?.created_by === currentUser?.id ? (
+                        <>
+                          <div className='me-3'>
+                            <span className='text-muted fs-7 mb-1'>{formatDateTime(item.created_at)}</span>
+                            <a href='#' className='fs-5 fw-bolder text-gray-900 text-hover-primary ms-1'>
+                              {currentUser?.name}
+                            </a>
+                          </div>
+                          <div className='symbol  symbol-35px symbol-circle '>
+                            <img alt='Avatar' src={currentUser?.avatar || toAbsoluteUrl('/media/avatars/blank.png')} />
+                          </div>
+                        </>
+                      ) : (
+                        <>
+                          <div className='symbol  symbol-35px symbol-circle '>
+                            <img alt='Avatar' src={selectedUser?.user?.avatar || toAbsoluteUrl('/media/avatars/blank.png')} />
+                          </div>
+                          <div className='ms-3'>
+                            <a href='#' className='fs-5 fw-bolder text-gray-900 text-hover-primary me-1'>
+                              {selectedUser?.user?.name}
+                            </a>
+                            <span className='text-muted fs-7 mb-1'>{formatDateTime(item?.created_at)}</span>
+                          </div>
+                        </>
+                      )}
+                    </div>
+
+                    <div
+                      className={clsx(
+                        'p-5 rounded',
+                        `bg-light-${state}`,
+                        'text-dark fw-bold mw-lg-400px',
+                        `text-${item?.created_by === currentUser?.id ? 'end' : 'start'}`
+                      )}
+                      data-kt-element='message-text'
+                      dangerouslySetInnerHTML={{__html: item?.message}}
+                    ></div>
+                  </div>
                 </div>
-              </div>
-            )
-          })}
+              )
+            })}
+          </React.Fragment>)}
         </div>
       </div>
       <div

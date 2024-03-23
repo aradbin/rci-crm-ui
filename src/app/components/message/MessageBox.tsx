@@ -1,15 +1,25 @@
 /* eslint-disable jsx-a11y/anchor-is-valid */
-import { useContext } from 'react'
+import React, { useContext, useEffect } from 'react'
 import { toAbsoluteUrl } from '../../../_metronic/helpers'
 import { MESSAGES_URL } from '../../helpers/ApiEndpoints'
 import { Query } from '../../helpers/Queries'
 import { formatDateTime } from '../../helpers/Utils'
 import { AppContext } from '../../providers/AppProvider'
+import { useAuth } from '../../modules/auth'
+import { SocketContext } from '../../providers/SocketProvider'
 
 const MessageBox = ({setSelectedUser}: any) => {
+    const { currentUser } = useAuth()
     const { users } = useContext(AppContext)
+    const { messages, setMessages } = useContext(SocketContext)
 
-    const messagesQuery = Query('messages', MESSAGES_URL, 'pageSize=all&sortBy=updated_at&orderBy=desc')
+    const messagesQuery = Query('all-messages', MESSAGES_URL, 'pageSize=all')
+
+    useEffect(() => {
+        if(JSON.stringify(messagesQuery?.data) !== JSON.stringify(messages)){
+            setMessages(messagesQuery?.data)
+        }
+      }, [messagesQuery]);
 
     return (
         <>
@@ -37,21 +47,21 @@ const MessageBox = ({setSelectedUser}: any) => {
                     data-kt-scroll-offset='0px'
                     style={{ height: 'calc(100vh - 310px)' }}
                 >
-                    {messagesQuery?.data?.length > 0 && <p className='fs-7 fw-semibold text-muted my-2'>Recent</p>}
-                    {messagesQuery?.data?.map((item: any) =>
+                    {messages?.length > 0 && <p className='fs-7 fw-semibold text-muted my-2'>Recent</p>}
+                    {messages?.map((item: any) =>
                         <div className='d-flex flex-stack py-2 cursor-pointer' key={item?.id} onClick={() => setSelectedUser({
-                            user: item.recipient,
+                            user: item.user_one !== currentUser?.id ? item.userOne : item.userTwo,
                             conversation_id: item.id
                         })}>
                             <div className='d-flex align-items-center'>
                                 <div className='symbol symbol-45px symbol-circle'>
-                                    <img alt='Avatar' src={item?.recipient?.avatar || toAbsoluteUrl('/media/avatars/blank.png')} />
+                                    <img alt='Avatar' src={item.user_one !== currentUser?.id ? (item?.userOne?.avatar || toAbsoluteUrl('/media/avatars/blank.png')) : (item?.userTwo?.avatar || toAbsoluteUrl('/media/avatars/blank.png'))} />
                                 </div>
                                 <div className='ms-5'>
                                     <span className='fs-5 fw-bolder text-gray-900 text-hover-primary mb-2'>
-                                    {item?.recipient?.name}
+                                    {item.user_one !== currentUser?.id ? item?.userOne?.name : item?.userTwo?.name}
                                     </span>
-                                    <div className='fw-bold text-gray-400'>{item?.recipient?.email}</div>
+                                    <div className='fw-bold text-gray-400'>{item.user_one !== currentUser?.id ? item.userOne.email : item.userTwo.email}</div>
                                 </div>
                             </div>
                             <div className='d-flex flex-column align-items-end ms-2'>
@@ -61,7 +71,8 @@ const MessageBox = ({setSelectedUser}: any) => {
                     )}
                     <p className='fs-7 fw-semibold text-muted my-2'>All Users</p>
                     {users?.map((item: any) =>
-                        <div className='d-flex flex-stack my-2 cursor-pointer' key={item?.id} onClick={() => setSelectedUser({
+                        <React.Fragment key={item?.id}>
+                        {item?.id !== currentUser?.id && <div className='d-flex flex-stack my-2 cursor-pointer' onClick={() => setSelectedUser({
                             user: item,
                             conversation_id: null
                         })}>
@@ -76,7 +87,8 @@ const MessageBox = ({setSelectedUser}: any) => {
                                     <div className='fw-bold text-gray-400'>{item?.email}</div>
                                 </div>
                             </div>
-                        </div>
+                        </div>}
+                        </React.Fragment>
                     )}              
                 </div>
             </div>

@@ -1,7 +1,7 @@
 import {useContext, useEffect} from 'react'
 import {Outlet, useLocation} from 'react-router-dom'
 import {HeaderWrapper} from './components/header'
-import {ScrollTop} from './components/scroll-top'
+// import {ScrollTop} from './components/scroll-top'
 import {Content} from './components/content'
 import {FooterWrapper} from './components/footer'
 import {Sidebar} from './components/sidebar'
@@ -18,6 +18,7 @@ import { MessagePage } from '../../app/pages/message/MessagePage'
 import { AppContext } from '../../app/providers/AppProvider'
 import { CUSTOMERS_URL, SETTINGS_URL, USERS_URL } from '../../app/helpers/ApiEndpoints'
 import { Query } from '../../app/helpers/Queries'
+import SocketComponent from '../../app/components/common/SocketComponent'
 
 const MasterLayout = () => {
   const location = useLocation()
@@ -69,7 +70,7 @@ const MasterLayout = () => {
       </div>
 
       <ShortcutComponent />
-
+      <SocketComponent />
       <EmailCreateForm />
       <TaskCreateForm />
       <WhatsAppCreateForm />

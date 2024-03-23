@@ -6,6 +6,7 @@ import {MasterInit} from '../_metronic/layout/MasterInit'
 import {AuthInit} from './modules/auth'
 import {ThemeModeProvider} from '../_metronic/partials'
 import { AppProvider } from './providers/AppProvider'
+import { SocketProvider } from './providers/SocketProvider'
 
 const App = () => {
   return (
@@ -13,12 +14,14 @@ const App = () => {
       <I18nProvider>
         <LayoutProvider>
           <ThemeModeProvider>
-            <AppProvider>
-              <AuthInit>
-                <Outlet />
-                <MasterInit />
-              </AuthInit>
-            </AppProvider>
+            <SocketProvider>
+              <AppProvider>
+                <AuthInit>
+                  <Outlet />
+                  <MasterInit />
+                </AuthInit>
+              </AppProvider>
+            </SocketProvider>
           </ThemeModeProvider>
         </LayoutProvider>
       </I18nProvider>
