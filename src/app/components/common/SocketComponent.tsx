@@ -5,7 +5,7 @@ import { BASE_URL } from "../../helpers/ApiEndpoints";
 import { useAuth } from "../../modules/auth";
 
 const SocketComponent = () => {
-    const { setSocket, messages, setMessages } = useContext(SocketContext)
+    const { setSocket, messages, setMessages, setVoip } = useContext(SocketContext)
     const { currentUser } = useAuth()
 
     useEffect(() => {
@@ -34,16 +34,12 @@ const SocketComponent = () => {
                 })
             }
             setMessages(currentMessages)
-            // setMessages(prevMessages => {
-            //     const currentMessages = { ...prevMessages };
-            //     const conversationId = response?.conversation_id;
-            //     currentMessages[conversationId] = [
-            //         ...(currentMessages[conversationId] || []),
-            //         { ...response }
-            //     ];
-            //     return currentMessages;
-            // });
-        });
+        })
+
+        socketInstance.on('voip', (response: any) => {
+            console.log(response)
+            setVoip(response)
+        })
     
         setSocket(socketInstance)
     

@@ -8,7 +8,7 @@ const CUSTOMERS_URL = `${BASE_URL}/customers`
 const TASKS_URL = `${BASE_URL}/tasks`
 const EMAIL_URL = `${BASE_URL}/email`
 const WHATSAPP_URL = `${BASE_URL}/whatsapp`
-const VOIP_URL = `${BASE_URL}/voip/list`
+const VOIP_URL = `${BASE_URL}/voip`
 const MESSAGES_URL = `${BASE_URL}/messages`
 const SETTINGS_URL = `${BASE_URL}/settings`
 

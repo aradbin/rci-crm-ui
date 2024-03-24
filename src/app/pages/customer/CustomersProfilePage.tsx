@@ -128,8 +128,8 @@ const ProfileHeader = ({ customer }: any) => {
                 <div className='d-flex flex-wrap flex-stack'>
                     <div className='d-flex flex-column flex-grow-1 pe-8'>
                         <div className='d-flex flex-wrap'>
-                            {statuses?.map((item) =>
-                                <div className={`border border-${item?.color} border-dashed rounded min-w-125px py-3 px-4 me-6 mb-3`}>
+                            {statuses?.map((item, index) =>
+                                <div key={index} className={`border border-${item?.color} border-dashed rounded min-w-125px py-3 px-4 me-6 mb-3`}>
                                     <div className='d-flex align-items-center'>
                                         <i className={`bi bi-check2-square fs-3 text-${item?.color} me-3`}></i>
                                         <div className={`fs-2 fw-bolder text-${item?.color}`}>

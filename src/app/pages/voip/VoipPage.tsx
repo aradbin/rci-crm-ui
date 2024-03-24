@@ -37,7 +37,7 @@ const VoipPage = () => {
             </ToolbarComponent>
             <KTCard className="mb-5 mb-xl-8">
                 <KTCardBody className='py-3'>
-                    <TableComponent queryKey="voip" url={VOIP_URL} params={params} columns={voipColumns} refetch="0" />
+                    <TableComponent queryKey="voip" url={`${VOIP_URL}/list`} params={params} columns={voipColumns} refetch="0" />
                 </KTCardBody>
             </KTCard>
         </>

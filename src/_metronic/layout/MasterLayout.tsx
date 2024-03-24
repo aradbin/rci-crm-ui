@@ -19,6 +19,7 @@ import { AppContext } from '../../app/providers/AppProvider'
 import { CUSTOMERS_URL, SETTINGS_URL, USERS_URL } from '../../app/helpers/ApiEndpoints'
 import { Query } from '../../app/helpers/Queries'
 import SocketComponent from '../../app/components/common/SocketComponent'
+import { VoIPCreateForm } from '../../app/components/forms/VoIPCreateForm'
 
 const MasterLayout = () => {
   const location = useLocation()
@@ -75,6 +76,7 @@ const MasterLayout = () => {
       <TaskCreateForm />
       <WhatsAppCreateForm />
       <MessagePage />
+      <VoIPCreateForm />
       
       <ToastContainer
         position="bottom-center"
