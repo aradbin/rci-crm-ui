@@ -61,7 +61,7 @@ const MessageBox = ({setSelectedUser}: any) => {
                                     <span className='fs-5 fw-bolder text-gray-900 text-hover-primary mb-2'>
                                     {item.user_one !== currentUser?.id ? item?.userOne?.name : item?.userTwo?.name}
                                     </span>
-                                    <div className='fw-bold text-gray-400'>{item.user_one !== currentUser?.id ? item.userOne.email : item.userTwo.email}</div>
+                                    <div className='fw-bold text-gray-400'>{item.user_one !== currentUser?.id ? item.userOne?.email : item.userTwo?.email}</div>
                                 </div>
                             </div>
                             <div className='d-flex flex-column align-items-end ms-2'>
