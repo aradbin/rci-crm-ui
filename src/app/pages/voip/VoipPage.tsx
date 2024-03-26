@@ -6,6 +6,7 @@ import { ToolbarComponent } from "../../components/common/ToolbarComponent"
 import { stringifyRequestQuery } from "../../helpers/Utils"
 import { FilterComponent } from "../../components/common/FilterComponent"
 import { voipColumns } from "../../columns/voipColumns"
+import { VoIPCreateForm } from "../../components/forms/VoIPCreateForm"
 
 const breadCrumbs = [
     { title: 'VoIP', path: '/voip', isSeparator: false },
@@ -25,9 +26,14 @@ const filter = {
 
 const VoipPage = () => {
     const [params, setParams] = useState("")
+    const [refetch, setRefetch] = useState(0)
 
     const handleFilterSubmit = (values: any) => {
         setParams(stringifyRequestQuery({...values}))
+    }
+
+    const updateList = () => {
+        setRefetch(refetch+1)
     }
 
     return (
@@ -37,9 +43,10 @@ const VoipPage = () => {
             </ToolbarComponent>
             <KTCard className="mb-5 mb-xl-8">
                 <KTCardBody className='py-3'>
-                    <TableComponent queryKey="voip" url={`${VOIP_URL}/list`} params={params} columns={voipColumns} refetch="0" />
+                    <TableComponent queryKey="voip" url={`${VOIP_URL}/list`} params={params} columns={voipColumns} refetch={refetch} />
                 </KTCardBody>
             </KTCard>
+            <VoIPCreateForm updateList={updateList} />
         </>
     )
 }
