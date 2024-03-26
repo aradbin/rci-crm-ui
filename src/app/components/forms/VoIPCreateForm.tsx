@@ -4,39 +4,41 @@ import { getRequest, updateRequest } from "../../helpers/Requests"
 import { VOIP_URL } from "../../helpers/ApiEndpoints"
 import { toast } from "react-toastify"
 import { useContext, useEffect, useState } from "react"
-import { TextAreaField } from "../fields/TextAreaField"
-import { SocketContext } from "../../providers/SocketProvider"
-import { useAuth } from "../../modules/auth"
-import { Link, useNavigate } from "react-router-dom"
+import { Link } from "react-router-dom"
 import { Modal } from "react-bootstrap"
 import { AppContext } from "../../providers/AppProvider"
 import { LoadingComponent } from "../common/LoadingComponent"
+import { SearchableSelectField } from "../fields/SearchableSelectField"
+import { TextAreaField } from "../fields/TextAreaField"
+
+type customerOptionType = { label: string, value: number }
+type receivedOptionType = { label: string, value: number }
 
 const VoIPCreateForm = ({updateList}: any) => {
-    const { currentUser } = useAuth()
-    const navigate = useNavigate()
-    const [show, setShow] = useState(false)
-    const [received, setReceived] = useState(false)
     const [loading, setLoading] = useState(false)
     const [showModal, setShowModal] = useState(false)
+    const [showEdit, setShowEdit] = useState(false)
     const [log, setLog] = useState<any>(null)
-    const { voip, setVoip } = useContext(SocketContext)
-    const { idForUpdate, setIdForUpdate } = useContext(AppContext)
+    const [customerOptions, setCustomerOptions] = useState<customerOptionType[]>([])
+    const [receivedOptions, setReceivedOptions] = useState<receivedOptionType[]>([])
+    const { idForDetails, setIdForDetails, idForUpdate, setIdForUpdate, users, customers } = useContext(AppContext)
 
     const formik = useFormik({
         initialValues: {
+            customer_id: "",
+            received_by: "",
             note: "",
         },
         validationSchema: Yup.object().shape({
-            note: Yup.string().required('Note is required'),
         }),
         onSubmit: async (values, {setSubmitting}) => {
             setSubmitting(true)
             try {
-                await updateRequest(`${VOIP_URL}/${voip.id}`, values).then((response) => {
+                await updateRequest(`${VOIP_URL}/${idForUpdate}`, values).then((response) => {
                     if(response?.status===200){
-                        toast.success('Note Saved Successfully')
-                        closeVoIP()
+                        toast.success('Log Updated Successfully')
+                        updateList()
+                        closeEdit()
                     }
                 })
             } catch (ex) {
@@ -47,106 +49,78 @@ const VoIPCreateForm = ({updateList}: any) => {
         },
     })
 
-    const toggleShow = (val: boolean) => {
-        setShow(val)
-    }
-
     const toggleShowModal = (val: boolean) => {
         setShowModal(val)
     }
 
+    const toggleShowEdit = (val: boolean) => {
+        setShowEdit(val)
+    }
+
     useEffect(() => {
-        if(voip){
-            toggleShow(true)
+        if(idForDetails > 0){
+            toggleShowModal(true)
+            setLoading(true)
+            getRequest(`${VOIP_URL}/details/${idForDetails}`).then((response) => {
+                setLog(response)
+            }).finally(() => {
+                setLoading(false)
+            })
         }
-    },[voip])
+    },[idForDetails])
 
     useEffect(() => {
         if(idForUpdate > 0){
-            toggleShowModal(true)
+            toggleShowEdit(true)
             setLoading(true)
             getRequest(`${VOIP_URL}/details/${idForUpdate}`).then((response) => {
-                setLog(response)
+                formik.setFieldValue('customer_id',response?.customer_id)
+                formik.setFieldValue('received_by',response?.received_by)
+                formik.setFieldValue('note',response?.note)
             }).finally(() => {
                 setLoading(false)
             })
         }
     },[idForUpdate])
 
-    const receiveCall = async (val: boolean) => {
-        if(val){
-            setReceived(true)
-            await updateRequest(`${VOIP_URL}/${voip.id}`, { received_by: currentUser?.id })
-            if(voip?.customer?.id){
-                navigate(`/customers/${voip?.customer?.id}`)
-            }
+    useEffect(() => {
+        let array: customerOptionType[] = [];
+        if(customers?.length > 0){
+            array = customers?.map((item: any) => {
+                return { label: item?.name, value: item?.id }
+            })
         }
-    }
-
-    const closeVoIP = () => {
-        formik.resetForm()
-        setVoip(null)
-        setReceived(false)
-        toggleShow(false)
-    }
+        setCustomerOptions(array)
+    }, [customers]);
+    
+    useEffect(() => {
+        let array: receivedOptionType[] = [];
+        if(users?.length > 0){
+            array = users?.map((item: any) => {
+                return { label: item?.name, value: item?.id }
+            })
+        }
+        setReceivedOptions(array)
+    }, [users]);
 
     const closeModal = () => {
         toggleShowModal(false)
+        setIdForDetails(0)
+        formik.resetForm()
+        toggleShowEdit(false)
         setIdForUpdate(0)
     }
 
-    return (<>
-        {show && <div className={`card bg-light-${received ? 'success' : 'warning'} card-xl-stretch`} style={{
-            position: "fixed",
-            bottom: "10px",
-            right: "65px"
-        }}>
-            <div className='card-body'>
-                <h2 className={`card-title fw-bold text-${received ? 'success' : 'warning'} fs-5 mb-3 d-block`}>VoIP Call Connected with <Link to={`/customers/${voip?.customer?.id}`} target="_blank"><b>{voip?.customer?.name || voip?.remote_number}</b></Link></h2>
-                {received ? <FormikProvider value={formik}>
-                    <form className="form" onSubmit={formik.handleSubmit} noValidate>
-                        <div className='d-flex flex-column'>
-                            <Field
-                                label="Note"
-                                name="note"
-                                type="text"
-                                required="required"
-                                component={TextAreaField}
-                                size="sm"
-                            />
-                        </div>
-                        <div className="d-flex flex-end">
-                            <button type="submit" className="btn btn-sm btn-primary w-125px me-3" disabled={formik.isSubmitting}>
-                                {formik.isSubmitting ? (
-                                    <span>
-                                        Please wait {' '}
-                                        <span className='spinner-border spinner-border-sm align-middle ms-2'></span>
-                                    </span>
-                                ) : (
-                                    <span>Submit</span>
-                                )}
-                            </button>
-                            <button type="button" className='btn btn-sm btn-outline btn-light w-125px' aria-disabled={formik.isSubmitting} onClick={closeVoIP}>
-                                Cancel
-                            </button>
-                        </div>
-                    </form>
-                </FormikProvider>
-                :
-                <>
-                    <div className="fw-bold mb-3">
-                        Are you on a call with <Link to={`/customers/${voip?.customer?.id}`} target="_blank"><b>{voip?.customer?.name} ({voip?.remote_number})</b></Link>
-                    </div>
-                    <div className="d-flex flex-end">
-                        <button type="submit" className="btn btn-icon btn-sm btn-success me-3" onClick={() => receiveCall(true)}><i className="fa-solid fa-phone"></i></button>
-                        <button type="button" className='btn btn-icon btn-sm btn-danger' onClick={closeVoIP}><i className="fa-solid fa-xmark"></i></button>
-                    </div>
-                </>
-                }
-            </div>
-        </div>}
+    const closeEdit = () => {
+        formik.resetForm()
+        toggleShowEdit(false)
+        setIdForUpdate(0)
+        toggleShowModal(false)
+        setIdForDetails(0)
+    }
 
-        <Modal className="fade" aria-hidden='true' show={showModal} centered animation>
+    return (<>
+        {idForDetails > 0 && <Modal className="fade" aria-hidden='true' show={showModal} centered animation>
             <div className="modal-content">
                 <div className='modal-header'>
                     <h2 className='fw-bolder mb-0'>VoIP Call Log Details</h2>
@@ -221,7 +195,64 @@ const VoIPCreateForm = ({updateList}: any) => {
                 </div>
             </div>
             {loading && <LoadingComponent />}
-        </Modal>
+        </Modal>}
+
+        {idForUpdate > 0 && <Modal className="fade" aria-hidden='true' show={showEdit} centered animation>
+            <div className="modal-content">
+                <div className='modal-header'>
+                    <h2 className='fw-bolder'>Update Log</h2>
+                    <div className='btn btn-icon btn-sm btn-active-icon-primary' onClick={() => closeEdit()}>
+                        <i className="fa fa-times fs-2"></i>
+                    </div>
+                </div>
+                <FormikProvider value={formik}>
+                    <form className="form" onSubmit={formik.handleSubmit} noValidate>
+                        <div className="modal-body mx-2 mx-xl-2 my-2">
+                            <div className='d-flex flex-column'>
+                                <Field
+                                    label="Customer"
+                                    name="customer_id"
+                                    options={customerOptions}
+                                    component={SearchableSelectField}
+                                    size="sm"
+                                />
+                                <Field
+                                    label="Received By"
+                                    name="received_by"
+                                    options={receivedOptions}
+                                    component={SearchableSelectField}
+                                    size="sm"
+                                />
+                                <Field
+                                    label="Note"
+                                    name="note"
+                                    type="text"
+                                    required="required"
+                                    component={TextAreaField}
+                                    size="sm"
+                                />
+                            </div>
+                        </div>
+                        <div className="modal-footer">
+                            <button type="submit" className="btn btn-sm btn-primary w-125px me-3" disabled={formik.isSubmitting}>
+                                {formik.isSubmitting ? (
+                                    <span>
+                                        Please wait {' '}
+                                        <span className='spinner-border spinner-border-sm align-middle ms-2'></span>
+                                    </span>
+                                ) : (
+                                    <span>Submit</span>
+                                )}
+                            </button>
+                            <button type="button" className='btn btn-sm btn-outline btn-light w-125px' aria-disabled={formik.isSubmitting} onClick={closeModal}>
+                                Cancel
+                            </button>
+                        </div>
+                    </form>
+                </FormikProvider>
+            </div>
+            {loading && <LoadingComponent />}
+        </Modal>}
     </>)
 }
 

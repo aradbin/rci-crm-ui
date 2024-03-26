@@ -5,6 +5,7 @@ const AppContext = createContext({
     customers: [], setCustomers: (arr: []) => {},
     settings: [], setSettings: (arr: []) => {},
 
+    idForDetails: 0, setIdForDetails: (id: number) => {},
     idForUpdate: 0, setIdForUpdate: (id: number) => {},
     idForDelete: 0, setIdForDelete: (id: number) => {},
 
@@ -26,6 +27,7 @@ const AppProvider = ({children}: any) => {
     const [customers, setCustomers] = useState([])
     const [settings, setSettings] = useState([])
 
+    const [idForDetails, setIdForDetails] = useState(0)
     const [idForUpdate, setIdForUpdate] = useState(0)
     const [idForDelete, setIdForDelete] = useState(0)
 
@@ -47,6 +49,7 @@ const AppProvider = ({children}: any) => {
             customers, setCustomers,
             settings, setSettings,
 
+            idForDetails, setIdForDetails,
             idForUpdate, setIdForUpdate,
             idForDelete, setIdForDelete,
 
