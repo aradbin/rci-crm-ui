@@ -17,6 +17,14 @@ const ProfileTasks = ({ customer }: any) => {
     )
 }
 
+const ProfileServices = ({ customer }: any) => {
+    return (
+        <div className='card mb-5 mb-xl-10' id='kt_profile_details_view'>
+
+        </div>
+    )
+}
+
 const ProfileOverview = ({ customer }: any) => {
     const { setIdForUpdate, setIdForEmail } = useContext(AppContext)
     return (
@@ -60,6 +68,7 @@ const ProfileOverview = ({ customer }: any) => {
 const ProfileTabs = ({tab, setTab}: any) => {
     const tabs = [
         { label: 'Overview', value: 'overview' },
+        { label: 'Services', value: 'services' },
         { label: 'Tasks', value: 'tasks' },
         // { label: 'Emails', value: 'emails' },
         // { label: 'WhatsApp', value: 'whatsapp' },
@@ -185,6 +194,7 @@ const CustomersProfilePage = () => {
                 </div>
             </div>
             {tab === 'overview' && <ProfileOverview customer={customer}/>}
+            {tab === 'services' && <ProfileServices customer={customer}/>}
             {tab === 'tasks' && <ProfileTasks customer={customer} />}
             <CustomerCreateForm show={showCreate} toggleShow={toggleShowCreate} updateList={getCustomer} />
             {loading && <LoadingComponent />}
