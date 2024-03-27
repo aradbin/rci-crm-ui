@@ -27,7 +27,7 @@ const TaskCreateForm = () => {
     const [typeOptions, setTypeOptions] = useState<typeOptionType[]>([])
 
     const queryClient = useQueryClient()
-    const { idForTaskUpdate, setIdForTaskUpdate, showCreateTask, setShowCreateTask, refetchTask, setRefetchTask, users, customers, settings } = useContext(AppContext)
+    const { idForTaskUpdate, setIdForTaskUpdate, showCreateTask, setShowCreateTask, showCreateSubTask, setShowCreateSubTask, refetchTask, setRefetchTask, users, customers, settings } = useContext(AppContext)
 
     const priorityOptions = priorities
 
@@ -39,6 +39,7 @@ const TaskCreateForm = () => {
             due_date: "",
             estimation: "",
             priority: "",
+            parent_id: "",
             customer_id: "",
             assignee_id: "",
             reporter_id: "",
@@ -62,10 +63,16 @@ const TaskCreateForm = () => {
             })
             try {
                 if(idForTaskUpdate === 0){
+                    if(showCreateSubTask > 0){
+                        formData.parent_id = showCreateSubTask
+                    }
                     await createRequest(TASKS_URL,formData).then((response) => {
                         if(response?.status===201){
                             const refetch = refetchTask + 1
                             setRefetchTask(refetch)
+                            if(showCreateSubTask > 0){
+                                queryClient.invalidateQueries({ queryKey: `task-${showCreateSubTask}` })
+                            }
                             toast.success('Task Created Successfully')
                             closeModal()
                         }
@@ -76,6 +83,9 @@ const TaskCreateForm = () => {
                             const refetch = refetchTask + 1
                             setRefetchTask(refetch)
                             queryClient.invalidateQueries({ queryKey: `task-${idForTaskUpdate}` })
+                            if(formData.parent_id){
+                                queryClient.invalidateQueries({ queryKey: `task-${formData.parent_id}` })
+                            }
                             toast.success('Task Updated Successfully')
                             closeModal()
                         }
@@ -136,6 +146,7 @@ const TaskCreateForm = () => {
                 formik.setFieldValue("due_date",formatDate(response.due_date, 'input'))
                 formik.setFieldValue("estimation",response.estimation)
                 formik.setFieldValue("priority",response.priority)
+                formik.setFieldValue("parent_id",response.parent_id)
                 formik.setFieldValue("customer_id",response.customer_id)
                 formik.setFieldValue("assignee_id",response.assignee_id)
                 formik.setFieldValue("reporter_id",response.reporter_id)
@@ -149,18 +160,25 @@ const TaskCreateForm = () => {
         toggleShow(showCreateTask)
     },[showCreateTask])
 
+    useEffect(() => {
+        if(showCreateSubTask > 0){
+            toggleShow(true)
+        }
+    },[showCreateSubTask])
+
     const closeModal = () => {
         formik.resetForm()
         toggleShow(false)
         setIdForTaskUpdate(0)
         setShowCreateTask(false)
+        setShowCreateSubTask(0)
     }
 
     return (
         <Modal className="fade" aria-hidden='true' show={show} centered animation>
             <div className="modal-content">
                 <div className='modal-header'>
-                    <h2 className='fw-bolder'>{idForTaskUpdate === 0 ? 'Create' : 'Update'} Task</h2>
+                    <h2 className='fw-bolder'>{idForTaskUpdate === 0 ? 'Create' : 'Update'} {showCreateSubTask > 0 ? 'Sub' : ''} Task</h2>
                     <div className='btn btn-icon btn-sm btn-active-icon-primary' onClick={() => closeModal()}>
                         <i className="fa fa-times fs-2"></i>
                     </div>

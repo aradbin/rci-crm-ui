@@ -8,11 +8,31 @@ import { formatDate, getTaskPriorityBadge, getTaskStatusBadge } from "../../help
 import { LoadingComponent } from "../../components/common/LoadingComponent";
 import TaskStatusField from "../../components/fields/TaskStatusField";
 import { Query } from "../../helpers/Queries";
+import TaskList from "../../components/task/TaskList";
+import { TableWithDataComponent } from "../../components/common/TableWithDataComponent";
+import { taskColumns } from "../../columns/taskColumns";
+
+const SubTasks = ({ task }: any) => {
+    const { setShowCreateSubTask } = useContext(AppContext)
+    return (
+        <div className='card mb-5'>
+            <div className='card-header'>
+                <div className='card-title m-0'>
+                    <h3 className='fw-bolder m-0'>Sub Tasks</h3>
+                </div>
+                <button className='btn btn-sm btn-primary align-self-center' onClick={() => setShowCreateSubTask(task?.id)}>Create Sub Task</button>
+            </div>
+            <div className='card-body p-9'>
+                <TableWithDataComponent data={task?.subTasks} columns={taskColumns} />
+            </div>
+        </div>
+    )
+}
 
 const TaskOverview = ({ task }: any) => {
     const { setIdForTaskUpdate } = useContext(AppContext)
     return (
-        <div className='card mb-5 mb-xl-10' id='kt_profile_details_view'>
+        <div className='card mb-5'>
             <div className='card-header'>
                 <div className='card-title m-0'>
                     <h3 className='fw-bolder m-0'>{task?.title}</h3>
@@ -28,7 +48,7 @@ const TaskOverview = ({ task }: any) => {
 
 const TaskActions = ({ task }: any) => {
     return (
-        <div className='card mb-5 mb-xl-10'>
+        <div className='card mb-5'>
             <div className='card-header justify-content-center'>
                 <div className='card-title m-0'>
                     <TaskStatusField task={task} />
@@ -77,6 +97,19 @@ const TaskActions = ({ task }: any) => {
                     </span>
                 </div>
                 <div className="separator separator-dashed"></div>
+                {task?.parent_id && <>
+                    <div className="d-flex justify-content-between gap-4">
+                        <span>Parent Task</span>
+                        <span>
+                            <Link to={`/tasks/${task?.parent_id}`} className='d-flex align-items-center text-dark text-hover-primary'>
+                                <div className='d-flex justify-content-start flex-column'>
+                                    <span className='fw-bold fs-7' title={task?.parentTask?.title}># {task?.parent_id}</span>
+                                </div>
+                            </Link>
+                        </span>
+                    </div>
+                    <div className="separator separator-dashed"></div>
+                </>}
                 <div className="d-flex justify-content-between gap-4">
                     <span>Priority</span>
                     <span>{getTaskPriorityBadge(task?.priority)}</span>
@@ -109,14 +142,19 @@ const TasksDetailsPage = () => {
     }, [data]);
     
     return (
-        <div className="d-flex gap-5 flex-column flex-lg-row">
-            <div className="w-100 w-lg-60">
-                <TaskOverview task={task}/>
+        <div className="d-flex gap-5 flex-column">
+            <div className="d-flex gap-5 flex-column flex-lg-row">
+                <div className="w-100 w-lg-60">
+                    <TaskOverview task={task}/>
+                </div>
+                <div className="w-100 w-lg-40">
+                    <TaskActions task={task} />
+                </div>
+                {isLoading && <LoadingComponent />}
             </div>
-            <div className="w-100 w-lg-40">
-                <TaskActions task={task} />
+            <div className="w-100">
+                <SubTasks task={task}/>
             </div>
-            {isLoading && <LoadingComponent />}
         </div>
     )
 }

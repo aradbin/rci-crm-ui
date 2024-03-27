@@ -19,6 +19,7 @@ const AppContext = createContext({
     idForTaskUpdate: 0, setIdForTaskUpdate: (id: number) => {},
     idForTaskDelete: 0, setIdForTaskDelete: (id: number) => {},
     showCreateTask: false, setShowCreateTask: (val: boolean) => {},
+    showCreateSubTask: 0, setShowCreateSubTask: (val: number) => {},
     refetchTask: 0, setRefetchTask: (id: number) => {},
 })
 
@@ -41,6 +42,7 @@ const AppProvider = ({children}: any) => {
     const [idForTaskUpdate, setIdForTaskUpdate] = useState(0)
     const [idForTaskDelete, setIdForTaskDelete] = useState(0)
     const [showCreateTask, setShowCreateTask] = useState(false)
+    const [showCreateSubTask, setShowCreateSubTask] = useState(0)
     const [refetchTask, setRefetchTask] = useState(0)
     
     return (
@@ -63,6 +65,7 @@ const AppProvider = ({children}: any) => {
             idForTaskUpdate, setIdForTaskUpdate,
             idForTaskDelete, setIdForTaskDelete,
             showCreateTask, setShowCreateTask,
+            showCreateSubTask, setShowCreateSubTask,
             refetchTask, setRefetchTask,
         }}>
             {children}
