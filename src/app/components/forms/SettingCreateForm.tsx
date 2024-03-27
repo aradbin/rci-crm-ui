@@ -22,7 +22,8 @@ const SettingCreateForm = ({show, toggleShow, updateList, type}: any) => {
         initialValues: {
             name: "",
             // for email
-            host: "",
+            smtp: "",
+            imap: "",
             username: "",
             password: "",
             // for whatsapp
@@ -32,14 +33,20 @@ const SettingCreateForm = ({show, toggleShow, updateList, type}: any) => {
             whatsapp_business_account_id: "",
             // for service
             cycle: "",
+            estimation: "",
+            fee: "",
             // for voip
             number: "",
         },
         validationSchema: Yup.object().shape({
             name: Yup.string().required('Name is required'),
-            host: Yup.string().when({
+            smtp: Yup.string().when({
                 is: () => type === 'email',
-                then: (schema) => schema.required('Host is required')
+                then: (schema) => schema.required('SMTP host is required')
+            }),
+            imap: Yup.string().when({
+                is: () => type === 'email',
+                then: (schema) => schema.required('IMAP host is required')
             }),
             username: Yup.string().when({
                 is: () => type === 'email',
@@ -69,6 +76,14 @@ const SettingCreateForm = ({show, toggleShow, updateList, type}: any) => {
                 is: () => type === 'service',
                 then: (schema) => schema.required('Service Cycle is required')
             }),
+            estimation: Yup.string().when({
+                is: () => type === 'service',
+                then: (schema) => schema.required('Service Estimation is required')
+            }),
+            fee: Yup.string().when({
+                is: () => type === 'service',
+                then: (schema) => schema.required('Service Fee is required')
+            }),
             number: Yup.string().when({
                 is: () => type === 'voip',
                 then: (schema) => schema.required('VoIP Number is required')
@@ -80,7 +95,8 @@ const SettingCreateForm = ({show, toggleShow, updateList, type}: any) => {
                 const formData = { name: values.name, type: type, metadata: {}}
                 if(type === 'email'){
                     formData.metadata = {
-                        host: values.host,
+                        smtp: values.smtp,
+                        imap: values.imap,
                         username: values.username,
                         password: values.password,
                     }
@@ -96,6 +112,8 @@ const SettingCreateForm = ({show, toggleShow, updateList, type}: any) => {
                 if(type === 'service'){
                     formData.metadata = {
                         cycle: values.cycle,
+                        estimation: values.estimation,
+                        fee: values.fee,
                     }
                 }
                 if(type === 'voip'){
@@ -135,7 +153,8 @@ const SettingCreateForm = ({show, toggleShow, updateList, type}: any) => {
             getRequest(`${SETTINGS_URL}/${idForUpdate}`).then((response) => {
                 formik.setFieldValue("name",response.name)
                 if(type === 'email'){
-                    formik.setFieldValue("host", response?.metadata?.host)
+                    formik.setFieldValue("smtp", response?.metadata?.smtp)
+                    formik.setFieldValue("imap", response?.metadata?.imap)
                     formik.setFieldValue("username", response?.metadata?.username)
                     formik.setFieldValue("password", response?.metadata?.password)
                 }
@@ -147,6 +166,8 @@ const SettingCreateForm = ({show, toggleShow, updateList, type}: any) => {
                 }
                 if(type === 'service'){
                     formik.setFieldValue("cycle", response?.metadata?.cycle)
+                    formik.setFieldValue("estimation", response?.metadata?.estimation)
+                    formik.setFieldValue("fee", response?.metadata?.fee)
                 }
                 if(type === 'voip'){
                     formik.setFieldValue("number", response?.metadata?.number)
@@ -191,8 +212,16 @@ const SettingCreateForm = ({show, toggleShow, updateList, type}: any) => {
                                 />
                                 {type === 'email' && <>
                                 <Field
-                                    label="Host"
-                                    name="host"
+                                    label="SMTP Host"
+                                    name="smtp"
+                                    type="text"
+                                    required="required"
+                                    component={InputField}
+                                    size="sm"
+                                />
+                                <Field
+                                    label="IMAP Host"
+                                    name="imap"
                                     type="text"
                                     required="required"
                                     component={InputField}
@@ -256,6 +285,22 @@ const SettingCreateForm = ({show, toggleShow, updateList, type}: any) => {
                                     options={cycles}
                                     required="required"
                                     component={SelectField}
+                                    size="sm"
+                                />
+                                <Field
+                                    label="Estimation Hour"
+                                    name="estimation"
+                                    type="number"
+                                    required="required"
+                                    component={InputField}
+                                    size="sm"
+                                />
+                                <Field
+                                    label="Fee"
+                                    name="fee"
+                                    type="number"
+                                    required="required"
+                                    component={InputField}
                                     size="sm"
                                 />
                                 </>}
