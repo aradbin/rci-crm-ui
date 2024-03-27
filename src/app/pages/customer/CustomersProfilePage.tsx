@@ -8,6 +8,8 @@ import { CustomerCreateForm } from "../../components/forms/CustomerCreateForm";
 import { LoadingComponent } from "../../components/common/LoadingComponent";
 import TaskList from "../../components/task/TaskList";
 import { statuses } from "../../helpers/Variables";
+import { TableWithDataComponent } from "../../components/common/TableWithDataComponent";
+import { customerSettingsColumns } from "../../columns/customerSettingsColumns";
 
 const ProfileTasks = ({ customer }: any) => {
     return (
@@ -20,7 +22,12 @@ const ProfileTasks = ({ customer }: any) => {
 const ProfileServices = ({ customer }: any) => {
     return (
         <div className='card mb-5 mb-xl-10' id='kt_profile_details_view'>
-
+            <div className="card-header justify-content-end">
+                <button className='btn btn-sm btn-primary align-self-center' onClick={() => console.log(customer?.id)}>Add Service</button>
+            </div>
+            <div className='card-body py-3'>
+                <TableWithDataComponent data={customer?.customerSettings} columns={customerSettingsColumns} />
+            </div>
         </div>
     )
 }
