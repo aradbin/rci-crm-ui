@@ -69,7 +69,7 @@ export const taskColumns = [
   },
   {
     Header: "Completed At",
-    Cell: ({row}: any) => formatDate(row?.original?.updated_at)
+    Cell: ({row}: any) => formatDate(row?.original?.completed_at)
   },
   {
     Header: "Actions",
