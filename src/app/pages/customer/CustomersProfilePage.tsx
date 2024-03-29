@@ -10,6 +10,8 @@ import TaskList from "../../components/task/TaskList";
 import { statuses } from "../../helpers/Variables";
 import { TableWithDataComponent } from "../../components/common/TableWithDataComponent";
 import { customerSettingsColumns } from "../../columns/customerSettingsColumns";
+import CustomerServiceList from "../../components/customer/CustomerServiceList";
+import { CustomerServiceCreateForm } from "../../components/forms/CustomerServiceCreateForm";
 
 const ProfileTasks = ({ customer }: any) => {
     return (
@@ -20,16 +22,28 @@ const ProfileTasks = ({ customer }: any) => {
 }
 
 const ProfileServices = ({ customer }: any) => {
-    return (
+    const [refetch, setRefetch] = useState(1)
+    const [show, setShow] = useState(false)
+
+    const toggleShow = (val: boolean) => {
+        setShow(val)
+    }
+
+    const updateList = () => {
+        setRefetch(refetch+1)
+    }
+
+    return (<>
         <div className='card mb-5 mb-xl-10' id='kt_profile_details_view'>
             <div className="card-header justify-content-end">
-                <button className='btn btn-sm btn-primary align-self-center' onClick={() => console.log(customer?.id)}>Add Service</button>
+                <button className='btn btn-sm btn-primary align-self-center' onClick={() => toggleShow(true)}>Add Service</button>
             </div>
             <div className='card-body py-3'>
-                <TableWithDataComponent data={customer?.customerSettings} columns={customerSettingsColumns} />
+                <CustomerServiceList filterParams={{ customer_id: customer?.id }} refetch={refetch} />
             </div>
         </div>
-    )
+        <CustomerServiceCreateForm customerId={customer?.id} show={show} toggleShow={toggleShow} updateList={updateList} />
+    </>)
 }
 
 const ProfileOverview = ({ customer }: any) => {

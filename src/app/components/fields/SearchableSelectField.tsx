@@ -10,7 +10,8 @@ export const SearchableSelectField = ({
     form,
     size,
     formStyle,
-    multiple
+    multiple,
+    isDisabled
 }: any) => {
     const { mode } = useThemeMode()
 
@@ -85,6 +86,7 @@ export const SearchableSelectField = ({
                         onChange={onChange}
                         isMulti={multiple}
                         closeMenuOnSelect={multiple ? false : true}
+                        isDisabled={isDisabled}
                     />
                 </div>
             : 
@@ -100,6 +102,7 @@ export const SearchableSelectField = ({
                     onChange={onChange}
                     isMulti={multiple}
                     closeMenuOnSelect={multiple ? false : true}
+                    isDisabled={isDisabled}
                 />
             }
             

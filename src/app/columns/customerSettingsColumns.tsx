@@ -1,15 +1,27 @@
 import { SettingsActionCell } from "../components/cells/SettingsActionCell"
-import { formatDate } from "../helpers/Utils"
+import { firstLetterUpperCase, formatDate } from "../helpers/Utils"
 
 export const customerSettingsColumns = [
   {
     Header: "Name",
-    accessor: "name",
+    accessor: "settings.name",
   },
   {
-    Header: "Created At",
-    Cell: ({row}: any) => formatDate(row?.original?.created_at)
-  },  
+    Header: "Cycle",
+    Cell: ({row}: any) => firstLetterUpperCase(row?.original?.settings?.metadata?.cycle)
+  },
+  {
+    Header: "From",
+    Cell: ({row}: any) => formatDate(row?.original?.metadata?.from)
+  },
+  {
+    Header: "Due Date",
+    Cell: ({row}: any) => formatDate(row?.original?.metadata?.due_date)
+  },
+  {
+    Header: "Fee",
+    accessor: "settings.metadata.fee",
+  },
   {
     Header: "Actions",
     Cell: ({ row }: any) => <SettingsActionCell item={row?.original} />
