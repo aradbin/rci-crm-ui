@@ -15,7 +15,7 @@ const loginSchema = Yup.object().shape({
 
 const initialValues = {
   email: 'user@email.com',
-  password: 'user',
+  password: '1234',
 }
 
 export function Login() {
