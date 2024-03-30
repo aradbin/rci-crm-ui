@@ -2,7 +2,7 @@ import { useNavigate, useParams } from "react-router-dom";
 import { toAbsoluteUrl } from "../../../_metronic/helpers";
 import { useContext, useEffect, useState } from "react";
 import { getRequest } from "../../helpers/Requests";
-import { CUSTOMERS_URL, TASKS_URL } from "../../helpers/ApiEndpoints";
+import { CUSTOMERS_URL, TASKS_URL, VOIP_URL } from "../../helpers/ApiEndpoints";
 import { AppContext } from "../../providers/AppProvider";
 import { CustomerCreateForm } from "../../components/forms/CustomerCreateForm";
 import { LoadingComponent } from "../../components/common/LoadingComponent";
@@ -12,6 +12,9 @@ import { TableWithDataComponent } from "../../components/common/TableWithDataCom
 import { customerSettingsColumns } from "../../columns/customerSettingsColumns";
 import CustomerServiceList from "../../components/customer/CustomerServiceList";
 import { CustomerServiceCreateForm } from "../../components/forms/CustomerServiceCreateForm";
+import { TableComponent } from "../../components/common/TableComponent";
+import { voipColumns } from "../../columns/voipColumns";
+import { stringifyRequestQuery } from "../../helpers/Utils";
 
 const ProfileTasks = ({ customer }: any) => {
     return (
@@ -19,6 +22,17 @@ const ProfileTasks = ({ customer }: any) => {
             <TaskList filterParams={{ customer_id: customer?.id }} />
         </div>
     )
+}
+
+const ProfileVoIPs = ({ customer }: any) => {
+
+    return (<>
+        <div className='card mb-5 mb-xl-10' id='kt_profile_details_view'>
+            <div className='card-body py-3'>
+                <TableComponent queryKey={`customer-voip-${customer?.id}`} url={`${VOIP_URL}/list`} params={stringifyRequestQuery({ customer_id: customer?.id })} columns={voipColumns} refetch={1} />
+            </div>
+        </div>
+    </>)
 }
 
 const ProfileServices = ({ customer }: any) => {
@@ -93,6 +107,7 @@ const ProfileTabs = ({tab, setTab}: any) => {
         { label: 'Tasks', value: 'tasks' },
         // { label: 'Emails', value: 'emails' },
         // { label: 'WhatsApp', value: 'whatsapp' },
+        { label: 'VoIP', value: 'voip' },
     ]
 
     return (
@@ -217,6 +232,7 @@ const CustomersProfilePage = () => {
             {tab === 'overview' && <ProfileOverview customer={customer}/>}
             {tab === 'services' && <ProfileServices customer={customer}/>}
             {tab === 'tasks' && <ProfileTasks customer={customer} />}
+            {tab === 'voip' && <ProfileVoIPs customer={customer}/>}
             <CustomerCreateForm show={showCreate} toggleShow={toggleShowCreate} updateList={getCustomer} />
             {loading && <LoadingComponent />}
         </>

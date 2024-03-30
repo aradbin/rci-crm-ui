@@ -127,7 +127,7 @@ const TaskActions = ({ task }: any) => {
                 <div className="separator separator-dashed"></div>
                 <div className="d-flex justify-content-between gap-4">
                     <span>Estimated Time</span>
-                    <span>{task?.estimation} h</span>
+                    <span>{task?.estimation ? `${task?.estimation} h` : ""}</span>
                 </div>
                 <div className="separator separator-dashed"></div>
                 <div className="d-flex justify-content-between gap-4">
