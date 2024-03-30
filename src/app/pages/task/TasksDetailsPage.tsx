@@ -4,7 +4,7 @@ import { useContext, useEffect, useState } from "react";
 import { getRequest, updateRequest } from "../../helpers/Requests";
 import { TASKS_URL } from "../../helpers/ApiEndpoints";
 import { AppContext } from "../../providers/AppProvider";
-import { formatDate, getTaskPriorityBadge, getTaskStatusBadge } from "../../helpers/Utils";
+import { formatDate, getTaskPriorityBadge, getTaskStatusBadge, getTaskTime, getTaskTimeString } from "../../helpers/Utils";
 import { LoadingComponent } from "../../components/common/LoadingComponent";
 import TaskStatusField from "../../components/fields/TaskStatusField";
 import { Query } from "../../helpers/Queries";
@@ -47,6 +47,11 @@ const TaskOverview = ({ task }: any) => {
 }
 
 const TaskActions = ({ task }: any) => {
+    const [worked, setWorked] = useState(0)
+
+    useEffect(() => {
+
+    },[task])
     return (
         <div className='card mb-5'>
             <div className='card-header justify-content-center'>
@@ -116,13 +121,28 @@ const TaskActions = ({ task }: any) => {
                 </div>
                 <div className="separator separator-dashed"></div>
                 <div className="d-flex justify-content-between gap-4">
-                    <span>Deadline</span>
+                    <span>Due Date</span>
                     <span>{formatDate(task?.due_date)}</span>
                 </div>
                 <div className="separator separator-dashed"></div>
                 <div className="d-flex justify-content-between gap-4">
-                    <span>Created</span>
+                    <span>Estimated Time</span>
+                    <span>{task?.estimation} h</span>
+                </div>
+                <div className="separator separator-dashed"></div>
+                <div className="d-flex justify-content-between gap-4">
+                    <span>Worked On</span>
+                    <span>{getTaskTimeString(getTaskTime(task?.time_log))}</span>
+                </div>
+                <div className="separator separator-dashed"></div>
+                <div className="d-flex justify-content-between gap-4">
+                    <span>Created At</span>
                     <span>{formatDate(task?.created_at)}</span>
+                </div>
+                <div className="separator separator-dashed"></div>
+                <div className="d-flex justify-content-between gap-4">
+                    <span>Completed At</span>
+                    <span>{task?.completed_at ? formatDate(task?.completed_at) : ""}</span>
                 </div>
             </div>
         </div>
