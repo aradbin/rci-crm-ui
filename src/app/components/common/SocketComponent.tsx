@@ -20,24 +20,14 @@ const SocketComponent = () => {
         })
     
         socketInstance.on('message', (response: any) => {
-            const currentMessages = messages
-            const conversationIndex = currentMessages.findIndex(item => item?.id === response?.conversation_id)
-            if(conversationIndex !== -1){
-                currentMessages[conversationIndex] = {
-                    ...currentMessages[conversationIndex],
-                    messages: [...currentMessages[conversationIndex].messages, response]
-                }
-            }else{
-                currentMessages.push({
-                    id: response?.conversation_id,
-                    messages: [{...response}]
-                })
-            }
-            setMessages(currentMessages)
+            setMessages(prevMessages => {
+              const currentMessages = [...prevMessages]
+              currentMessages.unshift(response)
+              return currentMessages
+            })
         })
 
         socketInstance.on('voip', (response: any) => {
-            console.log(response)
             setVoip(response)
         })
     
