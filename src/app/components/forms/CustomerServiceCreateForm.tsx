@@ -9,6 +9,7 @@ import { useContext, useEffect, useState } from "react"
 import { AppContext } from "../../providers/AppProvider"
 import { LoadingComponent } from "../common/LoadingComponent"
 import { SearchableSelectField } from "../fields/SearchableSelectField"
+import { RadioField } from "../fields/RadioField"
 
 const CustomerServiceCreateForm = ({customerId, show, toggleShow, updateList}: any) => {
     const [loading, setLoading] = useState(false)
@@ -18,12 +19,13 @@ const CustomerServiceCreateForm = ({customerId, show, toggleShow, updateList}: a
     const formik = useFormik({
         initialValues: {
             settings_id: "",
-            from: "",
-            due_date: ""
+            start_date: "",
+            due_date: "",
+            auto_task: true
         },
         validationSchema: Yup.object().shape({
             settings_id: Yup.number().required('Service is required'),
-            from: Yup.string().required('From date is required'),
+            start_date: Yup.string().required('Start date is required'),
             due_date: Yup.string().required('Due date is required'),
         }),
         onSubmit: async (values, {setSubmitting}) => {
@@ -34,8 +36,9 @@ const CustomerServiceCreateForm = ({customerId, show, toggleShow, updateList}: a
                         customer_id: customerId,
                         settings_id: values.settings_id,
                         metadata: {
-                            from: values.from,
-                            due_date: values.due_date
+                            start_date: values.start_date,
+                            due_date: values.due_date,
+                            auto_task: values.auto_task,
                         }
                     }
                     await createRequest(CUSTOMERS_SETTINGS_URL, formData).then(async (response) => {
@@ -48,8 +51,9 @@ const CustomerServiceCreateForm = ({customerId, show, toggleShow, updateList}: a
                 }else{
                     const formData: any = {
                         metadata: {
-                            from: values.from,
-                            due_date: values.due_date
+                            start_date: values.start_date,
+                            due_date: values.due_date,
+                            auto_task: values.auto_task,
                         }
                     }
                     await updateRequest(`${CUSTOMERS_SETTINGS_URL}/${idForCustomerServiceUpdate}`, formData).then((response) => {
@@ -74,8 +78,9 @@ const CustomerServiceCreateForm = ({customerId, show, toggleShow, updateList}: a
             setLoading(true)
             getRequest(`${CUSTOMERS_SETTINGS_URL}/${idForCustomerServiceUpdate}`).then((response) => {
                 formik.setFieldValue("settings_id",response?.settings_id)
-                formik.setFieldValue("from",response?.metadata?.from)
+                formik.setFieldValue("start_date",response?.metadata?.start_date)
                 formik.setFieldValue("due_date",response?.metadata?.due_date)
+                formik.setFieldValue("auto_task",response?.metadata?.auto_task)
             }).finally(() => {
                 setLoading(false)
             })
@@ -127,8 +132,8 @@ const CustomerServiceCreateForm = ({customerId, show, toggleShow, updateList}: a
                                     isDisabled={idForCustomerServiceUpdate > 0}
                                 />
                                 <Field
-                                    label="From"
-                                    name="from"
+                                    label="Start Date"
+                                    name="start_date"
                                     type="date"
                                     required="required"
                                     component={InputField}
@@ -140,6 +145,14 @@ const CustomerServiceCreateForm = ({customerId, show, toggleShow, updateList}: a
                                     type="date"
                                     required="required"
                                     component={InputField}
+                                    size="sm"
+                                />
+                                <Field
+                                    label="Active Auto Task Renew"
+                                    name="auto_task"
+                                    type="checkbox"
+                                    required="required"
+                                    component={RadioField}
                                     size="sm"
                                 />
                             </div>
