@@ -2,15 +2,37 @@ import { useNavigate, useParams } from "react-router-dom";
 import { toAbsoluteUrl } from "../../../_metronic/helpers";
 import { useContext, useEffect, useState } from "react";
 import { getRequest } from "../../helpers/Requests";
-import { TASKS_URL, USERS_URL } from "../../helpers/ApiEndpoints";
+import { EMAIL_URL, TASKS_URL, USERS_URL } from "../../helpers/ApiEndpoints";
 import { AppContext } from "../../providers/AppProvider";
 import { UserCreateForm } from "../../components/forms/UserCreateForm";
-import { getSettingsFromUserSettings } from "../../helpers/Utils";
+import { getSettingsFromUserSettings, stringifyRequestQuery } from "../../helpers/Utils";
 import { LoadingComponent } from "../../components/common/LoadingComponent";
 import { TableComponent } from "../../components/common/TableComponent";
 import { taskColumns } from "../../columns/taskColumns";
 import TaskList from "../../components/task/TaskList";
 import { statuses } from "../../helpers/Variables";
+import { emailColumns } from "../../columns/emailColumns";
+import { ShowEmail } from "../../components/email/ShowEmail";
+
+const ProfileEmail = ({ user }: any) => {console.log(user)
+    const [settingsId, setSettingsId] = useState(0)
+
+    useEffect(() => {
+        const settings = user?.userSettings?.find(item => item?.settings?.type === 'email')
+        if(settings){
+            setSettingsId(settings?.settings_id)
+        }
+    },[user])
+    
+    return (<>
+        <div className='card mb-5 mb-xl-10' id='kt_profile_details_view'>
+            <div className='card-body py-3'>
+                <TableComponent queryKey={`user-email-${user?.id}`} url={EMAIL_URL} params={stringifyRequestQuery({ settings_id: settingsId })} columns={emailColumns} refetch={1} />
+            </div>
+        </div>
+        <ShowEmail />
+    </>)
+}
 
 const ProfileTasks = ({ user }: any) => {
     return (
@@ -82,7 +104,7 @@ const ProfileTabs = ({tab, setTab}: any) => {
     const tabs = [
         { label: 'Overview', value: 'overview' },
         { label: 'Tasks', value: 'tasks' },
-        // { label: 'Emails', value: 'emails' },
+        { label: 'Email', value: 'email' },
         // { label: 'WhatsApp', value: 'whatsapp' },
     ]
 
@@ -155,8 +177,8 @@ const ProfileHeader = ({ user }: any) => {
                 <div className='d-flex flex-wrap flex-stack'>
                     <div className='d-flex flex-column flex-grow-1 pe-8'>
                         <div className='d-flex flex-wrap'>
-                            {statuses?.map((item) =>
-                                <div className={`border border-${item?.color} border-dashed rounded min-w-125px py-3 px-4 me-6 mb-3`}>
+                            {statuses?.map((item, index) =>
+                                <div className={`border border-${item?.color} border-dashed rounded min-w-125px py-3 px-4 me-6 mb-3`} key={index}>
                                     <div className='d-flex align-items-center'>
                                         <i className={`bi bi-check2-square fs-3 text-${item?.color} me-3`}></i>
                                         <div className={`fs-2 fw-bolder text-${item?.color}`}>
@@ -213,6 +235,7 @@ const UsersProfilePage = () => {
             </div>
             {tab === 'overview' && <ProfileOverview user={user}/>}
             {tab === 'tasks' && <ProfileTasks user={user} />}
+            {tab === 'email' && <ProfileEmail user={user} />}
             <UserCreateForm show={showCreate} toggleShow={toggleShowCreate} updateList={getUser} />
             {loading && <LoadingComponent />}
         </>

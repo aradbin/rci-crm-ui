@@ -1,4 +1,4 @@
-import { useContext, useState } from "react"
+import { useContext, useEffect, useState } from "react"
 import { KTCard, KTCardBody, KTIcon } from "../../../_metronic/helpers"
 import { TableComponent } from "../../components/common/TableComponent"
 import { EMAIL_URL } from "../../helpers/ApiEndpoints"
@@ -8,6 +8,8 @@ import { emailColumns } from "../../columns/emailColumns"
 import { ShowEmail } from "../../components/email/ShowEmail"
 import { getRequest } from "../../helpers/Requests"
 import { LoadingComponent } from "../../components/common/LoadingComponent"
+import { useAuth } from "../../modules/auth"
+import { stringifyRequestQuery } from "../../helpers/Utils"
 
 const breadCrumbs = [
     { title: 'Email', path: '/email', isSeparator: false },
@@ -15,19 +17,23 @@ const breadCrumbs = [
 ]
 
 const EmailPage = () => {
-    const [params, setParams] = useState("")
+    const [settingsId, setSettingsId] = useState(0)
+    const [params, setParams] = useState({})
     const [refetch, setRefetch] = useState(0)
     const [loading, setLoading] = useState(false)
-    const [show, setShow] = useState(false)
 
     const { setShowCreateEmail } = useContext(AppContext)
+    const {currentUser} = useAuth()
+
+    useEffect(() => {
+        const settings = currentUser?.userSettings?.find(item => item?.settings?.type === 'email')
+        if(settings){
+            setSettingsId(settings?.settings_id)
+        }
+    },[])
 
     const toggleShowCreate = (show: boolean) => {
         setShowCreateEmail(show)
-    }
-
-    const toggleShow = (show: boolean) => {
-        setShow(show)
     }
 
     const syncEmail = () => {
@@ -47,11 +53,11 @@ const EmailPage = () => {
             </ToolbarComponent>
             <KTCard className="mb-5 mb-xl-8">
                 <KTCardBody className='py-3'>
-                    <TableComponent queryKey="email" url={EMAIL_URL} params={params} columns={emailColumns} refetch={refetch} />
+                    <TableComponent queryKey="email" url={EMAIL_URL} params={stringifyRequestQuery({...params, settings_id: settingsId })} columns={emailColumns} refetch={refetch} />
                     {loading && <LoadingComponent />}
                 </KTCardBody>
             </KTCard>
-            <ShowEmail show={show} toggleShow={toggleShow} />
+            <ShowEmail />
         </>
     )
 }

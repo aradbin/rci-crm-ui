@@ -5,26 +5,31 @@ import { useContext, useEffect, useState } from "react"
 import { LoadingComponent } from "../common/LoadingComponent"
 import { AppContext } from "../../providers/AppProvider"
 
-const ShowEmail = ({show, toggleShow}: any) => {
+const ShowEmail = () => {
+    const [show, setShow] = useState(false)
     const [loading, setLoading] = useState(false)
     const [email, setEmail] = useState<any>(null)
-    const { idForUpdate, setIdForUpdate } = useContext(AppContext)
+    const { idForDetails, setIdForDetails } = useContext(AppContext)
 
     useEffect(() => {
-        if(idForUpdate > 0){
+        if(idForDetails > 0){
             toggleShow(true)
             setLoading(true)
-            getRequest(`${EMAIL_URL}/${idForUpdate}`).then((response) => {
+            getRequest(`${EMAIL_URL}/${idForDetails}`).then((response) => {
                 setEmail(response)
             }).finally(() => {
                 setLoading(false)
             })
         }
-    },[idForUpdate])
+    },[idForDetails])
+
+    const toggleShow = (show: boolean) => {
+        setShow(show)
+    }
 
     const closeModal = () => {
         toggleShow(false)
-        setIdForUpdate(0)
+        setIdForDetails(0)
     }
 
     return (

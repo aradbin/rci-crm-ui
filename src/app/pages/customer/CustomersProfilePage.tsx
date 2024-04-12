@@ -2,30 +2,21 @@ import { useNavigate, useParams } from "react-router-dom";
 import { toAbsoluteUrl } from "../../../_metronic/helpers";
 import { useContext, useEffect, useState } from "react";
 import { getRequest } from "../../helpers/Requests";
-import { CUSTOMERS_URL, TASKS_URL, VOIP_URL } from "../../helpers/ApiEndpoints";
+import { CUSTOMERS_URL, EMAIL_URL, TASKS_URL, VOIP_URL } from "../../helpers/ApiEndpoints";
 import { AppContext } from "../../providers/AppProvider";
 import { CustomerCreateForm } from "../../components/forms/CustomerCreateForm";
 import { LoadingComponent } from "../../components/common/LoadingComponent";
 import TaskList from "../../components/task/TaskList";
 import { statuses } from "../../helpers/Variables";
-import { TableWithDataComponent } from "../../components/common/TableWithDataComponent";
-import { customerSettingsColumns } from "../../columns/customerSettingsColumns";
 import CustomerServiceList from "../../components/customer/CustomerServiceList";
 import { CustomerServiceCreateForm } from "../../components/forms/CustomerServiceCreateForm";
 import { TableComponent } from "../../components/common/TableComponent";
 import { voipColumns } from "../../columns/voipColumns";
 import { stringifyRequestQuery } from "../../helpers/Utils";
-
-const ProfileTasks = ({ customer }: any) => {
-    return (
-        <div className='card mb-5 mb-xl-10' id='kt_profile_details_view'>
-            <TaskList filterParams={{ customer_id: customer?.id }} />
-        </div>
-    )
-}
+import { emailColumns } from "../../columns/emailColumns";
+import { ShowEmail } from "../../components/email/ShowEmail";
 
 const ProfileVoIPs = ({ customer }: any) => {
-
     return (<>
         <div className='card mb-5 mb-xl-10' id='kt_profile_details_view'>
             <div className='card-body py-3'>
@@ -33,6 +24,25 @@ const ProfileVoIPs = ({ customer }: any) => {
             </div>
         </div>
     </>)
+}
+
+const ProfileEmail = ({ customer }: any) => {
+    return (<>
+        <div className='card mb-5 mb-xl-10' id='kt_profile_details_view'>
+            <div className='card-body py-3'>
+                <TableComponent queryKey={`customer-email-${customer?.id}`} url={EMAIL_URL} params={stringifyRequestQuery({ email: customer?.email })} columns={emailColumns} refetch={1} />
+            </div>
+        </div>
+        <ShowEmail />
+    </>)
+}
+
+const ProfileTasks = ({ customer }: any) => {
+    return (
+        <div className='card mb-5 mb-xl-10' id='kt_profile_details_view'>
+            <TaskList filterParams={{ customer_id: customer?.id }} />
+        </div>
+    )
 }
 
 const ProfileServices = ({ customer }: any) => {
@@ -105,7 +115,7 @@ const ProfileTabs = ({tab, setTab}: any) => {
         { label: 'Overview', value: 'overview' },
         { label: 'Services', value: 'services' },
         { label: 'Tasks', value: 'tasks' },
-        // { label: 'Emails', value: 'emails' },
+        { label: 'Email', value: 'email' },
         // { label: 'WhatsApp', value: 'whatsapp' },
         { label: 'VoIP', value: 'voip' },
     ]
@@ -232,6 +242,7 @@ const CustomersProfilePage = () => {
             {tab === 'overview' && <ProfileOverview customer={customer}/>}
             {tab === 'services' && <ProfileServices customer={customer}/>}
             {tab === 'tasks' && <ProfileTasks customer={customer} />}
+            {tab === 'email' && <ProfileEmail customer={customer} />}
             {tab === 'voip' && <ProfileVoIPs customer={customer}/>}
             <CustomerCreateForm show={showCreate} toggleShow={toggleShowCreate} updateList={getCustomer} />
             {loading && <LoadingComponent />}
