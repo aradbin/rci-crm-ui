@@ -25,9 +25,9 @@ const MasterLayout = () => {
   const location = useLocation()
   const { users, setUsers, customers, setCustomers, settings, setSettings } = useContext(AppContext)
   
-  const usersQuery = Query('all-users', USERS_URL, 'pageSize=all')
-  const customersQuery = Query('all-customers', CUSTOMERS_URL, 'pageSize=all')
-  const settingsQuery = Query('all-settings', SETTINGS_URL, 'pageSize=all')
+  const usersQuery = Query('all-users', USERS_URL)
+  const customersQuery = Query('all-customers', CUSTOMERS_URL)
+  const settingsQuery = Query('all-settings', SETTINGS_URL)
   
   useEffect(() => {
     reInitMenu()

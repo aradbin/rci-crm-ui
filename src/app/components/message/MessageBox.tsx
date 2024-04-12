@@ -13,7 +13,7 @@ const MessageBox = ({setSelectedUser}: any) => {
     const { users } = useContext(AppContext)
     const { messages, setMessages } = useContext(SocketContext)
 
-    const messagesQuery = Query('all-messages', MESSAGES_URL, 'pageSize=all')
+    const messagesQuery = Query('all-messages', MESSAGES_URL)
 
     useEffect(() => {
         if(JSON.stringify(messagesQuery?.data) !== JSON.stringify(messages)){

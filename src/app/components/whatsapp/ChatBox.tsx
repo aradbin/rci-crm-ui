@@ -15,7 +15,7 @@ const ChatBox = () => {
   const [conversations, setConversations] = useState([])
   const [selectedConversation, setSelectedConversation]: any = useState()
 
-  const conversationsQuery = Query('whatsapp-conversations', WHATSAPP_URL, 'pageSize=all&sortBy=updated_at&orderBy=desc')
+  const conversationsQuery = Query('whatsapp-conversations', WHATSAPP_URL, 'sortBy=updated_at&orderBy=desc')
 
   useEffect(() => {
     if(JSON.stringify(conversationsQuery?.data) !== JSON.stringify(conversations)){

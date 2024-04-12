@@ -169,7 +169,7 @@ const UserCreateForm = ({show, toggleShow, updateList}: any) => {
     }
 
     const updateListHandler = () => {
-        queryClient.invalidateQueries({ queryKey: ['all-users', 'pageSize=all'] })
+        queryClient.invalidateQueries({ queryKey: ['all-users'] })
         updateList()
     }
 

@@ -185,7 +185,7 @@ const SettingCreateForm = ({show, toggleShow, updateList, type}: any) => {
     }
 
     const updateListHandler = () => {
-        queryClient.invalidateQueries({ queryKey: ['all-settings', 'pageSize=all'] })
+        queryClient.invalidateQueries({ queryKey: ['all-settings'] })
         updateList()
     }
 

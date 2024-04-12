@@ -77,7 +77,7 @@ const CustomerCreateForm = ({show, toggleShow, updateList}: any) => {
     }
 
     const updateListHandler = () => {
-        queryClient.invalidateQueries({ queryKey: ['all-customers', 'pageSize=all'] })
+        queryClient.invalidateQueries({ queryKey: ['all-customers'] })
         updateList()
     }
 
