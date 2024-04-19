@@ -17,7 +17,7 @@ const MessageInner = ({selectedUser, setSelectedUser}: any) => {
   useEffect(() => {
     if(selectedUser?.conversation_id){
       getRequest(`${MESSAGES_URL}/${selectedUser?.conversation_id}`).then((response) => {
-        setMessages(response?.results)
+        setMessages(response)
       })
     }
   },[selectedUser])
@@ -30,6 +30,7 @@ const MessageInner = ({selectedUser, setSelectedUser}: any) => {
       }
       socket.emit('message', payload, (response: any) => {
         setMessages(prevMessages => {
+          console.log(prevMessages)
           const currentMessages = [...prevMessages]
           currentMessages.unshift(response)
           return currentMessages
