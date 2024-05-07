@@ -9,6 +9,7 @@ import { useContext, useEffect, useState } from "react"
 import { LoadingComponent } from "../common/LoadingComponent"
 import { AppContext } from "../../providers/AppProvider"
 import { useQueryClient } from "react-query"
+import { RadioField } from "../fields/RadioField"
 
 const CustomerCreateForm = ({show, toggleShow, updateList}: any) => {
     const [loading, setLoading] = useState(false)

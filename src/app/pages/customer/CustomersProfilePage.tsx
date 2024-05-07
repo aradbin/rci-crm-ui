@@ -1,5 +1,5 @@
 import { useNavigate, useParams } from "react-router-dom";
-import { KTIcon, toAbsoluteUrl } from "../../../_metronic/helpers";
+import { KTIcon, KTSVG, toAbsoluteUrl } from "../../../_metronic/helpers";
 import { useContext, useEffect, useState } from "react";
 import { getRequest } from "../../helpers/Requests";
 import { CUSTOMERS_URL, EMAIL_URL, TASKS_URL, VOIP_URL } from "../../helpers/ApiEndpoints";
@@ -85,7 +85,6 @@ const ProfileOverview = ({ customer }: any) => {
                     <label className='col-lg-4 fw-bold text-muted'>Name</label>
                     <div className='col-lg-8'>
                         <span className='fw-bolder fs-6 text-dark'>{customer?.name}</span>
-                        {customer?.is_featured && <KTIcon iconName='star' className='fs-3' />}
                     </div>
                 </div>
                 <div className='row mb-7'>
@@ -170,6 +169,7 @@ const ProfileHeader = ({ customer }: any) => {
                             <span className='text-gray-800 fs-2 fw-bolder me-1'>
                                 {customer?.name}
                             </span>
+                            {customer?.is_featured && <KTSVG path='media/icons/duotune/general/gen049.svg' className='svg-icon svg-icon-3x ms-2 text-warning' />}
                         </div>
                         <div className='d-flex flex-wrap fw-bold fs-6 mb-4 pe-2'>
                             <a href={`tel:${customer?.contact}`} className='d-flex align-items-center text-gray-400 text-hover-primary me-5 mb-2 gap-2'>

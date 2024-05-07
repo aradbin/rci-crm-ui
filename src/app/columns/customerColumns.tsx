@@ -1,5 +1,5 @@
 import { Link } from "react-router-dom"
-import { KTIcon, toAbsoluteUrl } from "../../_metronic/helpers"
+import { KTIcon, KTSVG, toAbsoluteUrl } from "../../_metronic/helpers"
 import { CustomerActionCell } from "../components/cells/CustomerActionCell"
 import { formatDate } from "../helpers/Utils"
 
@@ -11,10 +11,10 @@ export const customerColumns = [
         <div className='symbol symbol-30px me-5'>
           <img src={row?.original?.avatar || toAbsoluteUrl('/media/avatars/blank.png')} alt='Avatar' />
         </div>
-        <div className='d-flex justify-content-start flex-column'>
+        <div className='d-flex justify-content-start flex-row'>
           <span className='fw-bold fs-7'>{row?.original?.name}</span>
-          {row?.original?.is_featured && <KTIcon iconName='star' className='fs-3' />}
         </div>
+        {row?.original?.is_featured && <KTSVG path='media/icons/duotune/general/gen049.svg' className='svg-icon svg-icon-2x ms-2 text-warning' />}
       </Link>
     )}
   },

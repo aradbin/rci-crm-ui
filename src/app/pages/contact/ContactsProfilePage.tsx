@@ -5,8 +5,6 @@ import { getRequest } from "../../helpers/Requests";
 import { CONTACTS_URL, EMAIL_URL } from "../../helpers/ApiEndpoints";
 import { AppContext } from "../../providers/AppProvider";
 import { LoadingComponent } from "../../components/common/LoadingComponent";
-import ContactCompanyList from "../../components/contact/ContactCompanyList";
-import { CustomerContactCreateForm } from "../../components/forms/CustomerContactCreateForm";
 import { TableComponent } from "../../components/common/TableComponent";
 import { stringifyRequestQuery } from "../../helpers/Utils";
 import { emailColumns } from "../../columns/emailColumns";
@@ -42,10 +40,10 @@ const ProfileCustomers = ({ contact }: any) => {
                 <button className='btn btn-sm btn-primary align-self-center' onClick={() => toggleShow(true)}>Add Service</button>
             </div>
             <div className='card-body py-3'>
-                <ContactCustomerList filterParams={{ contact_id: contact?.id }} refetch={refetch} />
+                {/* <ContactCustomerList filterParams={{ contact_id: contact?.id }} refetch={refetch} /> */}
             </div>
         </div>
-        <ContactCustomerCreateForm contactId={contact?.id} show={show} toggleShow={toggleShow} updateList={updateList} />
+        {/* <ContactCustomerCreateForm contactId={contact?.id} show={show} toggleShow={toggleShow} updateList={updateList} /> */}
     </>)
 }
 

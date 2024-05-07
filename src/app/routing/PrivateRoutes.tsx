@@ -5,12 +5,16 @@ import TopBarProgress from 'react-topbar-progress-indicator'
 import {DashboardWrapper} from '../pages/dashboard/DashboardWrapper'
 import {getCSSVariableValue} from '../../_metronic/assets/ts/_utils'
 import {WithChildren} from '../../_metronic/helpers'
+import ContactsPage from '../pages/contact/ContactsPage'
+import ContactsProfilePage from '../pages/contact/ContactsProfilePage'
 
 const PrivateRoutes = () => {
   const UsersPage = lazy(() => import('../pages/user/UsersPage'))
   const UsersProfilePage = lazy(() => import('../pages/user/UsersProfilePage'))
   const CustomersPage = lazy(() => import('../pages/customer/CustomersPage'))
   const CustomersProfilePage = lazy(() => import('../pages/customer/CustomersProfilePage'))
+  const ContactsPage = lazy(() => import('../pages/contact/ContactsPage'))
+  const ContactsProfilePage = lazy(() => import('../pages/contact/ContactsProfilePage'))
   const TasksPage = lazy(() => import('../pages/task/TasksPage'))
   const TasksDetailsPage = lazy(() => import('../pages/task/TasksDetailsPage'))
   const EmailPage = lazy(() => import('../pages/email/EmailPage'))
