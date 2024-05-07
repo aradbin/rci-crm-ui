@@ -1,5 +1,5 @@
 import { useNavigate, useParams } from "react-router-dom";
-import { toAbsoluteUrl } from "../../../_metronic/helpers";
+import { KTIcon, toAbsoluteUrl } from "../../../_metronic/helpers";
 import { useContext, useEffect, useState } from "react";
 import { getRequest } from "../../helpers/Requests";
 import { CUSTOMERS_URL, EMAIL_URL, TASKS_URL, VOIP_URL } from "../../helpers/ApiEndpoints";
@@ -85,6 +85,7 @@ const ProfileOverview = ({ customer }: any) => {
                     <label className='col-lg-4 fw-bold text-muted'>Name</label>
                     <div className='col-lg-8'>
                         <span className='fw-bolder fs-6 text-dark'>{customer?.name}</span>
+                        {customer?.is_featured && <KTIcon iconName='star' className='fs-3' />}
                     </div>
                 </div>
                 <div className='row mb-7'>

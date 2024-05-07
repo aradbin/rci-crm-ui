@@ -1,5 +1,5 @@
 import { Link } from "react-router-dom"
-import { toAbsoluteUrl } from "../../_metronic/helpers"
+import { KTIcon, toAbsoluteUrl } from "../../_metronic/helpers"
 import { CustomerActionCell } from "../components/cells/CustomerActionCell"
 import { formatDate } from "../helpers/Utils"
 
@@ -13,6 +13,7 @@ export const customerColumns = [
         </div>
         <div className='d-flex justify-content-start flex-column'>
           <span className='fw-bold fs-7'>{row?.original?.name}</span>
+          {row?.original?.is_featured && <KTIcon iconName='star' className='fs-3' />}
         </div>
       </Link>
     )}

@@ -20,13 +20,17 @@ const CustomerServiceCreateForm = ({customerId, show, toggleShow, updateList}: a
         initialValues: {
             settings_id: "",
             start_date: "",
+            end_date: "",
             due_date: "",
+            fee: "",
             auto_task: true
         },
         validationSchema: Yup.object().shape({
             settings_id: Yup.number().required('Service is required'),
             start_date: Yup.string().required('Start date is required'),
+            end_date: Yup.string().required('End date is required'),
             due_date: Yup.string().required('Due date is required'),
+            fee: Yup.number().required('Fee is required'),
         }),
         onSubmit: async (values, {setSubmitting}) => {
             setSubmitting(true)
@@ -37,7 +41,9 @@ const CustomerServiceCreateForm = ({customerId, show, toggleShow, updateList}: a
                         settings_id: values.settings_id,
                         metadata: {
                             start_date: values.start_date,
+                            end_date: values.end_date,
                             due_date: values.due_date,
+                            fee: values.fee,
                             auto_task: values.auto_task,
                         }
                     }
@@ -52,7 +58,9 @@ const CustomerServiceCreateForm = ({customerId, show, toggleShow, updateList}: a
                     const formData: any = {
                         metadata: {
                             start_date: values.start_date,
+                            end_date: values.end_date,
                             due_date: values.due_date,
+                            fee: values.fee,
                             auto_task: values.auto_task,
                         }
                     }
@@ -79,7 +87,9 @@ const CustomerServiceCreateForm = ({customerId, show, toggleShow, updateList}: a
             getRequest(`${CUSTOMERS_SETTINGS_URL}/${idForCustomerServiceUpdate}`).then((response) => {
                 formik.setFieldValue("settings_id",response?.settings_id)
                 formik.setFieldValue("start_date",response?.metadata?.start_date)
+                formik.setFieldValue("end_date",response?.metadata?.end_date)
                 formik.setFieldValue("due_date",response?.metadata?.due_date)
+                formik.setFieldValue("fee",response?.metadata?.fee)
                 formik.setFieldValue("auto_task",response?.metadata?.auto_task)
             }).finally(() => {
                 setLoading(false)
@@ -140,9 +150,25 @@ const CustomerServiceCreateForm = ({customerId, show, toggleShow, updateList}: a
                                     size="sm"
                                 />
                                 <Field
+                                    label="End Date"
+                                    name="end_date"
+                                    type="date"
+                                    required="required"
+                                    component={InputField}
+                                    size="sm"
+                                />
+                                <Field
                                     label="Due Date"
                                     name="due_date"
                                     type="date"
+                                    required="required"
+                                    component={InputField}
+                                    size="sm"
+                                />
+                                <Field
+                                    label="Fee"
+                                    name="fee"
+                                    type="number"
                                     required="required"
                                     component={InputField}
                                     size="sm"

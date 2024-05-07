@@ -20,6 +20,7 @@ const CustomerCreateForm = ({show, toggleShow, updateList}: any) => {
             name: "",
             email: "",
             contact: "",
+            is_featured: false,
             optional_contact: ""
         },
         validationSchema: Yup.object().shape({
@@ -64,6 +65,7 @@ const CustomerCreateForm = ({show, toggleShow, updateList}: any) => {
                 formik.setFieldValue("email",response.email)
                 formik.setFieldValue("contact",response.contact)
                 formik.setFieldValue("optional_contact",response.optional_contact)
+                formik.setFieldValue("is_featured",response?.is_featured)
             }).finally(() => {
                 setLoading(false)
             })
@@ -124,6 +126,14 @@ const CustomerCreateForm = ({show, toggleShow, updateList}: any) => {
                                     type="text"
                                     required="required"
                                     component={InputField}
+                                    size="sm"
+                                />
+                                <Field
+                                    label="Priority Customer"
+                                    name="is_featured"
+                                    type="checkbox"
+                                    required="required"
+                                    component={RadioField}
                                     size="sm"
                                 />
                             </div>
