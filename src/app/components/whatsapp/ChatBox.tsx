@@ -1,13 +1,11 @@
 /* eslint-disable jsx-a11y/anchor-is-valid */
 import { useContext, useEffect, useState } from 'react'
 import { toAbsoluteUrl } from '../../../_metronic/helpers'
-import { Dropdown1 } from '../../../_metronic/partials'
-import { USERS_URL, WHATSAPP_URL } from '../../helpers/ApiEndpoints'
+import { WHATSAPP_URL } from '../../helpers/ApiEndpoints'
 import { Query } from '../../helpers/Queries'
 import { ChatInner } from './ChatInner'
 import { formatDateTime } from '../../helpers/Utils'
 import { AppContext } from '../../providers/AppProvider'
-import { getRequest } from '../../helpers/Requests'
 
 const ChatBox = () => {
   const { setShowCreateWhatsApp } = useContext(AppContext)
@@ -15,7 +13,7 @@ const ChatBox = () => {
   const [conversations, setConversations] = useState([])
   const [selectedConversation, setSelectedConversation]: any = useState()
 
-  const conversationsQuery = Query('whatsapp-conversations', WHATSAPP_URL, 'sortBy=updated_at&orderBy=desc')
+  const conversationsQuery = Query('all-whatsapp', WHATSAPP_URL)
 
   useEffect(() => {
     if(JSON.stringify(conversationsQuery?.data) !== JSON.stringify(conversations)){
@@ -59,16 +57,16 @@ const ChatBox = () => {
                     </div>
                     <div className='ms-5'>
                       <span className='fs-5 fw-bolder text-gray-900 text-hover-primary mb-2'>
-                        {item?.customer?.name || item?.recipient_number}
+                        {item?.customer?.name || item?.recipient_id}
                       </span>
-                      {item?.customer?.name && <div className='fw-bold text-gray-400'>{item?.recipient_number}</div>}
+                      {item?.customer?.name && <div className='fw-bold text-gray-400'>{item?.recipient_id}</div>}
                     </div>
                   </div>
                   <div className='d-flex flex-column align-items-end ms-2'>
                     <span className='text-muted fs-7 mb-1'>{item?.updated_at ? formatDateTime(item?.updated_at) : formatDateTime(item?.created_at)}</span>
                   </div>
                 </div>
-              )}              
+              )}
             </div>
           </div>
         </div>

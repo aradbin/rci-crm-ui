@@ -30,7 +30,6 @@ const MessageInner = ({selectedUser, setSelectedUser}: any) => {
       }
       socket.emit('message', payload, (response: any) => {
         setMessages(prevMessages => {
-          console.log(prevMessages)
           const currentMessages = [...prevMessages]
           currentMessages.unshift(response)
           return currentMessages
