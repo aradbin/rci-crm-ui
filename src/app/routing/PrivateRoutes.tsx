@@ -60,6 +60,22 @@ const PrivateRoutes = () => {
           }
         />
         <Route
+          path='contacts'
+          element={
+            <SuspensedView>
+              <ContactsPage />
+            </SuspensedView>
+          }
+        />
+        <Route
+          path='contacts/:id'
+          element={
+            <SuspensedView>
+              <ContactsProfilePage />
+            </SuspensedView>
+          }
+        />
+        <Route
           path='tasks'
           element={
             <SuspensedView>
