@@ -1,7 +1,7 @@
 import { Field, FormikProvider, useFormik } from "formik"
 import * as Yup from 'yup'
 import { createRequest, getRequest, updateRequest } from "../../helpers/Requests"
-import { CUSTOMERS_URL } from "../../helpers/ApiEndpoints"
+import { CONTACTS_URL } from "../../helpers/ApiEndpoints"
 import { InputField } from "../fields/InputField"
 import { Modal } from "react-bootstrap"
 import { toast } from "react-toastify"
@@ -10,7 +10,7 @@ import { LoadingComponent } from "../common/LoadingComponent"
 import { AppContext } from "../../providers/AppProvider"
 import { useQueryClient } from "react-query"
 
-const CustomerCreateForm = ({show, toggleShow, updateList}: any) => {
+const ContactCreateForm = ({show, toggleShow, updateList}: any) => {
     const [loading, setLoading] = useState(false)
     const { idForUpdate, setIdForUpdate } = useContext(AppContext)
     const queryClient = useQueryClient()
@@ -20,8 +20,6 @@ const CustomerCreateForm = ({show, toggleShow, updateList}: any) => {
             name: "",
             email: "",
             contact: "",
-            is_featured: false,
-            optional_contact: ""
         },
         validationSchema: Yup.object().shape({
             name: Yup.string().required('Name is required'),
@@ -32,17 +30,17 @@ const CustomerCreateForm = ({show, toggleShow, updateList}: any) => {
             setSubmitting(true)
             try {
                 if(idForUpdate === 0){
-                    await createRequest(CUSTOMERS_URL,values).then((response) => {
+                    await createRequest(CONTACTS_URL,values).then((response) => {
                         if(response?.status===201){
-                            toast.success('Customer Created Successfully')
+                            toast.success('Contact Created Successfully')
                             updateListHandler()
                             closeModal()
                         }
                     })
                 }else{
-                    await updateRequest(`${CUSTOMERS_URL}/${idForUpdate}`,values).then((response) => {
+                    await updateRequest(`${CONTACTS_URL}/${idForUpdate}`,values).then((response) => {
                         if(response?.status===200){
-                            toast.success('Customer Updated Successfully')
+                            toast.success('Contact Updated Successfully')
                             updateListHandler()
                             closeModal()
                         }
@@ -60,12 +58,10 @@ const CustomerCreateForm = ({show, toggleShow, updateList}: any) => {
         if(idForUpdate > 0){
             toggleShow(true)
             setLoading(true)
-            getRequest(`${CUSTOMERS_URL}/${idForUpdate}`).then((response) => {
+            getRequest(`${CONTACTS_URL}/${idForUpdate}`).then((response) => {
                 formik.setFieldValue("name",response.name)
                 formik.setFieldValue("email",response.email)
                 formik.setFieldValue("contact",response.contact)
-                formik.setFieldValue("optional_contact",response.optional_contact)
-                formik.setFieldValue("is_featured",response?.is_featured)
             }).finally(() => {
                 setLoading(false)
             })
@@ -79,7 +75,7 @@ const CustomerCreateForm = ({show, toggleShow, updateList}: any) => {
     }
 
     const updateListHandler = () => {
-        queryClient.invalidateQueries({ queryKey: ['all-customers'] })
+        queryClient.invalidateQueries({ queryKey: ['all-contacts'] })
         updateList()
     }
 
@@ -87,7 +83,7 @@ const CustomerCreateForm = ({show, toggleShow, updateList}: any) => {
         <Modal className="fade" aria-hidden='true' show={show} centered animation>
             <div className="modal-content">
                 <div className='modal-header'>
-                    <h2 className='fw-bolder'>{idForUpdate === 0 ? 'Create' : 'Update'} Customer</h2>
+                    <h2 className='fw-bolder'>{idForUpdate === 0 ? 'Create' : 'Update'} Contact</h2>
                     <div className='btn btn-icon btn-sm btn-active-icon-primary' onClick={() => closeModal()}>
                         <i className="fa fa-times fs-2"></i>
                     </div>
@@ -120,22 +116,6 @@ const CustomerCreateForm = ({show, toggleShow, updateList}: any) => {
                                     component={InputField}
                                     size="sm"
                                 />
-                                <Field
-                                    label="Alternative Contact"
-                                    name="optional_contact"
-                                    type="text"
-                                    required="required"
-                                    component={InputField}
-                                    size="sm"
-                                />
-                                <Field
-                                    label="Priority Customer"
-                                    name="is_featured"
-                                    type="checkbox"
-                                    required="required"
-                                    component={RadioField}
-                                    size="sm"
-                                />
                             </div>
                         </div>
                         <div className="modal-footer">
@@ -161,4 +141,4 @@ const CustomerCreateForm = ({show, toggleShow, updateList}: any) => {
     )
 }
 
-export {CustomerCreateForm}
+export {ContactCreateForm}

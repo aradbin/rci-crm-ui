@@ -34,7 +34,6 @@ const SettingCreateForm = ({show, toggleShow, updateList, type}: any) => {
             // for service
             cycle: "",
             estimation: "",
-            fee: "",
             // for voip
             number: "",
         },
@@ -80,10 +79,6 @@ const SettingCreateForm = ({show, toggleShow, updateList, type}: any) => {
                 is: () => type === 'service',
                 then: (schema) => schema.required('Service Estimation is required')
             }),
-            fee: Yup.string().when({
-                is: () => type === 'service',
-                then: (schema) => schema.required('Service Fee is required')
-            }),
             number: Yup.string().when({
                 is: () => type === 'voip',
                 then: (schema) => schema.required('VoIP Number is required')
@@ -107,13 +102,6 @@ const SettingCreateForm = ({show, toggleShow, updateList, type}: any) => {
                         phone_number: values.phone_number,
                         phone_number_id: values.phone_number_id,
                         whatsapp_business_account_id: values.whatsapp_business_account_id,
-                    }
-                }
-                if(type === 'service'){
-                    formData.metadata = {
-                        cycle: values.cycle,
-                        estimation: values.estimation,
-                        fee: values.fee,
                     }
                 }
                 if(type === 'voip'){
@@ -167,7 +155,6 @@ const SettingCreateForm = ({show, toggleShow, updateList, type}: any) => {
                 if(type === 'service'){
                     formik.setFieldValue("cycle", response?.metadata?.cycle)
                     formik.setFieldValue("estimation", response?.metadata?.estimation)
-                    formik.setFieldValue("fee", response?.metadata?.fee)
                 }
                 if(type === 'voip'){
                     formik.setFieldValue("number", response?.metadata?.number)
@@ -290,14 +277,6 @@ const SettingCreateForm = ({show, toggleShow, updateList, type}: any) => {
                                 <Field
                                     label="Estimation Hour"
                                     name="estimation"
-                                    type="number"
-                                    required="required"
-                                    component={InputField}
-                                    size="sm"
-                                />
-                                <Field
-                                    label="Fee"
-                                    name="fee"
                                     type="number"
                                     required="required"
                                     component={InputField}

@@ -1,19 +1,18 @@
 import { Link } from "react-router-dom"
-import { KTIcon, toAbsoluteUrl } from "../../_metronic/helpers"
-import { CustomerActionCell } from "../components/cells/CustomerActionCell"
+import { toAbsoluteUrl } from "../../_metronic/helpers"
+import { ContactActionCell } from "../components/cells/ContactActionCell"
 import { formatDate } from "../helpers/Utils"
 
-export const customerColumns = [
+export const contactColumns = [
   {
     Header: "Name",
     Cell: ({ row }: any) => { return (
-      <Link to={`/customers/${row?.original?.id}`} className='d-flex align-items-center text-dark text-hover-primary'>
+      <Link to={`/contacts/${row?.original?.id}`} className='d-flex align-items-center text-dark text-hover-primary'>
         <div className='symbol symbol-30px me-5'>
           <img src={row?.original?.avatar || toAbsoluteUrl('/media/avatars/blank.png')} alt='Avatar' />
         </div>
         <div className='d-flex justify-content-start flex-column'>
           <span className='fw-bold fs-7'>{row?.original?.name}</span>
-          {row?.original?.is_featured && <KTIcon iconName='star' className='fs-3' />}
         </div>
       </Link>
     )}
@@ -32,6 +31,6 @@ export const customerColumns = [
   },  
   {
     Header: "Actions",
-    Cell: ({ row }: any) => <CustomerActionCell item={row?.original} />
+    Cell: ({ row }: any) => <ContactActionCell item={row?.original} />
   }
 ]
