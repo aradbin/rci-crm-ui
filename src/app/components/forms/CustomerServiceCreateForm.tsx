@@ -22,6 +22,7 @@ const CustomerServiceCreateForm = ({customerId, show, toggleShow, updateList}: a
             start_date: "",
             end_date: "",
             due_date: "",
+            estimation: "",
             fee: "",
             auto_task: true
         },
@@ -30,6 +31,7 @@ const CustomerServiceCreateForm = ({customerId, show, toggleShow, updateList}: a
             start_date: Yup.string().required('Start date is required'),
             end_date: Yup.string().required('End date is required'),
             due_date: Yup.string().required('Due date is required'),
+            estimation: Yup.number().required('Estimation is required'),
             fee: Yup.number().required('Fee is required'),
         }),
         onSubmit: async (values, {setSubmitting}) => {
@@ -43,6 +45,7 @@ const CustomerServiceCreateForm = ({customerId, show, toggleShow, updateList}: a
                             start_date: values.start_date,
                             end_date: values.end_date,
                             due_date: values.due_date,
+                            estimation: values.estimation,
                             fee: values.fee,
                             auto_task: values.auto_task,
                         }
@@ -60,6 +63,7 @@ const CustomerServiceCreateForm = ({customerId, show, toggleShow, updateList}: a
                             start_date: values.start_date,
                             end_date: values.end_date,
                             due_date: values.due_date,
+                            estimation: values.estimation,
                             fee: values.fee,
                             auto_task: values.auto_task,
                         }
@@ -89,6 +93,7 @@ const CustomerServiceCreateForm = ({customerId, show, toggleShow, updateList}: a
                 formik.setFieldValue("start_date",response?.metadata?.start_date)
                 formik.setFieldValue("end_date",response?.metadata?.end_date)
                 formik.setFieldValue("due_date",response?.metadata?.due_date)
+                formik.setFieldValue("estimation",response?.metadata?.estimation)
                 formik.setFieldValue("fee",response?.metadata?.fee)
                 formik.setFieldValue("auto_task",response?.metadata?.auto_task)
             }).finally(() => {
@@ -161,6 +166,14 @@ const CustomerServiceCreateForm = ({customerId, show, toggleShow, updateList}: a
                                     label="Due Date"
                                     name="due_date"
                                     type="date"
+                                    required="required"
+                                    component={InputField}
+                                    size="sm"
+                                />
+                                <Field
+                                    label="Estimated Hour"
+                                    name="estimation"
+                                    type="number"
                                     required="required"
                                     component={InputField}
                                     size="sm"

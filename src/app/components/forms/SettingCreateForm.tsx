@@ -33,7 +33,6 @@ const SettingCreateForm = ({show, toggleShow, updateList, type}: any) => {
             whatsapp_business_account_id: "",
             // for service
             cycle: "",
-            estimation: "",
             // for voip
             number: "",
         },
@@ -74,10 +73,6 @@ const SettingCreateForm = ({show, toggleShow, updateList, type}: any) => {
             cycle: Yup.string().when({
                 is: () => type === 'service',
                 then: (schema) => schema.required('Service Cycle is required')
-            }),
-            estimation: Yup.string().when({
-                is: () => type === 'service',
-                then: (schema) => schema.required('Service Estimation is required')
             }),
             number: Yup.string().when({
                 is: () => type === 'voip',
@@ -154,7 +149,6 @@ const SettingCreateForm = ({show, toggleShow, updateList, type}: any) => {
                 }
                 if(type === 'service'){
                     formik.setFieldValue("cycle", response?.metadata?.cycle)
-                    formik.setFieldValue("estimation", response?.metadata?.estimation)
                 }
                 if(type === 'voip'){
                     formik.setFieldValue("number", response?.metadata?.number)
@@ -272,14 +266,6 @@ const SettingCreateForm = ({show, toggleShow, updateList, type}: any) => {
                                     options={cycles}
                                     required="required"
                                     component={SelectField}
-                                    size="sm"
-                                />
-                                <Field
-                                    label="Estimation Hour"
-                                    name="estimation"
-                                    type="number"
-                                    required="required"
-                                    component={InputField}
                                     size="sm"
                                 />
                                 </>}
