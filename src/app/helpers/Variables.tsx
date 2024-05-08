@@ -9,6 +9,7 @@ const settings = [
 ]
 
 const cycles = [
+    { name: "One Time", id: "onetime" },
     { name: "Daily", id: "daily" },
     { name: "Weekly", id: "weekly" },
     { name: "Monthly", id: "monthly" },
