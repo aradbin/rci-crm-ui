@@ -1,11 +1,12 @@
 const settings = [
     { label: 'Services', value: 'service', icon: 'fa-solid fa-briefcase' },
-    { label: 'Task Types', value: 'task', icon: 'fa-solid fa-list-check' },
-    { label: 'Departments', value: 'department', icon: 'fa-solid fa-building' },
-    { label: 'Designations', value: 'designation', icon: 'fa-solid fa-user-tie' },
     { label: 'Emails', value: 'email', icon: 'fa-solid fa-envelope' },
     { label: 'WhatsApps', value: 'whatsapp', icon: 'fa-brands fa-whatsapp' },
     { label: 'VoIP', value: 'voip', icon: 'fa-solid fa-headphones' },
+    { label: 'Departments', value: 'department', icon: 'fa-solid fa-building' },
+    { label: 'Designations', value: 'designation', icon: 'fa-solid fa-user-tie' },
+    { label: 'Task Types', value: 'task', icon: 'fa-solid fa-list-check' },
+    { label: 'Customer Informations', value: 'customer', icon: 'fa-solid fa-user' },
 ]
 
 const cycles = [

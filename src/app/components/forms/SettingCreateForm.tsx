@@ -21,6 +21,8 @@ const SettingCreateForm = ({show, toggleShow, updateList, type}: any) => {
     const formik = useFormik({
         initialValues: {
             name: "",
+            // for service
+            cycle: "",
             // for email
             smtp: "",
             imap: "",
@@ -31,13 +33,17 @@ const SettingCreateForm = ({show, toggleShow, updateList, type}: any) => {
             phone_number: "",
             phone_number_id: "",
             whatsapp_business_account_id: "",
-            // for service
-            cycle: "",
             // for voip
             number: "",
+            // for customer
+            fields: []
         },
         validationSchema: Yup.object().shape({
             name: Yup.string().required('Name is required'),
+            cycle: Yup.string().when({
+                is: () => type === 'service',
+                then: (schema) => schema.required('Service Cycle is required')
+            }),
             smtp: Yup.string().when({
                 is: () => type === 'email',
                 then: (schema) => schema.required('SMTP host is required')
@@ -70,10 +76,6 @@ const SettingCreateForm = ({show, toggleShow, updateList, type}: any) => {
                 is: () => type === 'whatsapp',
                 then: (schema) => schema.required('Whatsapp Business Account ID is required')
             }),
-            cycle: Yup.string().when({
-                is: () => type === 'service',
-                then: (schema) => schema.required('Service Cycle is required')
-            }),
             number: Yup.string().when({
                 is: () => type === 'voip',
                 then: (schema) => schema.required('VoIP Number is required')
@@ -83,6 +85,11 @@ const SettingCreateForm = ({show, toggleShow, updateList, type}: any) => {
             setSubmitting(true)
             try {
                 const formData = { name: values.name, type: type, metadata: {}}
+                if(type === 'service'){
+                    formData.metadata = {
+                        cycle: values.cycle,
+                    }
+                }
                 if(type === 'email'){
                     formData.metadata = {
                         smtp: values.smtp,
@@ -102,6 +109,11 @@ const SettingCreateForm = ({show, toggleShow, updateList, type}: any) => {
                 if(type === 'voip'){
                     formData.metadata = {
                         number: values.number,
+                    }
+                }
+                if(type === 'customer'){
+                    formData.metadata = {
+                        fields: values.fields,
                     }
                 }
                 if(idForUpdate === 0){
@@ -135,6 +147,9 @@ const SettingCreateForm = ({show, toggleShow, updateList, type}: any) => {
             setLoading(true)
             getRequest(`${SETTINGS_URL}/${idForUpdate}`).then((response) => {
                 formik.setFieldValue("name",response.name)
+                if(type === 'service'){
+                    formik.setFieldValue("cycle", response?.metadata?.cycle)
+                }
                 if(type === 'email'){
                     formik.setFieldValue("smtp", response?.metadata?.smtp)
                     formik.setFieldValue("imap", response?.metadata?.imap)
@@ -147,11 +162,11 @@ const SettingCreateForm = ({show, toggleShow, updateList, type}: any) => {
                     formik.setFieldValue("phone_number_id", response?.metadata?.phone_number_id)
                     formik.setFieldValue("whatsapp_business_account_id", response?.metadata?.whatsapp_business_account_id)
                 }
-                if(type === 'service'){
-                    formik.setFieldValue("cycle", response?.metadata?.cycle)
-                }
                 if(type === 'voip'){
                     formik.setFieldValue("number", response?.metadata?.number)
+                }
+                if(type === 'customer'){
+                    formik.setFieldValue("customer", response?.metadata?.customer)
                 }
             }).finally(() => {
                 setLoading(false)
@@ -191,6 +206,16 @@ const SettingCreateForm = ({show, toggleShow, updateList, type}: any) => {
                                     component={InputField}
                                     size="sm"
                                 />
+                                {type === 'service' && <>
+                                <Field
+                                    label="Cycle"
+                                    name="cycle"
+                                    options={cycles}
+                                    required="required"
+                                    component={SelectField}
+                                    size="sm"
+                                />
+                                </>}
                                 {type === 'email' && <>
                                 <Field
                                     label="SMTP Host"
@@ -259,20 +284,28 @@ const SettingCreateForm = ({show, toggleShow, updateList, type}: any) => {
                                     size="sm"
                                 />
                                 </>}
-                                {type === 'service' && <>
-                                <Field
-                                    label="Cycle"
-                                    name="cycle"
-                                    options={cycles}
-                                    required="required"
-                                    component={SelectField}
-                                    size="sm"
-                                />
-                                </>}
                                 {type === 'voip' && <>
                                 <Field
                                     label="Number"
                                     name="number"
+                                    type="text"
+                                    required="required"
+                                    component={InputField}
+                                    size="sm"
+                                />
+                                </>}
+                                {type === 'customer' && <>
+                                <Field
+                                    label="Field Name"
+                                    name="field_name[]"
+                                    type="text"
+                                    required="required"
+                                    component={InputField}
+                                    size="sm"
+                                />
+                                <Field
+                                    label="Field Type"
+                                    name="field_type[]"
                                     type="text"
                                     required="required"
                                     component={InputField}
