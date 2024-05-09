@@ -20,6 +20,7 @@ const ContactCreateForm = ({show, toggleShow, updateList}: any) => {
             name: "",
             email: "",
             contact: "",
+            address: ""
         },
         validationSchema: Yup.object().shape({
             name: Yup.string().required('Name is required'),
@@ -62,6 +63,7 @@ const ContactCreateForm = ({show, toggleShow, updateList}: any) => {
                 formik.setFieldValue("name",response.name)
                 formik.setFieldValue("email",response.email)
                 formik.setFieldValue("contact",response.contact)
+                formik.setFieldValue("address",response.address)
             }).finally(() => {
                 setLoading(false)
             })
@@ -113,6 +115,13 @@ const ContactCreateForm = ({show, toggleShow, updateList}: any) => {
                                     name="contact"
                                     type="text"
                                     required="required"
+                                    component={InputField}
+                                    size="sm"
+                                />
+                                <Field
+                                    label="Address"
+                                    name="address"
+                                    type="text"
                                     component={InputField}
                                     size="sm"
                                 />

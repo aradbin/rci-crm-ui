@@ -3,6 +3,7 @@ import { createContext, useState } from "react";
 const AppContext = createContext({
     users: [], setUsers: (arr: []) => {},
     customers: [], setCustomers: (arr: []) => {},
+    contacts: [], setContacts: (arr: []) => {},
     settings: [], setSettings: (arr: []) => {},
 
     idForDetails: 0, setIdForDetails: (id: number) => {},
@@ -23,11 +24,13 @@ const AppContext = createContext({
     refetchTask: 0, setRefetchTask: (id: number) => {},
 
     idForCustomerServiceUpdate: 0, setIdForCustomerServiceUpdate: (id: number) => {},
+    idForCustomerContactUpdate: 0, setIdForCustomerContactUpdate: (id: number) => {},
 })
 
 const AppProvider = ({children}: any) => {
     const [users, setUsers] = useState([])
     const [customers, setCustomers] = useState([])
+    const [contacts, setContacts] = useState([])
     const [settings, setSettings] = useState([])
 
     const [idForDetails, setIdForDetails] = useState(0)
@@ -48,11 +51,13 @@ const AppProvider = ({children}: any) => {
     const [refetchTask, setRefetchTask] = useState(0)
 
     const [idForCustomerServiceUpdate, setIdForCustomerServiceUpdate] = useState(0)
+    const [idForCustomerContactUpdate, setIdForCustomerContactUpdate] = useState(0)
     
     return (
         <AppContext.Provider value={{
             users, setUsers,
             customers, setCustomers,
+            contacts, setContacts,
             settings, setSettings,
 
             idForDetails, setIdForDetails,
@@ -72,7 +77,8 @@ const AppProvider = ({children}: any) => {
             showCreateSubTask, setShowCreateSubTask,
             refetchTask, setRefetchTask,
 
-            idForCustomerServiceUpdate, setIdForCustomerServiceUpdate
+            idForCustomerServiceUpdate, setIdForCustomerServiceUpdate,
+            idForCustomerContactUpdate, setIdForCustomerContactUpdate,
         }}>
             {children}
         </AppContext.Provider>

@@ -1,7 +1,7 @@
 import { Field, FormikProvider, useFormik } from "formik"
 import * as Yup from 'yup'
 import { createRequest, getRequest, updateRequest } from "../../helpers/Requests"
-import { CUSTOMERS_SETTINGS_URL } from "../../helpers/ApiEndpoints"
+import { CUSTOMER_SETTINGS_URL } from "../../helpers/ApiEndpoints"
 import { InputField } from "../fields/InputField"
 import { Modal } from "react-bootstrap"
 import { toast } from "react-toastify"
@@ -50,7 +50,7 @@ const CustomerServiceCreateForm = ({customerId, show, toggleShow, updateList}: a
                             auto_task: values.auto_task,
                         }
                     }
-                    await createRequest(CUSTOMERS_SETTINGS_URL, formData).then(async (response) => {
+                    await createRequest(CUSTOMER_SETTINGS_URL, formData).then(async (response) => {
                         if(response?.status===201){
                             toast.success('Service Added Successfully')
                             updateListHandler()
@@ -68,7 +68,7 @@ const CustomerServiceCreateForm = ({customerId, show, toggleShow, updateList}: a
                             auto_task: values.auto_task,
                         }
                     }
-                    await updateRequest(`${CUSTOMERS_SETTINGS_URL}/${idForCustomerServiceUpdate}`, formData).then((response) => {
+                    await updateRequest(`${CUSTOMER_SETTINGS_URL}/${idForCustomerServiceUpdate}`, formData).then((response) => {
                         if(response?.status===200){
                             toast.success('Service Updated Successfully')
                             updateListHandler()
@@ -88,7 +88,7 @@ const CustomerServiceCreateForm = ({customerId, show, toggleShow, updateList}: a
         if(idForCustomerServiceUpdate > 0){
             toggleShow(true)
             setLoading(true)
-            getRequest(`${CUSTOMERS_SETTINGS_URL}/${idForCustomerServiceUpdate}`).then((response) => {
+            getRequest(`${CUSTOMER_SETTINGS_URL}/${idForCustomerServiceUpdate}`).then((response) => {
                 formik.setFieldValue("settings_id",response?.settings_id)
                 formik.setFieldValue("start_date",response?.metadata?.start_date)
                 formik.setFieldValue("end_date",response?.metadata?.end_date)

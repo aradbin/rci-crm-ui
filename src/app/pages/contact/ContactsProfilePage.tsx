@@ -10,6 +10,8 @@ import { stringifyRequestQuery } from "../../helpers/Utils";
 import { emailColumns } from "../../columns/emailColumns";
 import { ShowEmail } from "../../components/email/ShowEmail";
 import { ContactCreateForm } from "../../components/forms/ContactCreateForm";
+import CustomerContactList from "../../components/customer/CustomerContactList";
+import { CustomerContactCreateForm } from "../../components/forms/CustomerContactCreateForm";
 
 const ProfileEmail = ({ contact }: any) => {
     return (<>
@@ -37,13 +39,13 @@ const ProfileCustomers = ({ contact }: any) => {
     return (<>
         <div className='card mb-5 mb-xl-10' id='kt_profile_details_view'>
             <div className="card-header justify-content-end">
-                <button className='btn btn-sm btn-primary align-self-center' onClick={() => toggleShow(true)}>Add Service</button>
+                <button className='btn btn-sm btn-primary align-self-center' onClick={() => toggleShow(true)}>Add To Customer</button>
             </div>
             <div className='card-body py-3'>
-                {/* <ContactCustomerList filterParams={{ contact_id: contact?.id }} refetch={refetch} /> */}
+                <CustomerContactList filterParams={{ contact_id: contact?.id }} refetch={refetch} />
             </div>
         </div>
-        {/* <ContactCustomerCreateForm contactId={contact?.id} show={show} toggleShow={toggleShow} updateList={updateList} /> */}
+        <CustomerContactCreateForm contact={contact} show={show} toggleShow={toggleShow} updateList={updateList} />
     </>)
 }
 
@@ -77,9 +79,9 @@ const ProfileOverview = ({ contact }: any) => {
                     </div>
                 </div>
                 <div className='row mb-7'>
-                    <label className='col-lg-4 fw-bold text-muted'>Alternative Contact</label>
+                    <label className='col-lg-4 fw-bold text-muted'>Address</label>
                     <div className='col-lg-8'>
-                        <a href={`tel:${contact?.optional_contact}`} className='fw-bolder fs-6 text-dark text-hover-primary'>{contact?.optional_contact}</a>
+                    <span className='fw-bolder fs-6 text-dark'>{contact?.address}</span>
                     </div>
                 </div>
             </div>

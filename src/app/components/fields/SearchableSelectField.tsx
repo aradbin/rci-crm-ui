@@ -11,7 +11,8 @@ export const SearchableSelectField = ({
     size,
     formStyle,
     multiple,
-    isDisabled
+    isDisabled,
+    onChangeHandler
 }: any) => {
     const { mode } = useThemeMode()
 
@@ -66,6 +67,8 @@ export const SearchableSelectField = ({
         )
         :
         form.setFieldValue(field.name, option.value)
+
+        onChangeHandler(option)
     }
 
     return (

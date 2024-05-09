@@ -15,6 +15,8 @@ import { voipColumns } from "../../columns/voipColumns";
 import { stringifyRequestQuery } from "../../helpers/Utils";
 import { emailColumns } from "../../columns/emailColumns";
 import { ShowEmail } from "../../components/email/ShowEmail";
+import CustomerContactList from "../../components/customer/CustomerContactList";
+import { CustomerContactCreateForm } from "../../components/forms/CustomerContactCreateForm";
 
 const ProfileVoIPs = ({ customer }: any) => {
     return (<>
@@ -70,6 +72,31 @@ const ProfileServices = ({ customer }: any) => {
     </>)
 }
 
+const ProfileContacts = ({ customer }: any) => {
+    const [refetch, setRefetch] = useState(1)
+    const [show, setShow] = useState(false)
+
+    const toggleShow = (val: boolean) => {
+        setShow(val)
+    }
+
+    const updateList = () => {
+        setRefetch(refetch+1)
+    }
+
+    return (<>
+        <div className='card mb-5 mb-xl-10' id='kt_profile_details_view'>
+            <div className="card-header justify-content-end">
+                <button className='btn btn-sm btn-primary align-self-center' onClick={() => toggleShow(true)}>Add Contact</button>
+            </div>
+            <div className='card-body py-3'>
+                <CustomerContactList filterParams={{ customer_id: customer?.id }} refetch={refetch} />
+            </div>
+        </div>
+        <CustomerContactCreateForm customer={customer} show={show} toggleShow={toggleShow} updateList={updateList} />
+    </>)
+}
+
 const ProfileOverview = ({ customer }: any) => {
     const { setIdForUpdate, setIdForEmail } = useContext(AppContext)
     return (
@@ -105,6 +132,12 @@ const ProfileOverview = ({ customer }: any) => {
                         <a href={`tel:${customer?.optional_contact}`} className='fw-bolder fs-6 text-dark text-hover-primary'>{customer?.optional_contact}</a>
                     </div>
                 </div>
+                <div className='row mb-7'>
+                    <label className='col-lg-4 fw-bold text-muted'>Address</label>
+                    <div className='col-lg-8'>
+                    <span className='fw-bolder fs-6 text-dark'>{customer?.address}</span>
+                    </div>
+                </div>
             </div>
         </div>
     )
@@ -113,6 +146,7 @@ const ProfileOverview = ({ customer }: any) => {
 const ProfileTabs = ({tab, setTab}: any) => {
     const tabs = [
         { label: 'Overview', value: 'overview' },
+        { label: 'Contacts', value: 'contacts' },
         { label: 'Services', value: 'services' },
         { label: 'Tasks', value: 'tasks' },
         { label: 'Email', value: 'email' },
@@ -241,6 +275,7 @@ const CustomersProfilePage = () => {
                 </div>
             </div>
             {tab === 'overview' && <ProfileOverview customer={customer}/>}
+            {tab === 'contacts' && <ProfileContacts customer={customer}/>}
             {tab === 'services' && <ProfileServices customer={customer}/>}
             {tab === 'tasks' && <ProfileTasks customer={customer} />}
             {tab === 'email' && <ProfileEmail customer={customer} />}

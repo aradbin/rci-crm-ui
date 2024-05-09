@@ -21,6 +21,7 @@ const CustomerCreateForm = ({show, toggleShow, updateList}: any) => {
             name: "",
             email: "",
             contact: "",
+            address: "",
             is_featured: false,
             optional_contact: ""
         },
@@ -28,6 +29,7 @@ const CustomerCreateForm = ({show, toggleShow, updateList}: any) => {
             name: Yup.string().required('Name is required'),
             email: Yup.string().required('Email is required').email('Please provide valid email address'),
             contact: Yup.string().required('Contact is required'),
+            address: Yup.string().required('Address is required'),
         }),
         onSubmit: async (values, {setSubmitting}) => {
             setSubmitting(true)
@@ -65,6 +67,7 @@ const CustomerCreateForm = ({show, toggleShow, updateList}: any) => {
                 formik.setFieldValue("name",response.name)
                 formik.setFieldValue("email",response.email)
                 formik.setFieldValue("contact",response.contact)
+                formik.setFieldValue("address",response.address)
                 formik.setFieldValue("optional_contact",response.optional_contact)
                 formik.setFieldValue("is_featured",response?.is_featured)
             }).finally(() => {
@@ -116,6 +119,14 @@ const CustomerCreateForm = ({show, toggleShow, updateList}: any) => {
                                 <Field
                                     label="Contact"
                                     name="contact"
+                                    type="text"
+                                    required="required"
+                                    component={InputField}
+                                    size="sm"
+                                />
+                                <Field
+                                    label="Address"
+                                    name="address"
                                     type="text"
                                     required="required"
                                     component={InputField}
