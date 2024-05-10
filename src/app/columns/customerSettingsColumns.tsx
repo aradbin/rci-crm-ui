@@ -15,12 +15,24 @@ export const customerSettingsColumns = [
     Cell: ({row}: any) => formatDate(row?.original?.metadata?.start_date)
   },
   {
+    Header: "End Date",
+    Cell: ({row}: any) => formatDate(row?.original?.metadata?.end_date)
+  },
+  {
     Header: "Due Date",
     Cell: ({row}: any) => formatDate(row?.original?.metadata?.due_date)
   },
   {
+    Header: "Estimated Hour",
+    Cell: ({row}: any) => <>{row?.original?.metadata?.estimation} Hour</>
+  },
+  {
     Header: "Fee",
-    accessor: "settings.metadata.fee",
+    accessor: "metadata.fee",
+  },
+  {
+    Header: "Auto Task Renew",
+    Cell: ({row}: any) => <>{row?.original?.metadata?.auto_task ? 'Yes' : 'No'}</>
   },
   {
     Header: "Actions",

@@ -12,7 +12,7 @@ export const SearchableSelectField = ({
     formStyle,
     multiple,
     isDisabled,
-    onChangeHandler
+    onChangeHandler = () => {}
 }: any) => {
     const { mode } = useThemeMode()
 
