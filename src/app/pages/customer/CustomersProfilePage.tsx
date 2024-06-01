@@ -1,5 +1,5 @@
 import { useNavigate, useParams } from "react-router-dom";
-import { KTIcon, KTSVG, toAbsoluteUrl } from "../../../_metronic/helpers";
+import { KTSVG, toAbsoluteUrl } from "../../../_metronic/helpers";
 import { useContext, useEffect, useState } from "react";
 import { getRequest } from "../../helpers/Requests";
 import { CUSTOMERS_URL, EMAIL_URL, TASKS_URL, VOIP_URL } from "../../helpers/ApiEndpoints";
@@ -47,13 +47,8 @@ const ProfileTasks = ({ customer }: any) => {
     )
 }
 
-const ProfileServices = ({ customer }: any) => {
+const ProfileServices = ({ customer }: any) => {    
     const [refetch, setRefetch] = useState(1)
-    const [show, setShow] = useState(false)
-
-    const toggleShow = (val: boolean) => {
-        setShow(val)
-    }
 
     const updateList = () => {
         setRefetch(refetch+1)
@@ -61,14 +56,9 @@ const ProfileServices = ({ customer }: any) => {
 
     return (<>
         <div className='card mb-5 mb-xl-10' id='kt_profile_details_view'>
-            <div className="card-header justify-content-end">
-                <button className='btn btn-sm btn-primary align-self-center' onClick={() => toggleShow(true)}>Add Service</button>
-            </div>
-            <div className='card-body py-3'>
-                <CustomerServiceList filterParams={{ customer_id: customer?.id }} refetch={refetch} />
-            </div>
+            <CustomerServiceList filterParams={{ customer_id: customer?.id }} refetch={refetch} />
         </div>
-        <CustomerServiceCreateForm customerId={customer?.id} show={show} toggleShow={toggleShow} updateList={updateList} />
+        <CustomerServiceCreateForm customerId={customer?.id} updateList={updateList} />
     </>)
 }
 
@@ -89,7 +79,7 @@ const ProfileContacts = ({ customer }: any) => {
             <div className="card-header justify-content-end">
                 <button className='btn btn-sm btn-primary align-self-center' onClick={() => toggleShow(true)}>Add Contact</button>
             </div>
-            <div className='card-body py-3'>
+            <div className='card-body p-3'>
                 <CustomerContactList filterParams={{ customer_id: customer?.id }} refetch={refetch} />
             </div>
         </div>

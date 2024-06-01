@@ -23,7 +23,9 @@ const AppContext = createContext({
     showCreateSubTask: 0, setShowCreateSubTask: (val: number) => {},
     refetchTask: 0, setRefetchTask: (id: number) => {},
 
+    idForCustomerServiceCreate: 0, setIdForCustomerServiceCreate: (id: number) => {},
     idForCustomerServiceUpdate: 0, setIdForCustomerServiceUpdate: (id: number) => {},
+
     idForCustomerContactUpdate: 0, setIdForCustomerContactUpdate: (id: number) => {},
 })
 
@@ -50,7 +52,9 @@ const AppProvider = ({children}: any) => {
     const [showCreateSubTask, setShowCreateSubTask] = useState(0)
     const [refetchTask, setRefetchTask] = useState(0)
 
+    const [idForCustomerServiceCreate, setIdForCustomerServiceCreate] = useState(0)
     const [idForCustomerServiceUpdate, setIdForCustomerServiceUpdate] = useState(0)
+
     const [idForCustomerContactUpdate, setIdForCustomerContactUpdate] = useState(0)
     
     return (
@@ -77,7 +81,9 @@ const AppProvider = ({children}: any) => {
             showCreateSubTask, setShowCreateSubTask,
             refetchTask, setRefetchTask,
 
+            idForCustomerServiceCreate, setIdForCustomerServiceCreate,
             idForCustomerServiceUpdate, setIdForCustomerServiceUpdate,
+
             idForCustomerContactUpdate, setIdForCustomerContactUpdate,
         }}>
             {children}

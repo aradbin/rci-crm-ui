@@ -10,11 +10,20 @@ import { AppContext } from "../../providers/AppProvider"
 import { LoadingComponent } from "../common/LoadingComponent"
 import { SearchableSelectField } from "../fields/SearchableSelectField"
 import { RadioField } from "../fields/RadioField"
+import { priorities } from "../../helpers/Variables"
+import { SelectField } from "../fields/SelectField"
 
-const CustomerServiceCreateForm = ({customerId, show, toggleShow, updateList}: any) => {
+const CustomerServiceCreateForm = ({customerId, updateList}: any) => {
     const [loading, setLoading] = useState(false)
     const [serviceOptions, setServiceOptions] = useState([])
-    const { idForCustomerServiceUpdate, setIdForCustomerServiceUpdate, settings } = useContext(AppContext)
+    const [show, setShow] = useState(false)
+    const { idForCustomerServiceCreate, setIdForCustomerServiceCreate, idForCustomerServiceUpdate, setIdForCustomerServiceUpdate, settings } = useContext(AppContext)
+
+    const priorityOptions = priorities
+
+    const toggleShow = (val: boolean) => {
+        setShow(val)
+    }
 
     const formik = useFormik({
         initialValues: {
@@ -24,7 +33,8 @@ const CustomerServiceCreateForm = ({customerId, show, toggleShow, updateList}: a
             due_date: "",
             estimation: "",
             fee: "",
-            auto_task: true
+            auto_task: true,
+            priority: 2
         },
         validationSchema: Yup.object().shape({
             settings_id: Yup.number().required('Service is required'),
@@ -33,6 +43,13 @@ const CustomerServiceCreateForm = ({customerId, show, toggleShow, updateList}: a
             due_date: Yup.string().required('Due date is required'),
             estimation: Yup.number().required('Estimation is required'),
             fee: Yup.number().required('Fee is required'),
+            priority: Yup.number().when('auto_task', (autoTaskValue, schema) => {
+                if (autoTaskValue[0]) {
+                  return schema.required('Priority is required')
+                }else{
+                    return schema
+                }
+            })
         }),
         onSubmit: async (values, {setSubmitting}) => {
             setSubmitting(true)
@@ -48,6 +65,7 @@ const CustomerServiceCreateForm = ({customerId, show, toggleShow, updateList}: a
                             estimation: values.estimation,
                             fee: values.fee,
                             auto_task: values.auto_task,
+                            priority: values.priority
                         }
                     }
                     await createRequest(CUSTOMER_SETTINGS_URL, formData).then(async (response) => {
@@ -66,6 +84,7 @@ const CustomerServiceCreateForm = ({customerId, show, toggleShow, updateList}: a
                             estimation: values.estimation,
                             fee: values.fee,
                             auto_task: values.auto_task,
+                            priority: values.priority
                         }
                     }
                     await updateRequest(`${CUSTOMER_SETTINGS_URL}/${idForCustomerServiceUpdate}`, formData).then((response) => {
@@ -96,11 +115,16 @@ const CustomerServiceCreateForm = ({customerId, show, toggleShow, updateList}: a
                 formik.setFieldValue("estimation",response?.metadata?.estimation)
                 formik.setFieldValue("fee",response?.metadata?.fee)
                 formik.setFieldValue("auto_task",response?.metadata?.auto_task)
+                formik.setFieldValue("priority",response?.metadata?.priority)
             }).finally(() => {
                 setLoading(false)
             })
         }
-    },[idForCustomerServiceUpdate])
+        if(idForCustomerServiceCreate > 0){
+            toggleShow(true)
+            formik.setFieldValue('settings_id', idForCustomerServiceCreate)
+        }
+    },[idForCustomerServiceCreate, idForCustomerServiceUpdate])
 
     useEffect(() => {
         if(settings?.length > 0){
@@ -117,6 +141,7 @@ const CustomerServiceCreateForm = ({customerId, show, toggleShow, updateList}: a
     const closeModal = () => {
         formik.resetForm()
         toggleShow(false)
+        setIdForCustomerServiceCreate(0)
         setIdForCustomerServiceUpdate(0)
     }
 
@@ -129,7 +154,10 @@ const CustomerServiceCreateForm = ({customerId, show, toggleShow, updateList}: a
             <div className="modal-content">
                 <div className='modal-header'>
                     <h2 className='fw-bolder'>{idForCustomerServiceUpdate === 0 ? 'Add' : 'Update'} Service</h2>
-                    <div className='btn btn-icon btn-sm btn-active-icon-primary' onClick={() => closeModal()}>
+                    <div className='btn btn-icon btn-sm btn-active-icon-primary' onClick={() => {
+                        closeModal()
+                        updateListHandler()
+                    }}>
                         <i className="fa fa-times fs-2"></i>
                     </div>
                 </div>
@@ -194,6 +222,16 @@ const CustomerServiceCreateForm = ({customerId, show, toggleShow, updateList}: a
                                     component={RadioField}
                                     size="sm"
                                 />
+                                {formik.values.auto_task &&
+                                    <Field
+                                        label="Priority"
+                                        name="priority"
+                                        required="required"
+                                        options={priorityOptions}
+                                        component={SelectField}
+                                        size="sm"
+                                    />
+                                }
                             </div>
                         </div>
                         <div className="modal-footer">
@@ -207,7 +245,10 @@ const CustomerServiceCreateForm = ({customerId, show, toggleShow, updateList}: a
                                     <span>Submit</span>
                                 )}
                             </button>
-                            <button type="button" className='btn btn-sm btn-outline btn-light w-125px' aria-disabled={formik.isSubmitting} onClick={closeModal}>
+                            <button type="button" className='btn btn-sm btn-outline btn-light w-125px' aria-disabled={formik.isSubmitting} onClick={() => {
+                                closeModal()
+                                updateListHandler()
+                            }}>
                                 Cancel
                             </button>
                         </div>

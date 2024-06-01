@@ -1,38 +1,43 @@
 import { CustomerSettingsActionCell } from "../components/cells/CustomerSettingsActionCell"
+import { CustomerSettingsActiveActionCell } from "../components/cells/CustomerSettingsActiveActionCell"
 import { firstLetterUpperCase, formatDate } from "../helpers/Utils"
 
 export const customerSettingsColumns = [
   {
     Header: "Name",
-    accessor: "settings.name",
+    accessor: "name",
   },
   {
     Header: "Cycle",
-    Cell: ({row}: any) => firstLetterUpperCase(row?.original?.settings?.metadata?.cycle)
+    accessor: "metadata.cycle",
   },
   {
     Header: "Start Date",
-    Cell: ({row}: any) => formatDate(row?.original?.metadata?.start_date)
+    Cell: ({row}: any) => row?.original?.customerSettingsSingle?.metadata?.start_date ? formatDate(row?.original?.customerSettingsSingle?.metadata?.start_date) : ''
   },
   {
     Header: "End Date",
-    Cell: ({row}: any) => formatDate(row?.original?.metadata?.end_date)
+    Cell: ({row}: any) => row?.original?.customerSettingsSingle?.metadata?.end_date ? formatDate(row?.original?.customerSettingsSingle?.metadata?.end_date) : ''
   },
   {
     Header: "Due Date",
-    Cell: ({row}: any) => formatDate(row?.original?.metadata?.due_date)
+    Cell: ({row}: any) => row?.original?.customerSettingsSingle?.metadata?.due_date ? formatDate(row?.original?.customerSettingsSingle?.metadata?.due_date) : ''
   },
   {
     Header: "Estimated Hour",
-    Cell: ({row}: any) => <>{row?.original?.metadata?.estimation} Hour</>
+    Cell: ({row}: any) => <>{row?.original?.customerSettingsSingle?.metadata?.estimation ? `${row?.original?.customerSettingsSingle?.metadata?.estimation} Hour` : ''}</>
   },
   {
     Header: "Fee",
-    accessor: "metadata.fee",
+    accessor: "customerSettingsSingle.metadata.fee",
   },
   {
     Header: "Auto Task Renew",
-    Cell: ({row}: any) => <>{row?.original?.metadata?.auto_task ? 'Yes' : 'No'}</>
+    Cell: ({row}: any) => <>{row?.original?.customerSettingsSingle ? `${row?.original?.customerSettingsSingle?.metadata?.auto_task ? 'Yes' : 'No'}` : ''}</>
+  },
+  {
+    Header: "Active",
+    Cell: ({row}: any) =>  <CustomerSettingsActiveActionCell item={row?.original} />
   },
   {
     Header: "Actions",
