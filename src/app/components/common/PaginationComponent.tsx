@@ -3,22 +3,23 @@ import clsx from 'clsx'
 
 const PaginationComponent = ({page, pageSize, count, updatePage, updatePageSize}: any) => {
     return (
-        <div className='row mt-4 px-4'>
+        <div className='row mt-4'>
             <div className='col-sm-12 col-md-5 d-flex align-items-center justify-content-center justify-content-md-start'>
-                    <label className="fw-bold fs-7 col-form-label pe-2">Show rows</label>
-                    <div>
-                        <select
-                            className="form-select form-select-sm w-100px"
-                            onChange={(e) => {updatePageSize(e.target.value)}}
-                        >
-                            <option value="10">10</option>
-                            <option value="20">20</option>
-                            <option value="30">30</option>
-                            <option value="40">40</option>
-                            <option value="50">50</option>
-                            <option value="100">100</option>
-                        </select>
-                    </div>
+                <span className="badge badge-light-primary me-4">Total: {count}</span>
+                <label className="fw-bold fs-7 col-form-label pe-2">Show rows</label>
+                <div>
+                    <select
+                        className="form-select form-select-sm w-80px"
+                        onChange={(e) => {updatePageSize(e.target.value)}}
+                    >
+                        <option value="10">10</option>
+                        <option value="20">20</option>
+                        <option value="30">30</option>
+                        <option value="40">40</option>
+                        <option value="50">50</option>
+                        <option value="100">100</option>
+                    </select>
+                </div>
             </div>
             <div className='col-sm-12 col-md-7 d-flex align-items-center justify-content-center justify-content-md-end'>
                 {count > pageSize && <div id='kt_table_users_paginate'>
