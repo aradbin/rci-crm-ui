@@ -1,4 +1,4 @@
-import { useContext, useState } from "react"
+import { useContext, useEffect, useState } from "react"
 import { ToolbarComponent } from "../../components/common/ToolbarComponent"
 import { FilterComponent } from "../../components/common/FilterComponent"
 import { AppContext } from "../../providers/AppProvider"
@@ -9,26 +9,32 @@ const breadCrumbs = [
     { isSeparator: true },
 ]
 
-const filter = {
-    initialValues: {
-        id: "",
-        title: "",
-        sort: "",
-    },
-    fields: [
-        { label: "ID", name: "id", type: "number" },
-        { label: "Title", name: "title" },
-        { label: "Sort By", name: "sort", type: "select", options: [
-            { id: 'priorityLowToHigh', name: "Priority (Low to High)" },
-            { id: 'priorityHighToLow', name: "Priority (High to Low)" },
-        ] },
-    ]
-}
-
 const TasksPage = () => {
     const [params, setParams] = useState<any>({})
+    const { setShowCreateTask, settings } = useContext(AppContext)
 
-    const { setShowCreateTask } = useContext(AppContext)
+    const filter = {
+        initialValues: {
+            id: "",
+            title: "",
+            sort: "",
+            settings_id: ""
+        },
+        fields: [
+            { label: "ID", name: "id", type: "number" },
+            { label: "Title", name: "title" },
+            { label: "Service", name: "settings_id", type: "select", options: [] },
+            { label: "Sort By", name: "sort", type: "select", options: [
+                { id: 'priorityLowToHigh', name: "Priority (Low to High)" },
+                { id: 'priorityHighToLow', name: "Priority (High to Low)" },
+            ] },
+        ]
+    }
+
+    useEffect(() => {
+        const serviceOptions = settings?.filter((item: any) => item?.type === 'service')
+        filter.fields[2].options = serviceOptions
+    },[settings])
 
     const handleFilterSubmit = (values: any) => {
         const formData = {...values}

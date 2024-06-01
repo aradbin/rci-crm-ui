@@ -102,6 +102,11 @@ const TaskActions = ({ task }: any) => {
                     </span>
                 </div>
                 <div className="separator separator-dashed"></div>
+                <div className="d-flex justify-content-between gap-4">
+                    <span>Service</span>
+                    <span>{task?.settings?.name}</span>
+                </div>
+                <div className="separator separator-dashed"></div>
                 {task?.parent_id && <>
                     <div className="d-flex justify-content-between gap-4">
                         <span>Parent Task</span>
@@ -127,17 +132,42 @@ const TaskActions = ({ task }: any) => {
                 <div className="separator separator-dashed"></div>
                 <div className="d-flex justify-content-between gap-4">
                     <span>Estimated Time</span>
-                    <span>{task?.estimation ? `${task?.estimation} h` : ""}</span>
+                    <span>{task?.estimation ? `${task?.estimation} h` : "0 h"}</span>
                 </div>
                 <div className="separator separator-dashed"></div>
                 <div className="d-flex justify-content-between gap-4">
-                    <span>Worked On</span>
+                    <span>Worked</span>
                     <span>{getTaskTimeString(getTaskTime(task?.time_log))}</span>
                 </div>
+                {task?.billable && <>
+                    <div className="separator separator-dashed"></div>
+                    <div className="d-flex justify-content-between gap-4">
+                        <span>Bill Amount</span>
+                        <span>{task?.bill_amount}</span>
+                    </div>
+                </>}
                 <div className="separator separator-dashed"></div>
                 <div className="d-flex justify-content-between gap-4">
                     <span>Created At</span>
                     <span>{formatDate(task?.created_at)}</span>
+                </div>
+                <div className="separator separator-dashed"></div>
+                <div className="d-flex justify-content-between gap-4">
+                    <span>Created By</span>
+                    {task?.creator ?
+                        <span>
+                            <Link to={`/users/${task?.creator?.id}`} className='d-flex align-items-center text-dark text-hover-primary'>
+                                {/* <div className='symbol symbol-30px me-5'>
+                                    <img src={task?.customer?.avatar || toAbsoluteUrl('/media/avatars/blank.png')} alt='Avatar' />
+                                </div> */}
+                                <div className='d-flex justify-content-start flex-column'>
+                                    <span className='fw-bold fs-7'>{task?.creator?.name}</span>
+                                </div>
+                            </Link>
+                        </span>
+                    :
+                        <span>Auto Generated</span>
+                    }
                 </div>
                 <div className="separator separator-dashed"></div>
                 <div className="d-flex justify-content-between gap-4">

@@ -14,6 +14,7 @@ import { formatDate } from "../../helpers/Utils"
 import { priorities } from "../../helpers/Variables"
 import { SelectField } from "../fields/SelectField"
 import { useQueryClient } from "react-query"
+import { RadioField } from "../fields/RadioField"
 
 type assigneeOptionType = { label: string, value: number }
 type customerOptionType = { label: string, value: number }
@@ -25,6 +26,7 @@ const TaskCreateForm = () => {
     const [customerOptions, setCustomerOptions] = useState<customerOptionType[]>([])
     const [assigneeOptions, setAssigneeOptions] = useState<assigneeOptionType[]>([])
     const [typeOptions, setTypeOptions] = useState<typeOptionType[]>([])
+    const [serviceOptions, setServiceOptions] = useState<typeOptionType[]>([])
 
     const queryClient = useQueryClient()
     const { idForTaskUpdate, setIdForTaskUpdate, showCreateTask, setShowCreateTask, showCreateSubTask, setShowCreateSubTask, refetchTask, setRefetchTask, users, customers, settings } = useContext(AppContext)
@@ -43,6 +45,9 @@ const TaskCreateForm = () => {
             customer_id: "",
             assignee_id: "",
             reporter_id: "",
+            settings_id: "",
+            billable: false,
+            bill_amount: 0
         },
         validationSchema: Yup.object().shape({
             title: Yup.string().required('Title is required'),
@@ -104,15 +109,20 @@ const TaskCreateForm = () => {
     }
 
     useEffect(() => {
-        let array: typeOptionType[] = [];
+        const array: typeOptionType[] = [];
+        const serviceArray: typeOptionType[] = [];
         if(settings?.length > 0){
             settings?.map((item: any) => {
                 if(item.type === 'task'){
                     array.push({ label: item?.name, value: item?.id })
                 }
+                if(item.type === 'service'){
+                    serviceArray.push({ label: item?.name, value: item?.id })
+                }
             })
         }
         setTypeOptions(array)
+        setServiceOptions(serviceArray)
     }, [settings]);
 
     useEffect(() => {
@@ -150,6 +160,9 @@ const TaskCreateForm = () => {
                 formik.setFieldValue("customer_id",response.customer_id)
                 formik.setFieldValue("assignee_id",response.assignee_id)
                 formik.setFieldValue("reporter_id",response.reporter_id)
+                formik.setFieldValue("settings_id",response.settings_id)
+                formik.setFieldValue("billable",response.billable)
+                formik.setFieldValue("bill_amount",response.bill_amount)
             }).finally(() => {
                 setLoading(false)
             })
@@ -240,6 +253,13 @@ const TaskCreateForm = () => {
                                     size="sm"
                                 />
                                 <Field
+                                    label="Service"
+                                    name="settings_id"
+                                    options={serviceOptions}
+                                    component={SearchableSelectField}
+                                    size="sm"
+                                />
+                                <Field
                                     label="Assignee"
                                     name="assignee_id"
                                     options={assigneeOptions}
@@ -253,6 +273,22 @@ const TaskCreateForm = () => {
                                     component={SearchableSelectField}
                                     size="sm"
                                 />
+                                <Field
+                                    label="Billable"
+                                    name="billable"
+                                    type="checkbox"
+                                    component={RadioField}
+                                    size="sm"
+                                />
+                                {formik.values.billable &&
+                                    <Field
+                                        label="Bill Amount"
+                                        name="bill_amount"
+                                        type="number"
+                                        component={InputField}
+                                        size="sm"
+                                    />
+                                }
                             </div>
                         </div>
                         <div className="modal-footer">
