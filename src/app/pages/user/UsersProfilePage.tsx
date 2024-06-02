@@ -95,6 +95,12 @@ const ProfileOverview = ({ user }: any) => {
                         <span className='fw-bolder fs-6 text-dark'>{getSettingsFromUserSettings(user?.userSettings, 'whatsapp').label}</span>
                     </div>
                 </div>
+                <div className='row mb-7'>
+                    <label className='col-lg-4 fw-bold text-muted'>Assigned Phone</label>
+                    <div className='col-lg-8'>
+                        <a href={`tel:${getSettingsFromUserSettings(user?.userSettings, 'phone').number}`} className='fw-bolder fs-6 text-dark text-hover-primary'>{getSettingsFromUserSettings(user?.userSettings, 'phone').label}</a>
+                    </div>
+                </div>
             </div>
         </div>
     )

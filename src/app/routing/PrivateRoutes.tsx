@@ -20,6 +20,7 @@ const PrivateRoutes = () => {
   const EmailPage = lazy(() => import('../pages/email/EmailPage'))
   const WhatsAppPage = lazy(() => import('../pages/whatsapp/WhatsAppPage'))
   const SettingsPage = lazy(() => import('../pages/settings/SettingsPage'))
+  const CallPage = lazy(() => import('../pages/call/CallPage'))
   const VoipPage = lazy(() => import('../pages/voip/VoipPage'))
 
   return (
@@ -112,14 +113,13 @@ const PrivateRoutes = () => {
           }
         />
         <Route
-          path='settings'
+          path='calls'
           element={
             <SuspensedView>
-              <SettingsPage />
+              <CallPage />
             </SuspensedView>
           }
         />
-
         <Route
           path='voip'
           element={
@@ -128,7 +128,14 @@ const PrivateRoutes = () => {
             </SuspensedView>
           }
         />
-
+        <Route
+          path='settings'
+          element={
+            <SuspensedView>
+              <SettingsPage />
+            </SuspensedView>
+          }
+        />
         {/* Page Not Found */}
         <Route path='*' element={<Navigate to='/error/404' />} />
       </Route>

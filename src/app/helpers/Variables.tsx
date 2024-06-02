@@ -2,6 +2,7 @@ const settings = [
     { label: 'Services', value: 'service', icon: 'fa-solid fa-briefcase' },
     { label: 'Emails', value: 'email', icon: 'fa-solid fa-envelope' },
     { label: 'WhatsApps', value: 'whatsapp', icon: 'fa-brands fa-whatsapp' },
+    { label: 'Phone', value: 'phone', icon: 'fa-solid fa-phone' },
     { label: 'VoIP', value: 'voip', icon: 'fa-solid fa-headphones' },
     { label: 'Departments', value: 'department', icon: 'fa-solid fa-building' },
     { label: 'Designations', value: 'designation', icon: 'fa-solid fa-user-tie' },

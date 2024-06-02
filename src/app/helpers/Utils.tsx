@@ -98,6 +98,12 @@ const getSettingsFromUserSettings = (userSettings: any, type: string) => {
           value: item?.settings?.id,
           phone_number: item?.settings?.metadata?.phone_number
         }
+      }else if(type === 'phone'){
+        settings = {
+          label: `${item?.settings?.name} (${item?.settings?.metadata?.number})`,
+          value: item?.settings?.id,
+          number: item?.settings?.metadata?.number
+        }
       }else{
         settings = {
           label: item?.settings?.name,

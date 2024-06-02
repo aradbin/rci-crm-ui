@@ -33,7 +33,7 @@ const SettingCreateForm = ({show, toggleShow, updateList, type}: any) => {
             phone_number: "",
             phone_number_id: "",
             whatsapp_business_account_id: "",
-            // for voip
+            // for voip && phone
             number: "",
             // for customer
             fields: []
@@ -77,8 +77,8 @@ const SettingCreateForm = ({show, toggleShow, updateList, type}: any) => {
                 then: (schema) => schema.required('Whatsapp Business Account ID is required')
             }),
             number: Yup.string().when({
-                is: () => type === 'voip',
-                then: (schema) => schema.required('VoIP Number is required')
+                is: () => (type === 'voip' || type === 'phone'),
+                then: (schema) => schema.required('Number is required')
             }),
         }),
         onSubmit: async (values, {setSubmitting}) => {
@@ -106,7 +106,7 @@ const SettingCreateForm = ({show, toggleShow, updateList, type}: any) => {
                         whatsapp_business_account_id: values.whatsapp_business_account_id,
                     }
                 }
-                if(type === 'voip'){
+                if(type === 'voip' || type === 'phone'){
                     formData.metadata = {
                         number: values.number,
                     }
@@ -162,7 +162,7 @@ const SettingCreateForm = ({show, toggleShow, updateList, type}: any) => {
                     formik.setFieldValue("phone_number_id", response?.metadata?.phone_number_id)
                     formik.setFieldValue("whatsapp_business_account_id", response?.metadata?.whatsapp_business_account_id)
                 }
-                if(type === 'voip'){
+                if(type === 'voip' || type === 'phone'){
                     formik.setFieldValue("number", response?.metadata?.number)
                 }
                 if(type === 'customer'){
@@ -284,7 +284,7 @@ const SettingCreateForm = ({show, toggleShow, updateList, type}: any) => {
                                     size="sm"
                                 />
                                 </>}
-                                {type === 'voip' && <>
+                                {(type === 'voip' || type === 'phone') && <>
                                 <Field
                                     label="Number"
                                     name="number"
