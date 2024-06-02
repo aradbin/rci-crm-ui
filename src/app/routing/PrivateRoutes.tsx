@@ -5,8 +5,6 @@ import TopBarProgress from 'react-topbar-progress-indicator'
 import {DashboardWrapper} from '../pages/dashboard/DashboardWrapper'
 import {getCSSVariableValue} from '../../_metronic/assets/ts/_utils'
 import {WithChildren} from '../../_metronic/helpers'
-import ContactsPage from '../pages/contact/ContactsPage'
-import ContactsProfilePage from '../pages/contact/ContactsProfilePage'
 
 const PrivateRoutes = () => {
   const UsersPage = lazy(() => import('../pages/user/UsersPage'))
@@ -19,9 +17,9 @@ const PrivateRoutes = () => {
   const TasksDetailsPage = lazy(() => import('../pages/task/TasksDetailsPage'))
   const EmailPage = lazy(() => import('../pages/email/EmailPage'))
   const WhatsAppPage = lazy(() => import('../pages/whatsapp/WhatsAppPage'))
-  const SettingsPage = lazy(() => import('../pages/settings/SettingsPage'))
-  const CallPage = lazy(() => import('../pages/call/CallPage'))
+  const PhonePage = lazy(() => import('../pages/phone/PhonePage'))
   const VoipPage = lazy(() => import('../pages/voip/VoipPage'))
+  const SettingsPage = lazy(() => import('../pages/settings/SettingsPage'))
 
   return (
     <Routes>
@@ -113,10 +111,10 @@ const PrivateRoutes = () => {
           }
         />
         <Route
-          path='calls'
+          path='phone/:type'
           element={
             <SuspensedView>
-              <CallPage />
+              <PhonePage />
             </SuspensedView>
           }
         />

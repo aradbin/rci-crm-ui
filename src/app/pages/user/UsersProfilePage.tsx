@@ -14,7 +14,7 @@ import { statuses } from "../../helpers/Variables";
 import { emailColumns } from "../../columns/emailColumns";
 import { ShowEmail } from "../../components/email/ShowEmail";
 
-const ProfileEmail = ({ user }: any) => {console.log(user)
+const ProfileEmail = ({ user }: any) => {
     const [settingsId, setSettingsId] = useState(0)
 
     useEffect(() => {

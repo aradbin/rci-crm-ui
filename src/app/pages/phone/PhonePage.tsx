@@ -1,16 +1,16 @@
-import { useState } from "react"
+import { useEffect, useState } from "react"
 import { KTCard, KTCardBody } from "../../../_metronic/helpers"
 import { TableComponent } from "../../components/common/TableComponent"
-import { CALLS_URL, VOIP_URL } from "../../helpers/ApiEndpoints"
+import { PHONE_URL } from "../../helpers/ApiEndpoints"
 import { ToolbarComponent } from "../../components/common/ToolbarComponent"
 import { stringifyRequestQuery } from "../../helpers/Utils"
 import { FilterComponent } from "../../components/common/FilterComponent"
-import { voipColumns } from "../../columns/voipColumns"
 import { VoIPCreateForm } from "../../components/forms/VoIPCreateForm"
-import { callColumns } from "../../columns/callColumns"
+import { phoneColumns } from "../../columns/phoneColumns"
+import { useParams } from "react-router-dom"
 
 const breadCrumbs = [
-    { title: 'Phone', path: '/calls', isSeparator: false },
+    { title: 'Phone', path: '/phone/calls', isSeparator: false },
     { isSeparator: true },
 ]
 
@@ -23,9 +23,14 @@ const filter = {
     ]
 }
 
-const CallPage = () => {
+const PhonePage = () => {
+    const { type } = useParams()
     const [params, setParams] = useState("")
     const [refetch, setRefetch] = useState(0)
+
+    useEffect(() => {
+        
+    },[type])
 
     const handleFilterSubmit = (values: any) => {
         setParams(stringifyRequestQuery({...values}))
@@ -37,12 +42,12 @@ const CallPage = () => {
 
     return (
         <>
-            <ToolbarComponent title="Phone Call Log" breadCrumbs={breadCrumbs} handleButtonClick={() => {}} hasCreate={false}>
+            <ToolbarComponent title={`${type === 'call' ? 'Call' : 'SMS'} Log`} breadCrumbs={breadCrumbs} handleButtonClick={() => {}} hasCreate={false}>
                 <FilterComponent filter={filter} submit={handleFilterSubmit}/>
             </ToolbarComponent>
             <KTCard className="mb-5 mb-xl-8">
                 <KTCardBody className='py-3'>
-                    <TableComponent queryKey="calls" url={CALLS_URL} params={params} columns={callColumns} refetch={refetch} />
+                    <TableComponent queryKey="calls" url={PHONE_URL} params={params} columns={phoneColumns} refetch={refetch} />
                 </KTCardBody>
             </KTCard>
             <VoIPCreateForm updateList={updateList} />
@@ -50,4 +55,4 @@ const CallPage = () => {
     )
 }
 
-export default CallPage;
+export default PhonePage;

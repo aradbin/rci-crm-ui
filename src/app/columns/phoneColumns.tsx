@@ -1,10 +1,9 @@
 import { Link } from "react-router-dom"
 import { toAbsoluteUrl } from "../../_metronic/helpers"
-// import { CustomerActionCell } from "../components/cells/CustomerActionCell"
 import { formatDate } from "../helpers/Utils"
 import { VoIPActionCell } from "../components/cells/VoIPActionCell"
 
-export const callColumns = [
+export const phoneColumns = [
   {
     Header: "Customer",
     Cell: ({row}: any) => { return (row?.original?.customer && 
