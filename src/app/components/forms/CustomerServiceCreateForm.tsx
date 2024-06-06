@@ -41,8 +41,8 @@ const CustomerServiceCreateForm = ({customerId, updateList}: any) => {
             start_date: Yup.string().required('Start date is required'),
             end_date: Yup.string().required('End date is required'),
             due_date: Yup.string().required('Due date is required'),
-            estimation: Yup.number().required('Estimation is required'),
-            fee: Yup.number().required('Fee is required'),
+            // estimation: Yup.number().required('Estimation is required'),
+            // fee: Yup.number().required('Fee is required'),
             priority: Yup.number().when('auto_task', (autoTaskValue, schema) => {
                 if (autoTaskValue[0]) {
                   return schema.required('Priority is required')
@@ -202,7 +202,7 @@ const CustomerServiceCreateForm = ({customerId, updateList}: any) => {
                                     label="Estimated Hour"
                                     name="estimation"
                                     type="number"
-                                    required="required"
+                                    // required="required"
                                     component={InputField}
                                     size="sm"
                                 />
@@ -210,7 +210,7 @@ const CustomerServiceCreateForm = ({customerId, updateList}: any) => {
                                     label="Fee"
                                     name="fee"
                                     type="number"
-                                    required="required"
+                                    // required="required"
                                     component={InputField}
                                     size="sm"
                                 />
