@@ -25,7 +25,9 @@ const SettingCreateForm = ({show, toggleShow, updateList, type}: any) => {
             cycle: "",
             // for email
             smtp: "",
+            smtp_port: "",
             imap: "",
+            imap_port: "",
             username: "",
             password: "",
             // for whatsapp
@@ -48,9 +50,17 @@ const SettingCreateForm = ({show, toggleShow, updateList, type}: any) => {
                 is: () => type === 'email',
                 then: (schema) => schema.required('SMTP host is required')
             }),
+            smtp_port: Yup.string().when({
+                is: () => type === 'email',
+                then: (schema) => schema.required('SMTP port is required')
+            }),
             imap: Yup.string().when({
                 is: () => type === 'email',
                 then: (schema) => schema.required('IMAP host is required')
+            }),
+            imap_port: Yup.string().when({
+                is: () => type === 'email',
+                then: (schema) => schema.required('IMAP port is required')
             }),
             username: Yup.string().when({
                 is: () => type === 'email',
@@ -93,7 +103,9 @@ const SettingCreateForm = ({show, toggleShow, updateList, type}: any) => {
                 if(type === 'email'){
                     formData.metadata = {
                         smtp: values.smtp,
+                        smtp_port: values.smtp_port,
                         imap: values.imap,
+                        imap_port: values.imap_port,
                         username: values.username,
                         password: values.password,
                     }
@@ -152,7 +164,9 @@ const SettingCreateForm = ({show, toggleShow, updateList, type}: any) => {
                 }
                 if(type === 'email'){
                     formik.setFieldValue("smtp", response?.metadata?.smtp)
+                    formik.setFieldValue("smtp_port", response?.metadata?.smtp_port)
                     formik.setFieldValue("imap", response?.metadata?.imap)
+                    formik.setFieldValue("imap_port", response?.metadata?.imap_port)
                     formik.setFieldValue("username", response?.metadata?.username)
                     formik.setFieldValue("password", response?.metadata?.password)
                 }
@@ -217,22 +231,48 @@ const SettingCreateForm = ({show, toggleShow, updateList, type}: any) => {
                                 />
                                 </>}
                                 {type === 'email' && <>
-                                <Field
-                                    label="SMTP Host"
-                                    name="smtp"
-                                    type="text"
-                                    required="required"
-                                    component={InputField}
-                                    size="sm"
-                                />
-                                <Field
-                                    label="IMAP Host"
-                                    name="imap"
-                                    type="text"
-                                    required="required"
-                                    component={InputField}
-                                    size="sm"
-                                />
+                                <div className="row">
+                                    <div className="col-md-7">
+                                        <Field
+                                            label="SMTP Host"
+                                            name="smtp"
+                                            type="text"
+                                            required="required"
+                                            component={InputField}
+                                            size="sm"
+                                        />
+                                    </div>
+                                    <div className="col-md-5">
+                                        <Field
+                                            label="SMTP Port"
+                                            name="smtp_port"
+                                            type="text"
+                                            required="required"
+                                            component={InputField}
+                                            size="sm"
+                                        />
+                                    </div>
+                                    <div className="col-md-7">
+                                        <Field
+                                            label="IMAP Host"
+                                            name="imap"
+                                            type="text"
+                                            required="required"
+                                            component={InputField}
+                                            size="sm"
+                                        />
+                                    </div>
+                                    <div className="col-md-5">
+                                        <Field
+                                            label="IMAP Port"
+                                            name="imap_port"
+                                            type="text"
+                                            required="required"
+                                            component={InputField}
+                                            size="sm"
+                                        />
+                                    </div>
+                                </div>
                                 <Field
                                     label="Email"
                                     name="username"
