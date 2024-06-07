@@ -16,6 +16,9 @@ const AppContext = createContext({
     idForWhatsApp: "", setIdForWhatsApp: (id: string) => {},
     showCreateWhatsApp: false, setShowCreateWhatsApp: (val: boolean) => {},
 
+    idForVoipDetails: 0, setIdForVoipDetails: (id: number) => {},
+    idForVoipUpdate: 0, setIdForVoipUpdate: (id: number) => {},
+
     idForTaskRunning: 0, setIdForTaskRunning: (id: number) => {},
     idForTaskUpdate: 0, setIdForTaskUpdate: (id: number) => {},
     idForTaskDelete: 0, setIdForTaskDelete: (id: number) => {},
@@ -45,6 +48,9 @@ const AppProvider = ({children}: any) => {
     const [idForWhatsApp, setIdForWhatsApp] = useState("")
     const [showCreateWhatsApp, setShowCreateWhatsApp] = useState(false)
 
+    const [idForVoipDetails, setIdForVoipDetails] = useState(0)
+    const [idForVoipUpdate, setIdForVoipUpdate] = useState(0)
+
     const [idForTaskRunning, setIdForTaskRunning] = useState(0)
     const [idForTaskUpdate, setIdForTaskUpdate] = useState(0)
     const [idForTaskDelete, setIdForTaskDelete] = useState(0)
@@ -73,6 +79,9 @@ const AppProvider = ({children}: any) => {
 
             idForWhatsApp, setIdForWhatsApp,
             showCreateWhatsApp, setShowCreateWhatsApp,
+
+            idForVoipDetails, setIdForVoipDetails,
+            idForVoipUpdate, setIdForVoipUpdate,
 
             idForTaskRunning, setIdForTaskRunning,
             idForTaskUpdate, setIdForTaskUpdate,

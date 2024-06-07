@@ -17,14 +17,21 @@ import { emailColumns } from "../../columns/emailColumns";
 import { ShowEmail } from "../../components/email/ShowEmail";
 import CustomerContactList from "../../components/customer/CustomerContactList";
 import { CustomerContactCreateForm } from "../../components/forms/CustomerContactCreateForm";
+import { VoIPCreateForm } from "../../components/forms/VoIPCreateForm";
 
 const ProfileVoIPs = ({ customer }: any) => {
+    const [refetch, setRefetch] = useState(0)
+
+    const updateList = () => {
+        setRefetch(refetch+1)
+    }
     return (<>
         <div className='card mb-5 mb-xl-10' id='kt_profile_details_view'>
             <div className='card-body py-3'>
-                <TableComponent queryKey={`customer-voip-${customer?.id}`} url={`${VOIP_URL}/list`} params={stringifyRequestQuery({ customer_id: customer?.id })} columns={voipColumns} refetch={1} />
+                <TableComponent queryKey={`customer-voip-${customer?.id}`} url={`${VOIP_URL}/list`} params={stringifyRequestQuery({ customer_id: customer?.id })} columns={voipColumns} refetch={refetch} />
             </div>
         </div>
+        <VoIPCreateForm updateList={updateList} />
     </>)
 }
 

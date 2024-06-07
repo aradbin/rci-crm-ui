@@ -21,7 +21,7 @@ const VoIPCreateForm = ({updateList}: any) => {
     const [log, setLog] = useState<any>(null)
     const [customerOptions, setCustomerOptions] = useState<customerOptionType[]>([])
     const [receivedOptions, setReceivedOptions] = useState<receivedOptionType[]>([])
-    const { idForDetails, setIdForDetails, idForUpdate, setIdForUpdate, users, customers } = useContext(AppContext)
+    const { idForVoipDetails, setIdForVoipDetails, idForVoipUpdate, setIdForVoipUpdate, users, customers } = useContext(AppContext)
 
     const formik = useFormik({
         initialValues: {
@@ -34,7 +34,7 @@ const VoIPCreateForm = ({updateList}: any) => {
         onSubmit: async (values, {setSubmitting}) => {
             setSubmitting(true)
             try {
-                await updateRequest(`${VOIP_URL}/${idForUpdate}`, values).then((response) => {
+                await updateRequest(`${VOIP_URL}/${idForVoipUpdate}`, values).then((response) => {
                     if(response?.status===200){
                         toast.success('Log Updated Successfully')
                         updateList()
@@ -58,22 +58,22 @@ const VoIPCreateForm = ({updateList}: any) => {
     }
 
     useEffect(() => {
-        if(idForDetails > 0){
+        if(idForVoipDetails > 0){
             toggleShowModal(true)
             setLoading(true)
-            getRequest(`${VOIP_URL}/details/${idForDetails}`).then((response) => {
+            getRequest(`${VOIP_URL}/details/${idForVoipDetails}`).then((response) => {
                 setLog(response)
             }).finally(() => {
                 setLoading(false)
             })
         }
-    },[idForDetails])
+    },[idForVoipDetails])
 
     useEffect(() => {
-        if(idForUpdate > 0){
+        if(idForVoipUpdate > 0){
             toggleShowEdit(true)
             setLoading(true)
-            getRequest(`${VOIP_URL}/details/${idForUpdate}`).then((response) => {
+            getRequest(`${VOIP_URL}/details/${idForVoipUpdate}`).then((response) => {
                 formik.setFieldValue('customer_id',response?.customer_id)
                 formik.setFieldValue('received_by',response?.received_by)
                 formik.setFieldValue('note',response?.note)
@@ -81,7 +81,7 @@ const VoIPCreateForm = ({updateList}: any) => {
                 setLoading(false)
             })
         }
-    },[idForUpdate])
+    },[idForVoipUpdate])
 
     useEffect(() => {
         let array: customerOptionType[] = [];
@@ -105,22 +105,22 @@ const VoIPCreateForm = ({updateList}: any) => {
 
     const closeModal = () => {
         toggleShowModal(false)
-        setIdForDetails(0)
+        setIdForVoipDetails(0)
         formik.resetForm()
         toggleShowEdit(false)
-        setIdForUpdate(0)
+        setIdForVoipUpdate(0)
     }
 
     const closeEdit = () => {
         formik.resetForm()
         toggleShowEdit(false)
-        setIdForUpdate(0)
+        setIdForVoipUpdate(0)
         toggleShowModal(false)
-        setIdForDetails(0)
+        setIdForVoipDetails(0)
     }
 
     return (<>
-        {idForDetails > 0 && <Modal className="fade" aria-hidden='true' show={showModal} centered animation>
+        {idForVoipDetails > 0 && <Modal className="fade" aria-hidden='true' show={showModal} centered animation>
             <div className="modal-content">
                 <div className='modal-header'>
                     <h2 className='fw-bolder mb-0'>VoIP Call Log Details</h2>
@@ -197,7 +197,7 @@ const VoIPCreateForm = ({updateList}: any) => {
             {loading && <LoadingComponent />}
         </Modal>}
 
-        {idForUpdate > 0 && <Modal className="fade" aria-hidden='true' show={showEdit} centered animation>
+        {idForVoipUpdate > 0 && <Modal className="fade" aria-hidden='true' show={showEdit} centered animation>
             <div className="modal-content">
                 <div className='modal-header'>
                     <h2 className='fw-bolder'>Update Log</h2>
