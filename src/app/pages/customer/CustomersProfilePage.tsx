@@ -12,7 +12,7 @@ import CustomerServiceList from "../../components/customer/CustomerServiceList";
 import { CustomerServiceCreateForm } from "../../components/forms/CustomerServiceCreateForm";
 import { TableComponent } from "../../components/common/TableComponent";
 import { voipColumns } from "../../columns/voipColumns";
-import { stringifyRequestQuery } from "../../helpers/Utils";
+import { getCustomerPriorityBadge, stringifyRequestQuery } from "../../helpers/Utils";
 import { emailColumns } from "../../columns/emailColumns";
 import { ShowEmail } from "../../components/email/ShowEmail";
 import CustomerContactList from "../../components/customer/CustomerContactList";
@@ -193,7 +193,7 @@ const ProfileHeader = ({ customer }: any) => {
                             <span className='text-gray-800 fs-2 fw-bolder me-1'>
                                 {customer?.name}
                             </span>
-                            {customer?.is_featured && <KTSVG path='media/icons/duotune/general/gen049.svg' className='svg-icon svg-icon-3x ms-2 text-warning' />}
+                            {customer?.priority > 1 && <KTSVG path='media/icons/duotune/general/gen049.svg' className={`svg-icon svg-icon-2x ms-2 ${getCustomerPriorityBadge(customer?.priority)}`} />}
                         </div>
                         <div className='d-flex flex-wrap fw-bold fs-6 mb-4 pe-2'>
                             <a href={`tel:${customer?.contact}`} className='d-flex align-items-center text-gray-400 text-hover-primary me-5 mb-2 gap-2'>

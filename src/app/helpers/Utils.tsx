@@ -52,6 +52,16 @@ const getTaskPriorityBadge = (value: number) => {
   return ''
 }
 
+const getCustomerPriorityBadge = (value: number) => {
+  if(value===2){
+    return 'text-info'
+  }
+  if(value===3){
+    return 'text-warning'
+  }
+  return ''
+}
+
 const getTaskStatusBadge = (value: string) => {
   const status = statuses.find(item => item.value === value)
   
@@ -115,4 +125,4 @@ const getSettingsFromUserSettings = (userSettings: any, type: string) => {
   return settings
 }
 
-export { stringifyRequestQuery, formatDate, formatDateTime, firstLetterUpperCase, getTaskPriorityBadge, getTaskStatusBadge, getTaskTime, getTaskTimeString, getSettingsFromUserSettings }
+export { stringifyRequestQuery, formatDate, formatDateTime, firstLetterUpperCase, getTaskPriorityBadge, getCustomerPriorityBadge, getTaskStatusBadge, getTaskTime, getTaskTimeString, getSettingsFromUserSettings }

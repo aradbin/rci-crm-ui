@@ -25,6 +25,12 @@ const priorities = [
     { name: "High", id: 3 }
 ]
 
+const customerPriorities = [
+    { name: "Regular", id: 1 },
+    { name: "Medium", id: 2 },
+    { name: "High", id: 3 }
+]
+
 const statuses = [
     { label: "To Do", value: "todo", color: "dark" },
     { label: "In Progress", value: "inprogress", color: "info" },
@@ -32,4 +38,4 @@ const statuses = [
     { label: "Done", value: "done", color: "success" },
 ]
 
-export { settings, cycles, priorities, statuses }
+export { settings, cycles, priorities, customerPriorities, statuses }

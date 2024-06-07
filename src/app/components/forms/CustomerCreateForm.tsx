@@ -9,12 +9,15 @@ import { useContext, useEffect, useState } from "react"
 import { LoadingComponent } from "../common/LoadingComponent"
 import { AppContext } from "../../providers/AppProvider"
 import { useQueryClient } from "react-query"
-import { RadioField } from "../fields/RadioField"
+import { customerPriorities } from "../../helpers/Variables"
+import { SelectField } from "../fields/SelectField"
 
 const CustomerCreateForm = ({show, toggleShow, updateList}: any) => {
     const [loading, setLoading] = useState(false)
     const { idForUpdate, setIdForUpdate } = useContext(AppContext)
     const queryClient = useQueryClient()
+
+    const priorityOptions = customerPriorities
 
     const formik = useFormik({
         initialValues: {
@@ -22,7 +25,7 @@ const CustomerCreateForm = ({show, toggleShow, updateList}: any) => {
             email: "",
             contact: "",
             address: "",
-            is_featured: false,
+            priority: "1",
             optional_contact: ""
         },
         validationSchema: Yup.object().shape({
@@ -30,12 +33,14 @@ const CustomerCreateForm = ({show, toggleShow, updateList}: any) => {
             email: Yup.string().required('Email is required').email('Please provide valid email address'),
             contact: Yup.string().required('Contact is required'),
             address: Yup.string().required('Address is required'),
+            priority: Yup.number().required('Priority is required'),
         }),
         onSubmit: async (values, {setSubmitting}) => {
             setSubmitting(true)
             try {
+                const formData = { ...values, priority: parseInt(values?.priority)}
                 if(idForUpdate === 0){
-                    await createRequest(CUSTOMERS_URL,values).then((response) => {
+                    await createRequest(CUSTOMERS_URL,formData).then((response) => {
                         if(response?.status===201){
                             toast.success('Customer Created Successfully')
                             updateListHandler()
@@ -43,7 +48,7 @@ const CustomerCreateForm = ({show, toggleShow, updateList}: any) => {
                         }
                     })
                 }else{
-                    await updateRequest(`${CUSTOMERS_URL}/${idForUpdate}`,values).then((response) => {
+                    await updateRequest(`${CUSTOMERS_URL}/${idForUpdate}`,formData).then((response) => {
                         if(response?.status===200){
                             toast.success('Customer Updated Successfully')
                             updateListHandler()
@@ -69,7 +74,7 @@ const CustomerCreateForm = ({show, toggleShow, updateList}: any) => {
                 formik.setFieldValue("contact",response.contact)
                 formik.setFieldValue("address",response.address)
                 formik.setFieldValue("optional_contact",response.optional_contact)
-                formik.setFieldValue("is_featured",response?.is_featured)
+                formik.setFieldValue("priority",response?.priority)
             }).finally(() => {
                 setLoading(false)
             })
@@ -141,11 +146,11 @@ const CustomerCreateForm = ({show, toggleShow, updateList}: any) => {
                                     size="sm"
                                 />
                                 <Field
-                                    label="Priority Customer"
-                                    name="is_featured"
-                                    type="checkbox"
+                                    label="Priority"
+                                    name="priority"
+                                    options={priorityOptions}
                                     required="required"
-                                    component={RadioField}
+                                    component={SelectField}
                                     size="sm"
                                 />
                             </div>

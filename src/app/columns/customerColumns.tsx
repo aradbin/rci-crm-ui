@@ -1,7 +1,7 @@
 import { Link } from "react-router-dom"
 import { KTIcon, KTSVG, toAbsoluteUrl } from "../../_metronic/helpers"
 import { CustomerActionCell } from "../components/cells/CustomerActionCell"
-import { formatDate } from "../helpers/Utils"
+import { formatDate, getCustomerPriorityBadge } from "../helpers/Utils"
 
 export const customerColumns = [
   {
@@ -14,7 +14,7 @@ export const customerColumns = [
         <div className='d-flex justify-content-start flex-row'>
           <span className='fw-bold fs-7'>{row?.original?.name}</span>
         </div>
-        {row?.original?.is_featured && <KTSVG path='media/icons/duotune/general/gen049.svg' className='svg-icon svg-icon-2x ms-2 text-warning' />}
+        {row?.original?.priority > 1 && <KTSVG path='media/icons/duotune/general/gen049.svg' className={`svg-icon svg-icon-2x ms-2 ${getCustomerPriorityBadge(row?.original?.priority)}`} />}
       </Link>
     )}
   },
