@@ -1,4 +1,4 @@
-const API_URL_LOCAL = 'http://localhost:8080'
+const API_URL_LOCAL = 'https://api.rci.rest'
 
 const BASE_URL = API_URL_LOCAL
 
