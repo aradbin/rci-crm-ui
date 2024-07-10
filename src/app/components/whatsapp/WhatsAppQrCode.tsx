@@ -1,8 +1,8 @@
 import { useEffect, useState } from "react"
 import { Modal } from "react-bootstrap"
 import { LoadingComponent } from "../common/LoadingComponent"
-import { getRequest, getRequestBlob } from "../../helpers/Requests"
-import { WHATSAPP_CONNECT_URL } from "../../helpers/ApiEndpoints"
+import { createRequest } from "../../helpers/Requests"
+import { ACCOUNT_CONNECT_URL } from "../../helpers/ApiEndpoints"
 
 const WhatsAppQrCode = ({show, toggleShow, updateList, type}: any) => {
   const [loading, setLoading] = useState(false)
@@ -11,9 +11,9 @@ const WhatsAppQrCode = ({show, toggleShow, updateList, type}: any) => {
   useEffect(() => {
     if(show){
       setLoading(true)
-      getRequest(WHATSAPP_CONNECT_URL).then((response: any) => {
+      createRequest(ACCOUNT_CONNECT_URL, {}).then((response: any) => {
         // const qrUrl = URL.createObjectURL(response.data)
-        setQr(response)
+        setQr(response?.data)
       }).catch((error) => {
         closeModal()
       }).finally(() => {
