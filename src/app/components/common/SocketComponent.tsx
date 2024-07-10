@@ -5,7 +5,7 @@ import { BASE_URL } from "../../helpers/ApiEndpoints";
 import { useAuth } from "../../modules/auth";
 
 const SocketComponent = () => {
-    const { setSocket, messages, setMessages, setVoip } = useContext(SocketContext)
+    const { setSocket, setMessages, setWhatsApp, setVoip } = useContext(SocketContext)
     const { currentUser } = useAuth()
 
     useEffect(() => {
@@ -20,11 +20,19 @@ const SocketComponent = () => {
         })
     
         socketInstance.on('message', (response: any) => {
-            setMessages(prevMessages => {
-              const currentMessages = [...prevMessages]
-              currentMessages.unshift(response)
-              return currentMessages
-            })
+          setMessages(prevMessages => {
+            const currentMessages = [...prevMessages]
+            currentMessages.unshift(response)
+            return currentMessages
+          })
+        })
+
+        socketInstance.on('whatsapp', (response: any) => {
+          setWhatsApp(prevMessages => {
+            const currentMessages = [...prevMessages]
+            currentMessages.unshift(response)
+            return currentMessages
+          })
         })
 
         socketInstance.on('voip', (response: any) => {

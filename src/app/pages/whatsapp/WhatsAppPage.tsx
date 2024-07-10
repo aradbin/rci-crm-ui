@@ -15,8 +15,6 @@ const WhatsAppPage = () => {
 
     return (
         <>
-            {/* <ToolbarComponent title="WhatsApp" breadCrumbs={breadCrumbs} handleButtonClick={() => setShowCreateWhatsApp(true)}>
-            </ToolbarComponent> */}
             <ChatBox />
         </>
     )

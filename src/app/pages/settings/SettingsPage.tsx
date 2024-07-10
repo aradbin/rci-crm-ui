@@ -6,6 +6,7 @@ import { ToolbarComponent } from "../../components/common/ToolbarComponent"
 import { SettingsSidebar } from "../../components/settings/SettingsSidebar"
 import { settingsColumns } from "../../columns/settingsColumns"
 import { SettingCreateForm } from "../../components/forms/SettingCreateForm"
+import { WhatsAppQrCode } from "../../components/whatsapp/WhatsAppQrCode"
 
 const breadCrumbs = [
     { title: 'Settings', path: '/settings', isSeparator: false },
@@ -15,19 +16,27 @@ const breadCrumbs = [
 const SettingsPage = () => {
     const [refetch, setRefetch] = useState(0)
     const [showCreate, setShowCreate] = useState(false)
+    const [showWhatsAppQrCode, setShowWhatsAppQrCode] = useState(false)
     const [type, setType] = useState({ label: 'Services', value: 'service' })
 
     const toggleShowCreate = (show: boolean) => {
         setShowCreate(show)
     }
-    const updateList = () => {
+
+    const toggleShowWhatsAppQrCode = (show: boolean) => {
+        setShowWhatsAppQrCode(show)
+    }
+
+    const updateList = (qr = false) => {
+        if(type.value === 'whatsapp' && qr){
+            setShowWhatsAppQrCode(true)
+        }
         setRefetch(refetch+1)
     }
 
     return (
         <>
-            <ToolbarComponent title={type.label} breadCrumbs={breadCrumbs} handleButtonClick={toggleShowCreate}>
-            </ToolbarComponent>
+            <ToolbarComponent title={type.label} breadCrumbs={breadCrumbs} handleButtonClick={toggleShowCreate} />
             <div className='d-flex flex-column flex-lg-row'>
                 <SettingsSidebar type={type} setType={setType} />
                 <div className='flex-lg-row-fluid ms-lg-7 ms-xl-10'>
@@ -39,6 +48,7 @@ const SettingsPage = () => {
                 </div>
             </div>
             <SettingCreateForm show={showCreate} toggleShow={toggleShowCreate} updateList={updateList} type={type.value} />
+            <WhatsAppQrCode show={showWhatsAppQrCode} toggleShow={toggleShowWhatsAppQrCode} updateList={updateList} type={type.value} />
         </>
     )
 }

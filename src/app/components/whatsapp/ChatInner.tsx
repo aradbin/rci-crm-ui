@@ -5,7 +5,7 @@ import { toAbsoluteUrl } from '../../../_metronic/helpers'
 import { getRequest } from '../../helpers/Requests'
 import { WHATSAPP_URL } from '../../helpers/ApiEndpoints'
 import { useAuth } from '../../modules/auth'
-import { formatDateTime } from '../../helpers/Utils'
+import { formatDateTime, getSettingsFromUserSettings } from '../../helpers/Utils'
 import { SocketContext } from '../../providers/SocketProvider'
 import ChatImage from './ChatImage'
 
@@ -25,9 +25,9 @@ const ChatInner = ({conversation}: any) => {
 
   const sendMessage = () => {
     if(socket){
-      const payload: any = { sender: currentUser?.id, receiver: conversation?.id, message }
-      if(conversation?.id){
-        payload.conversation_id = conversation?.id
+      const payload: any = {
+        conversation_id: conversation?.id || null,
+        sender_number: getSettingsFromUserSettings(currentUser?.userSettings, 'whatsapp').phone_number,
       }
       socket.emit('whatsapp', payload, (response: any) => {
         setWhatsApp(prevMessages => {
@@ -131,7 +131,7 @@ const ChatInner = ({conversation}: any) => {
                     )}
                   </div>
 
-                  {item?.payload?.entry[0]?.changes[0]?.value?.messages[0]?.type === 'text' &&
+                  {item?.payload?.body &&
                     <div className={clsx(
                         'p-5 rounded',
                         `bg-light-${state}`,
@@ -139,11 +139,11 @@ const ChatInner = ({conversation}: any) => {
                         `text-${item?.user ? 'end' : 'start'}`
                       )}
                       data-kt-element='message-text'
-                      dangerouslySetInnerHTML={{__html: item?.payload?.entry[0]?.changes[0]?.value?.messages[0]?.text?.body}}
+                      dangerouslySetInnerHTML={{__html: item?.payload?.body}}
                     />
                   }
-                  {(item?.payload?.entry[0]?.changes[0]?.value?.messages[0]?.type === 'image' && item?.payload?.entry[0]?.changes[0]?.value?.messages[0]?.image?.id) &&
-                    <ChatImage id={item?.payload?.entry[0]?.changes[0]?.value?.messages[0]?.image?.id} />
+                  {(item?.payload?.hasMedia) &&
+                    <ChatImage id={item?.payload?.hasMedia} />
                   }
                 </div>
               </div>

@@ -1,7 +1,7 @@
 import { KTIcon } from "../../../_metronic/helpers"
 import { PageTitleComponent } from "./PageTitleComponent"
 
-const ToolbarComponent = ({title, breadCrumbs, handleButtonClick, children, hasCreate=true}) => {
+const ToolbarComponent = ({title, breadCrumbs, handleButtonClick, children = <></>, hasCreate=true}) => {
     return (
         <div id="kt_app_toolbar" className='app-toolbar pb-3 pb-lg-6'>
             <div id="kt_app_toolbar_container" className='d-flex flex-stack container-fluid p-0'>
