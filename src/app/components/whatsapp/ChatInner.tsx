@@ -2,7 +2,7 @@
 import {useContext, useEffect, useState} from 'react'
 import clsx from 'clsx'
 import { toAbsoluteUrl } from '../../../_metronic/helpers'
-import { getRequest } from '../../helpers/Requests'
+import { createRequest, getRequest } from '../../helpers/Requests'
 import { WHATSAPP_URL } from '../../helpers/ApiEndpoints'
 import { useAuth } from '../../modules/auth'
 import { formatDateTime, getSettingsFromUserSettings } from '../../helpers/Utils'
@@ -17,27 +17,41 @@ const ChatInner = ({conversation}: any) => {
 
   useEffect(() => {
     if(conversation?.id){
+      setWhatsApp([])
       getRequest(`${WHATSAPP_URL}/${conversation?.id}`).then((response) => {
-        setWhatsApp(response)
+        setWhatsApp(response?.items || [])
       })
     }
   },[conversation])
 
   const sendMessage = () => {
-    if(socket){
-      const payload: any = {
-        conversation_id: conversation?.id || null,
-        sender_number: getSettingsFromUserSettings(currentUser?.userSettings, 'whatsapp').phone_number,
-      }
-      socket.emit('whatsapp', payload, (response: any) => {
-        setWhatsApp(prevMessages => {
-          const currentMessages = [...prevMessages]
-          currentMessages.unshift(response)
-          return currentMessages
-        })
-        setMessage('')
+    // if(socket){
+    //   const payload: any = {
+    //     conversation_id: conversation?.id || null,
+    //     sender_number: getSettingsFromUserSettings(currentUser?.userSettings, 'whatsapp').phone_number,
+    //   }
+    //   socket.emit('whatsapp', payload, (response: any) => {
+    //     setWhatsApp(prevMessages => {
+    //       const currentMessages = [...prevMessages]
+    //       currentMessages.unshift(response)
+    //       return currentMessages
+    //     })
+    //     setMessage('')
+    //   })
+    // }
+    createRequest(WHATSAPP_URL, {
+      conversation_id: conversation?.id || null,
+      msg_body: message
+    }).then((response) => {
+      setWhatsApp(prevMessages => {
+        const currentMessages = [...prevMessages]
+        currentMessages.unshift(response)
+        return currentMessages
       })
-    }
+      setMessage('')
+    }).catch((error) => {
+      console.log(error)
+    })
   }
 
   const onEnterPress = (e: React.KeyboardEvent<HTMLTextAreaElement>) => {
@@ -56,9 +70,9 @@ const ChatInner = ({conversation}: any) => {
           </div>
           <div className='ms-5'>
             <a href='#' className='fs-5 fw-bolder text-gray-900 text-hover-primary mb-2'>
-              {conversation?.customer?.name || conversation?.recipient_id}
+              {conversation?.name || conversation?.provider_id?.split('@')[0]}
             </a>
-            {conversation?.customer?.name && <div className='fw-bold text-gray-400'>{conversation?.recipient_id}</div>}
+            {conversation?.name && <div className='fw-bold text-gray-400'>{conversation?.provider_id?.split('@')[0]}</div>}
           </div>
         </div>
         {/* <div className='card-toolbar'>
@@ -92,24 +106,24 @@ const ChatInner = ({conversation}: any) => {
           style={{ height: 'calc(100vh - 321px)' }}
         >
           {whatsapp?.map((item: any, index: number) => {
-            const state = item?.user ? 'primary' : 'info'
-            const contentClass = `d-flex justify-content-${item?.user ? 'end' : 'start'} mb-10`
+            const state = item?.is_sender === 1 ? 'primary' : 'info'
+            const contentClass = `d-flex justify-content-${item?.is_sender === 1 ? 'end' : 'start'} mb-5`
             return (
               <div
                 key={index}
-                className={clsx('d-flex', contentClass, 'mb-10')}
+                className={clsx('d-flex', contentClass, 'mb-5')}
               >
                 <div
-                  className={clsx('d-flex flex-column align-items', `align-items-${item.user ? 'end' : 'start'}`
+                  className={clsx('d-flex flex-column align-items', `align-items-${item.is_sender === 1 ? 'end' : 'start'}`
                   )}
                 >
-                  <div className='d-flex align-items-center mb-2'>
-                    {item?.user ? (
+                  {/* <div className='d-flex align-items-center mb-2'>
+                    {item?.is_sender === 1 ? (
                       <>
                         <div className='me-3'>
                           <span className='text-muted fs-7 mb-1'>{formatDateTime(item.created_at)}</span>
                           <a href='#' className='fs-5 fw-bolder text-gray-900 text-hover-primary ms-1'>
-                            {item?.user?.name}
+                            {item?.sender_id?.split('@')[0]}
                           </a>
                         </div>
                         <div className='symbol  symbol-35px symbol-circle '>
@@ -123,28 +137,28 @@ const ChatInner = ({conversation}: any) => {
                         </div>
                         <div className='ms-3'>
                           <span className='fs-5 fw-bolder text-gray-900 text-hover-primary mb-2'>
-                            {item?.customer?.name || conversation?.recipient_id}
+                            {JSON.parse(item?.original)?.pushName || conversation?.provider_id?.split('@')[0]}
                           </span>
-                          {item?.customer?.name && <div className='fw-bold text-gray-400'>{item?.recipient_id}</div>}
+                          {JSON.parse(item?.original)?.pushName && <div className='fw-bold text-gray-400'>{conversation?.provider_id?.split('@')[0]}</div>}
                         </div>
                       </>
                     )}
-                  </div>
+                  </div> */}
 
-                  {item?.payload?.body &&
+                  {item?.text &&
                     <div className={clsx(
                         'p-5 rounded',
                         `bg-light-${state}`,
                         'text-dark fw-bold mw-lg-400px',
-                        `text-${item?.user ? 'end' : 'start'}`
+                        `text-${item?.is_sender === 1 ? 'end' : 'start'}`
                       )}
                       data-kt-element='message-text'
-                      dangerouslySetInnerHTML={{__html: item?.payload?.body}}
+                      dangerouslySetInnerHTML={{__html: item?.text}}
                     />
                   }
-                  {(item?.payload?.hasMedia) &&
-                    <ChatImage id={item?.payload?.hasMedia} />
-                  }
+                  {item?.attachments && item?.attachments?.map((attachment: any) =>
+                    <ChatImage id={item?.id} attachment={attachment} />
+                  )}
                 </div>
               </div>
             )

@@ -13,7 +13,7 @@ async function getRequest(url: string, query?: string) {
 async function getRequestBlob(url: string, query?: string) {
   return await axios
     .get(`${url}${query ? `?${query}` : ""}`, {
-      responseType: 'blob'
+      // responseType: 'blob'
     })
     .catch((error) => {
       catchError(error)

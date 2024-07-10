@@ -57,13 +57,13 @@ const ChatBox = () => {
                     </div>
                     <div className='ms-5'>
                       <span className='fs-5 fw-bolder text-gray-900 text-hover-primary mb-2'>
-                        {item?.customer?.name || item?.recipient_id}
+                        {item?.name || item?.provider_id?.split('@')[0]}
                       </span>
-                      {item?.customer?.name && <div className='fw-bold text-gray-400'>{item?.recipient_id}</div>}
+                      {item?.name && <div className='fw-bold text-gray-400'>{item?.provider_id?.split('@')[0]}</div>}
                     </div>
                   </div>
                   <div className='d-flex flex-column align-items-end ms-2'>
-                    <span className='text-muted fs-7 mb-1'>{item?.updated_at ? formatDateTime(item?.updated_at) : formatDateTime(item?.created_at)}</span>
+                    <span className='text-muted fs-7 mb-1'>{item?.timestamp ? formatDateTime(item?.timestamp) : formatDateTime(new Date())}</span>
                   </div>
                 </div>
               )}
