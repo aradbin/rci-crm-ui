@@ -2,7 +2,7 @@ const API_URL_LOCAL = 'http://localhost:8080'
 const API_URL_PROD = 'https://api.rci.rest'
 const API_URL_COMMUNICATION_LOCAL = 'http://localhost:8081'
 
-const BASE_URL = API_URL_PROD
+const BASE_URL = API_URL_LOCAL
 const BASE_URL_COMMUNICATION = API_URL_COMMUNICATION_LOCAL
 
 const AUTH_URL = `${BASE_URL}/auth`

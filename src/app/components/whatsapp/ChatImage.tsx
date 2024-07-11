@@ -32,7 +32,6 @@ const ChatImage = ({id, attachment}: any) => {
                     const audioUrl = URL.createObjectURL(audioData)
                     setAudUrl(audioUrl)
                 } else if (response.headers.get('Content-Type').startsWith('video/')) {
-                    // Handle video file (create video element)
                     const videoData = await response.blob()
                     const videoUrl = URL.createObjectURL(videoData)
                     setVidUrl(videoUrl)
@@ -46,7 +45,7 @@ const ChatImage = ({id, attachment}: any) => {
 
     return (<>
         {loading &&
-            <div className="d-flex justify-content-center align-items-center" style={{ width: '100%', height: '100px', backgroundColor: '#92929f' }}>
+            <div className="d-flex justify-content-center align-items-center" style={{ width: '50%', height: '100px', backgroundColor: '#92929f' }}>
                 <span className='spinner-border spinner-border-sm'></span>
             </div>
         }

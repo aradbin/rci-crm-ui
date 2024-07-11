@@ -29,7 +29,7 @@ const SettingsPage = () => {
 
     const updateList = (qr = false) => {
         if(type.value === 'whatsapp' && qr){
-            setShowWhatsAppQrCode(true)
+            // setShowWhatsAppQrCode(true)
         }
         setRefetch(refetch+1)
     }

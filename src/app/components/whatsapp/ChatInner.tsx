@@ -97,19 +97,6 @@ const ChatInner = ({conversation}: any) => {
             {conversation?.name && <div className='fw-bold text-gray-400'>{conversation?.provider_id?.split('@')[0]}</div>}
           </div>
         </div>
-        {/* <div className='card-toolbar'>
-          <div className='me-n3'>
-            <button
-              className='btn btn-sm btn-icon btn-active-light-primary'
-              data-kt-menu-trigger='click'
-              data-kt-menu-placement='bottom-end'
-              data-kt-menu-flip='top-end'
-            >
-              <i className='bi bi-three-dots fs-2'></i>
-            </button>
-            <Dropdown1 />
-          </div>
-        </div> */}
       </div>
 
       <div
@@ -129,11 +116,11 @@ const ChatInner = ({conversation}: any) => {
         >
           {whatsapp?.map((item: any, index: number) => {
             const state = item?.is_sender === 1 ? 'primary' : 'info'
-            const contentClass = `d-flex justify-content-${item?.is_sender === 1 ? 'end' : 'start'} mb-5`
+            const contentClass = `d-flex justify-content-${item?.is_sender === 1 ? 'end' : 'start'} mb-1`
             return (
               <div
                 key={index}
-                className={clsx('d-flex', contentClass, 'mb-5')}
+                className={clsx('d-flex', contentClass, 'mb-1')}
               >
                 <div
                   className={clsx('d-flex flex-column align-items', `align-items-${item.is_sender === 1 ? 'end' : 'start'}`
@@ -141,7 +128,7 @@ const ChatInner = ({conversation}: any) => {
                 >
                   {item?.text &&
                     <div className={clsx(
-                        'p-5 rounded',
+                        'px-3 py-2 rounded',
                         `bg-light-${state}`,
                         'text-dark fw-bold mw-lg-400px',
                         `text-${item?.is_sender === 1 ? 'end' : 'start'}`
@@ -150,8 +137,8 @@ const ChatInner = ({conversation}: any) => {
                       dangerouslySetInnerHTML={{__html: item?.text}}
                     />
                   }
-                  {item?.attachments && item?.attachments?.map((attachment: any) =>
-                    <ChatImage id={item?.id} attachment={attachment} />
+                  {item?.attachments && item?.attachments?.map((attachment: any, index: number) =>
+                    <ChatImage key={index} id={item?.id} attachment={attachment} />
                   )}
                 </div>
               </div>
