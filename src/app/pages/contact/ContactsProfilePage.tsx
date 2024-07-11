@@ -2,25 +2,19 @@ import { useNavigate, useParams } from "react-router-dom";
 import { toAbsoluteUrl } from "../../../_metronic/helpers";
 import { useContext, useEffect, useState } from "react";
 import { getRequest } from "../../helpers/Requests";
-import { CONTACTS_URL, EMAIL_URL } from "../../helpers/ApiEndpoints";
+import { CONTACTS_URL } from "../../helpers/ApiEndpoints";
 import { AppContext } from "../../providers/AppProvider";
 import { LoadingComponent } from "../../components/common/LoadingComponent";
-import { TableComponent } from "../../components/common/TableComponent";
-import { stringifyRequestQuery } from "../../helpers/Utils";
-import { emailColumns } from "../../columns/emailColumns";
-import { ShowEmail } from "../../components/email/ShowEmail";
 import { ContactCreateForm } from "../../components/forms/ContactCreateForm";
 import CustomerContactList from "../../components/customer/CustomerContactList";
 import { CustomerContactCreateForm } from "../../components/forms/CustomerContactCreateForm";
+import EmailList from "../../components/email/EmailList";
 
 const ProfileEmail = ({ contact }: any) => {
     return (<>
         <div className='card mb-5 mb-xl-10' id='kt_profile_details_view'>
-            <div className='card-body py-3'>
-                <TableComponent queryKey={`contact-email-${contact?.id}`} url={EMAIL_URL} params={stringifyRequestQuery({ email: contact?.email })} columns={emailColumns} refetch={1} />
-            </div>
+            <EmailList filterParams={{ any_email: contact?.email }} />
         </div>
-        <ShowEmail />
     </>)
 }
 

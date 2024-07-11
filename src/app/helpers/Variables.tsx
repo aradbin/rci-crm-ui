@@ -38,4 +38,10 @@ const statuses = [
     { label: "Done", value: "done", color: "success" },
 ]
 
-export { settings, cycles, priorities, customerPriorities, statuses }
+const folders = [
+    { label: "Inbox", value: "inbox", color: "success" },
+    { label: "Sent", value: "sent", color: "info" },
+    { label: "Trash", value: "trash", color: "danger" },
+]
+
+export { settings, cycles, priorities, customerPriorities, statuses, folders }

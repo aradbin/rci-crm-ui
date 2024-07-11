@@ -36,6 +36,7 @@ const formatDateTime = (value: any, type="") => {
 }
 
 const firstLetterUpperCase = (string: string) => {
+  string = string.toLowerCase().replaceAll('_', ' ');
   return string.charAt(0).toUpperCase() + string.slice(1);
 }
 
@@ -100,7 +101,8 @@ const getSettingsFromUserSettings = (userSettings: any, type: string) => {
       if(type === 'email'){
         settings = {
           label: `${item?.settings?.name} (${item?.settings?.metadata?.username})`,
-          value: item?.settings?.id
+          value: item?.settings?.id,
+          username: item?.settings?.metadata?.username
         }
       }else if(type === 'whatsapp'){
         settings = {

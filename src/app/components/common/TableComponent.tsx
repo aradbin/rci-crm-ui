@@ -96,7 +96,7 @@ const TableComponent = ({queryKey, url, params='', columns, refetch, canExpand='
         }
     },[refetch, params])
 
-    let tableData = data?.results
+    let tableData = data?.results || data?.items || []
     if(canExpand){
         tableData = data?.results?.map((item: any) => {
             return {

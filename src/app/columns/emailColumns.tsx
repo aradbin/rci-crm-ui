@@ -4,15 +4,15 @@ import { formatDate } from "../helpers/Utils"
 export const emailColumns = [
   {
     Header: "From",
-    accessor: "email_data.from.text",
+    Cell: ({ row }: any) => `${row?.original?.from_attendee?.display_name} (${row?.original?.from_attendee?.identifier})`
   },
   {
     Header: "Subject",
-    accessor: "email_data.subject",
+    accessor: "subject",
   },
   {
     Header: "Created At",
-    Cell: ({row}: any) => formatDate(row?.original?.email_data.date)
+    Cell: ({row}: any) => formatDate(row?.original?.date)
   },
   {
     Header: "Actions",

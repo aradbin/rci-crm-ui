@@ -2,35 +2,20 @@ import { useNavigate, useParams } from "react-router-dom";
 import { toAbsoluteUrl } from "../../../_metronic/helpers";
 import { useContext, useEffect, useState } from "react";
 import { getRequest } from "../../helpers/Requests";
-import { EMAIL_URL, TASKS_URL, USERS_URL } from "../../helpers/ApiEndpoints";
+import { TASKS_URL, USERS_URL } from "../../helpers/ApiEndpoints";
 import { AppContext } from "../../providers/AppProvider";
 import { UserCreateForm } from "../../components/forms/UserCreateForm";
 import { getSettingsFromUserSettings, stringifyRequestQuery } from "../../helpers/Utils";
 import { LoadingComponent } from "../../components/common/LoadingComponent";
-import { TableComponent } from "../../components/common/TableComponent";
-import { taskColumns } from "../../columns/taskColumns";
 import TaskList from "../../components/task/TaskList";
 import { statuses } from "../../helpers/Variables";
-import { emailColumns } from "../../columns/emailColumns";
-import { ShowEmail } from "../../components/email/ShowEmail";
+import EmailList from "../../components/email/EmailList";
 
-const ProfileEmail = ({ user }: any) => {
-    const [settingsId, setSettingsId] = useState(0)
-
-    useEffect(() => {
-        const settings = user?.userSettings?.find(item => item?.settings?.type === 'email')
-        if(settings){
-            setSettingsId(settings?.settings_id)
-        }
-    },[user])
-    
+const ProfileEmail = ({ user }: any) => {    
     return (<>
         <div className='card mb-5 mb-xl-10' id='kt_profile_details_view'>
-            <div className='card-body py-3'>
-                <TableComponent queryKey={`user-email-${user?.id}`} url={EMAIL_URL} params={stringifyRequestQuery({ settings_id: settingsId })} columns={emailColumns} refetch={1} />
-            </div>
+            <EmailList filterParams={{ any_email: user.email }} />
         </div>
-        <ShowEmail />
     </>)
 }
 
