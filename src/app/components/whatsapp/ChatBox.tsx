@@ -6,6 +6,7 @@ import { Query } from '../../helpers/Queries'
 import { ChatInner } from './ChatInner'
 import { formatDateTime } from '../../helpers/Utils'
 import { AppContext } from '../../providers/AppProvider'
+import { LoadingComponent } from '../common/LoadingComponent'
 
 const ChatBox = () => {
   const { setShowCreateWhatsApp } = useContext(AppContext)
@@ -69,6 +70,8 @@ const ChatBox = () => {
               )}
             </div>
           </div>
+
+          {conversationsQuery?.isLoading && <LoadingComponent />}
         </div>
       </div>
 

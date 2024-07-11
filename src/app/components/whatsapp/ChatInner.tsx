@@ -8,21 +8,32 @@ import { useAuth } from '../../modules/auth'
 import { formatDateTime, getSettingsFromUserSettings } from '../../helpers/Utils'
 import { SocketContext } from '../../providers/SocketProvider'
 import ChatImage from './ChatImage'
+import { LoadingComponent } from '../common/LoadingComponent'
 
 const ChatInner = ({conversation}: any) => {
   const { currentUser } = useAuth()
   const { socket, whatsapp, setWhatsApp } = useContext(SocketContext)
 
   const [message, setMessage] = useState<string>('')
+  const [loading, setLoading] = useState<boolean>(false)
 
   useEffect(() => {
     if(conversation?.id){
-      setWhatsApp([])
-      getRequest(`${WHATSAPP_URL}/${conversation?.id}`).then((response) => {
-        setWhatsApp(response?.items || [])
-      })
+      getWhatsApp()
     }
   },[conversation])
+
+  const getWhatsApp = (keep = false) => {
+    setLoading(true)
+    if(!keep){
+      setWhatsApp([])
+    }
+    getRequest(`${WHATSAPP_URL}/${conversation?.id}`).then((response) => {
+      setWhatsApp(response?.items || [])
+    }).finally(() => {
+      setLoading(false)
+    })
+  }
 
   const sendMessage = () => {
     // if(socket){
@@ -39,18 +50,17 @@ const ChatInner = ({conversation}: any) => {
     //     setMessage('')
     //   })
     // }
+    setLoading(true)
     createRequest(WHATSAPP_URL, {
       conversation_id: conversation?.id || null,
       msg_body: message
     }).then((response) => {
-      setWhatsApp(prevMessages => {
-        const currentMessages = [...prevMessages]
-        currentMessages.unshift(response)
-        return currentMessages
-      })
+      getWhatsApp(true)
       setMessage('')
     }).catch((error) => {
       console.log(error)
+    }).finally(() => {
+      setLoading(false)
     })
   }
 
@@ -188,6 +198,7 @@ const ChatInner = ({conversation}: any) => {
           Send
         </button>
       </div>
+      {loading && <LoadingComponent />}
     </div>
   </>)
 }
