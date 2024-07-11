@@ -42,10 +42,12 @@ const SocketComponent = () => {
           console.log(response)
           setWhatsApp(prevMessages => {
             const currentMessages = [...prevMessages]
-            currentMessages.unshift({
-              is_sender: 0,
-              text: response?.message,
-            })
+            if(currentMessages[currentMessages.length - 1]?.chat_id === response?.chat_id){
+              currentMessages.unshift({
+                is_sender: 0,
+                text: response?.message,
+              }) 
+            }
             return currentMessages
           })
         })

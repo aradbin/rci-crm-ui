@@ -1,19 +1,15 @@
 /* eslint-disable jsx-a11y/anchor-is-valid */
-import { useContext, useEffect, useState } from 'react'
+import { useState } from 'react'
 import { toAbsoluteUrl } from '../../../_metronic/helpers'
 import { WHATSAPP_URL } from '../../helpers/ApiEndpoints'
 import { Query } from '../../helpers/Queries'
 import { ChatInner } from './ChatInner'
-import { formatDate, formatDateTime, getSettingsFromUserSettings } from '../../helpers/Utils'
-import { AppContext } from '../../providers/AppProvider'
+import { formatDate, getSettingsFromUserSettings } from '../../helpers/Utils'
 import { LoadingComponent } from '../common/LoadingComponent'
 import { useAuth } from '../../modules/auth'
 
 const ChatBox = () => {
   const { currentUser } = useAuth()
-  const { setShowCreateWhatsApp } = useContext(AppContext)
-
-  const [conversations, setConversations] = useState([])
   const [filter, setFilter] = useState('')
   const [selectedConversation, setSelectedConversation]: any = useState()
 
