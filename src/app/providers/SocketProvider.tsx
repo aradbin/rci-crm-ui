@@ -3,6 +3,7 @@ import { createContext, useState } from "react";
 
 interface SocketContextProps {
     socket: Socket | null; setSocket: (instance: Socket | null) => void;
+    socketCommunication: Socket | null; setSocketCommunication: (instance: Socket | null) => void;
     messages: any[]; setMessages: (arr: any) => void;
     whatsapp: any[]; setWhatsApp: (arr: any) => void;
     voip: any; setVoip: (val: any) => void;
@@ -10,6 +11,7 @@ interface SocketContextProps {
 
 const SocketContext = createContext<SocketContextProps>({
     socket: null, setSocket: () => {},
+    socketCommunication: null, setSocketCommunication: () => {},
     messages: [], setMessages: () => {},
     whatsapp: [], setWhatsApp: () => {},
     voip: null, setVoip: () => {},
@@ -17,6 +19,7 @@ const SocketContext = createContext<SocketContextProps>({
 
 const SocketProvider = ({children}: any) => {
     const [socket, setSocket] = useState<Socket | null>(null);
+    const [socketCommunication, setSocketCommunication] = useState<Socket | null>(null);
     const [messages, setMessages] = useState<any>([]);
     const [whatsapp, setWhatsApp] = useState<any>([]);
     const [voip, setVoip] = useState<any>(null);
@@ -24,6 +27,7 @@ const SocketProvider = ({children}: any) => {
     return (
         <SocketContext.Provider value={{
             socket, setSocket,
+            socketCommunication, setSocketCommunication,
             messages, setMessages,
             whatsapp, setWhatsApp,
             voip, setVoip,

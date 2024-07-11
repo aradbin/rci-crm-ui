@@ -12,18 +12,18 @@ import { LoadingComponent } from '../common/LoadingComponent'
 
 const ChatInner = ({conversation}: any) => {
   const { currentUser } = useAuth()
-  const { socket, whatsapp, setWhatsApp } = useContext(SocketContext)
+  const { socketCommunication, whatsapp, setWhatsApp } = useContext(SocketContext)
 
   const [message, setMessage] = useState<string>('')
   const [loading, setLoading] = useState<boolean>(false)
 
   useEffect(() => {
     if(conversation?.id){
-      getWhatsApp()
+      getWhatsApp(false)
     }
   },[conversation])
 
-  const getWhatsApp = (keep = false) => {
+  const getWhatsApp = (keep = true) => {
     setLoading(true)
     if(!keep){
       setWhatsApp([])
@@ -36,32 +36,44 @@ const ChatInner = ({conversation}: any) => {
   }
 
   const sendMessage = () => {
-    // if(socket){
-    //   const payload: any = {
-    //     conversation_id: conversation?.id || null,
-    //     sender_number: getSettingsFromUserSettings(currentUser?.userSettings, 'whatsapp').phone_number,
-    //   }
-    //   socket.emit('whatsapp', payload, (response: any) => {
-    //     setWhatsApp(prevMessages => {
-    //       const currentMessages = [...prevMessages]
-    //       currentMessages.unshift(response)
-    //       return currentMessages
-    //     })
-    //     setMessage('')
-    //   })
-    // }
-    setLoading(true)
-    createRequest(WHATSAPP_URL, {
-      conversation_id: conversation?.id || null,
-      msg_body: message
-    }).then((response) => {
-      getWhatsApp(true)
-      setMessage('')
-    }).catch((error) => {
-      console.log(error)
-    }).finally(() => {
-      setLoading(false)
-    })
+    if(socketCommunication){
+      const payload: any = {
+        conversation_id: conversation?.id,
+        sender_number: getSettingsFromUserSettings(currentUser?.userSettings, 'whatsapp').phone_number,
+        text: message
+      }
+      socketCommunication.emit('whatsapp', payload, (response: any) => {
+        setWhatsApp(prevMessages => {
+          const currentMessages = [...prevMessages]
+          currentMessages.unshift({
+            is_sender: 1,
+            text: message,
+          })
+          return currentMessages
+        })
+        setMessage('')
+      })
+    }else{
+      setLoading(true)
+      createRequest(WHATSAPP_URL, {
+        conversation_id: conversation?.id || null,
+        text: message
+      }).then((response) => {
+        setWhatsApp(prevMessages => {
+          const currentMessages = [...prevMessages]
+          currentMessages.unshift({
+            is_sender: 1,
+            text: message,
+          })
+          return currentMessages
+        })
+        setMessage('')
+      }).catch((error) => {
+        console.log(error)
+      }).finally(() => {
+        setLoading(false)
+      })
+    }
   }
 
   const onEnterPress = (e: React.KeyboardEvent<HTMLTextAreaElement>) => {
@@ -127,34 +139,6 @@ const ChatInner = ({conversation}: any) => {
                   className={clsx('d-flex flex-column align-items', `align-items-${item.is_sender === 1 ? 'end' : 'start'}`
                   )}
                 >
-                  {/* <div className='d-flex align-items-center mb-2'>
-                    {item?.is_sender === 1 ? (
-                      <>
-                        <div className='me-3'>
-                          <span className='text-muted fs-7 mb-1'>{formatDateTime(item.created_at)}</span>
-                          <a href='#' className='fs-5 fw-bolder text-gray-900 text-hover-primary ms-1'>
-                            {item?.sender_id?.split('@')[0]}
-                          </a>
-                        </div>
-                        <div className='symbol  symbol-35px symbol-circle '>
-                          <img alt='Avatar' src={item?.user?.avatar || toAbsoluteUrl('/media/avatars/blank.png')} />
-                        </div>
-                      </>
-                    ) : (
-                      <>
-                        <div className='symbol  symbol-35px symbol-circle '>
-                          <img alt='Avatar' src={conversation?.customer?.avatar || toAbsoluteUrl('/media/avatars/blank.png')} />
-                        </div>
-                        <div className='ms-3'>
-                          <span className='fs-5 fw-bolder text-gray-900 text-hover-primary mb-2'>
-                            {JSON.parse(item?.original)?.pushName || conversation?.provider_id?.split('@')[0]}
-                          </span>
-                          {JSON.parse(item?.original)?.pushName && <div className='fw-bold text-gray-400'>{conversation?.provider_id?.split('@')[0]}</div>}
-                        </div>
-                      </>
-                    )}
-                  </div> */}
-
                   {item?.text &&
                     <div className={clsx(
                         'p-5 rounded',
