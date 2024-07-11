@@ -39,9 +39,13 @@ const SocketComponent = () => {
         })
         setSocketCommunication(socketCommunicationInstance)
         socketCommunicationInstance.on('whatsapp', (response: any) => {
+          console.log(response)
           setWhatsApp(prevMessages => {
             const currentMessages = [...prevMessages]
-            currentMessages.unshift(response)
+            currentMessages.unshift({
+              is_sender: 0,
+              text: response?.message,
+            })
             return currentMessages
           })
         })
