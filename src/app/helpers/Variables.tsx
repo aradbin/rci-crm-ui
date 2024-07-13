@@ -41,6 +41,7 @@ const statuses = [
 const folders = [
     { label: "Inbox", value: "inbox", color: "success" },
     { label: "Sent", value: "sent", color: "info" },
+    { label: "Spam", value: "spam", color: "warning" },
     { label: "Trash", value: "trash", color: "danger" },
 ]
 

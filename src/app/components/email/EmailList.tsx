@@ -1,5 +1,4 @@
 import { useEffect, useState } from "react"
-import { TableComponent } from "../common/TableComponent"
 import { EMAIL_URL } from "../../helpers/ApiEndpoints"
 import { firstLetterUpperCase, getSettingsFromUserSettings, stringifyRequestQuery } from "../../helpers/Utils"
 import { useAuth } from "../../modules/auth"
@@ -7,6 +6,7 @@ import { useAuth } from "../../modules/auth"
 import { emailColumns } from "../../columns/emailColumns"
 import { folders } from "../../helpers/Variables"
 import { ShowEmail } from "./ShowEmail"
+import { EmailTable } from "./EmailTable"
 
 const EmailList = ({ filterParams }: any) => {
     const { currentUser } = useAuth()
@@ -41,7 +41,7 @@ const EmailList = ({ filterParams }: any) => {
             ))}
         </div>
         <div className='card-body py-3'>
-            <TableComponent queryKey="email" url={EMAIL_URL} params={stringifyRequestQuery(params)} columns={emailColumns} refetch={1} />
+            <EmailTable queryKey="email" url={EMAIL_URL} params={stringifyRequestQuery(params)} columns={emailColumns} refetch={1} />
         </div>
         <ShowEmail />
     </>)

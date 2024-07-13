@@ -31,8 +31,12 @@ const EmailCreateForm = () => {
         onSubmit: async (values, {setSubmitting}) => {
             setSubmitting(true)
             try {
-                await createRequest(EMAIL_URL,values).then((response) => {
-                    if(response?.status===201){
+                const formData = {
+                    ...values,
+                    account: getSettingsFromUserSettings(currentUser?.userSettings, 'email').username
+                }
+                await createRequest(EMAIL_URL,formData).then((response) => {
+                    if(response?.status===201 && response?.data?.tracking_id){
                         toast.success('Email Sent Successfully')
                         closeModal()
                     }
