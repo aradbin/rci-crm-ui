@@ -27,6 +27,12 @@ const SidebarMenuMain = () => {
       <SidebarMenuItem to='/phone/calls' icon='simcard' iconColor='text-primary' title='Calls' fontIcon='bi-layers' />
       <SidebarMenuItem to='/phone/sms' icon='simcard' iconColor='text-warning' title='SMS' fontIcon='bi-layers' />
       <SidebarMenuItem to='/voip' icon='monitor-mobile' iconColor='text-info' title='VoIP' fontIcon='bi-layers' />
+      <div className='menu-item'>
+        <div className='menu-content pt-8 pb-2'>
+          <span className='menu-section text-muted text-uppercase fs-8 ls-1'>Settings</span>
+        </div>
+      </div>
+      <SidebarMenuItem to='/settings' icon='setting-2' iconColor='text-primary' title='Settings' fontIcon='bi-layers' />
     </>
   )
 }
