@@ -1,9 +1,9 @@
-import { useEffect, useState } from "react"
+import { useState } from "react"
 import { KTCard, KTCardBody } from "../../../_metronic/helpers"
 import { TableComponent } from "../../components/common/TableComponent"
 import { PHONE_URL } from "../../helpers/ApiEndpoints"
 import { ToolbarComponent } from "../../components/common/ToolbarComponent"
-import { stringifyRequestQuery } from "../../helpers/Utils"
+import { firstLetterUpperCase, stringifyRequestQuery } from "../../helpers/Utils"
 import { FilterComponent } from "../../components/common/FilterComponent"
 import { VoIPCreateForm } from "../../components/forms/VoIPCreateForm"
 import { phoneColumns } from "../../columns/phoneColumns"
@@ -25,15 +25,11 @@ const filter = {
 
 const PhonePage = () => {
     const { type } = useParams()
-    const [params, setParams] = useState("")
+    const [params, setParams] = useState({})
     const [refetch, setRefetch] = useState(0)
 
-    useEffect(() => {
-        
-    },[type])
-
     const handleFilterSubmit = (values: any) => {
-        setParams(stringifyRequestQuery({...values}))
+        setParams(values)
     }
 
     const updateList = () => {
@@ -42,12 +38,12 @@ const PhonePage = () => {
 
     return (
         <>
-            <ToolbarComponent title={`${type === 'call' ? 'Call' : 'SMS'} Log`} breadCrumbs={breadCrumbs} handleButtonClick={() => {}} hasCreate={false}>
+            <ToolbarComponent title={`${firstLetterUpperCase(type || '')} Log`} breadCrumbs={breadCrumbs} handleButtonClick={() => {}} hasCreate={false}>
                 <FilterComponent filter={filter} submit={handleFilterSubmit}/>
             </ToolbarComponent>
             <KTCard className="mb-5 mb-xl-8">
                 <KTCardBody className='py-3'>
-                    <TableComponent queryKey="calls" url={PHONE_URL} params={params} columns={phoneColumns} refetch={refetch} />
+                    <TableComponent queryKey="calls" url={PHONE_URL} params={stringifyRequestQuery({...params, type})} columns={phoneColumns} refetch={refetch} />
                 </KTCardBody>
             </KTCard>
             <VoIPCreateForm updateList={updateList} />
