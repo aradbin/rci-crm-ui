@@ -5,9 +5,9 @@ import { toAbsoluteUrl } from '../../../_metronic/helpers'
 import { createRequest, getRequest } from '../../helpers/Requests'
 import { WHATSAPP_URL } from '../../helpers/ApiEndpoints'
 import { useAuth } from '../../modules/auth'
-import { formatDateTime, getSettingsFromUserSettings } from '../../helpers/Utils'
+import { formatDateTime, formatTime, getSettingsFromUserSettings } from '../../helpers/Utils'
 import { SocketContext } from '../../providers/SocketProvider'
-import ChatImage from './ChatImage'
+import ChatAttachment from './ChatAttachment'
 import { LoadingComponent } from '../common/LoadingComponent'
 
 const ChatInner = ({conversation}: any) => {
@@ -115,31 +115,53 @@ const ChatInner = ({conversation}: any) => {
           style={{ height: 'calc(100vh - 321px)' }}
         >
           {whatsapp?.map((item: any, index: number) => {
-            const state = item?.is_sender === 1 ? 'primary' : 'info'
-            const contentClass = `d-flex justify-content-${item?.is_sender === 1 ? 'end' : 'start'} mb-1`
+            const state = item?.is_event === 1 ? 'warning' : item?.is_sender === 1 ? 'success' : 'info'
+            const contentClass = `d-flex justify-content-${item?.is_event === 1 ? 'center' : item?.is_sender === 1 ? 'end' : 'start'} ${item?.is_event === 1 ? 'my-4' : 'mb-1'}`
             return (
               <div
                 key={index}
-                className={clsx('d-flex', contentClass, 'mb-1')}
+                className={`${contentClass} flex-column align-items align-items-${item.is_sender === 1 ? 'end' : 'start'}`}
               >
+                {item?.edited ? <span className='fs-9 text-muted'>Edited</span> : <></>}
                 <div
-                  className={clsx('d-flex flex-column align-items', `align-items-${item.is_sender === 1 ? 'end' : 'start'}`
-                  )}
+                  className={`px-3 py-2 rounded bg-light-${state} text-dark fw-bold mw-lg-400px`}
+                  data-kt-element='message-text'
+                  style={{ overflowWrap: 'anywhere' }}
                 >
-                  {item?.text &&
-                    <div className={clsx(
-                        'px-3 py-2 rounded',
-                        `bg-light-${state}`,
-                        'text-dark fw-bold mw-lg-400px',
-                        `text-${item?.is_sender === 1 ? 'end' : 'start'}`
-                      )}
-                      data-kt-element='message-text'
-                      dangerouslySetInnerHTML={{__html: item?.text}}
-                    />
-                  }
                   {item?.attachments && item?.attachments?.map((attachment: any, index: number) =>
-                    <ChatImage key={index} id={item?.id} attachment={attachment} />
+                    <ChatAttachment key={index} message={item} attachment={attachment} />
                   )}
+                  {item?.attachments?.length > 0 && item?.text && <div className="separator border-2 my-1"></div>}
+                  <div className='d-flex gap-2 align-items-end justify-content-between'>
+                    {item?.text ?
+                      <p className={`text-wrap p-0 pb-1 m-0 ${item?.is_event === 1 ? 'text-center' : ''}`}>
+                        {item?.text?.startsWith('http') ?
+                          <a href={item?.text} target='_blank' rel="noreferrer" className='text-primary'>
+                            {item?.text}
+                          </a>
+                        :
+                          item?.text
+                        }
+                      </p>
+                    :
+                      <p className='p-0 m-0'>&nbsp;</p>
+                    }
+                    {item?.is_event === 0 && <p className='d-flex p-0 m-0 fs-8 fw-normal text-right text-nowrap'>
+                      {item?.timestamp && <span className='text-muted'>{formatTime(item?.timestamp)}</span>}
+                      {item?.is_sender === 1 &&
+                        <span className='ms-1'>
+                          {item?.seen === 1 ?
+                            <i className="bi bi-check-all text-success" />
+                          :
+                            item?.delivered === 1 ?
+                              <i className="bi bi-check-all" />
+                            :
+                              <i className="bi bi-check" />
+                          }
+                        </span>
+                      }
+                    </p>}
+                  </div>
                 </div>
               </div>
             )

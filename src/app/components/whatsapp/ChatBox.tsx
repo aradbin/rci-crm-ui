@@ -2,7 +2,7 @@
 import { useState } from 'react'
 import { toAbsoluteUrl } from '../../../_metronic/helpers'
 import { WHATSAPP_URL } from '../../helpers/ApiEndpoints'
-import { Query } from '../../helpers/Queries'
+import { Query, QueryInfinite } from '../../helpers/Queries'
 import { ChatInner } from './ChatInner'
 import { formatDate, getSettingsFromUserSettings } from '../../helpers/Utils'
 import { LoadingComponent } from '../common/LoadingComponent'
@@ -17,7 +17,7 @@ const ChatBox = () => {
     return getSettingsFromUserSettings(currentUser?.userSettings, 'whatsapp').phone_number
   }
 
-  const conversationsQuery = Query('all-whatsapp', `${WHATSAPP_URL}?account=${getWhatsAppAccount()}`)
+  const { data, fetchNextPage, hasNextPage, isFetching, isFetchingNextPage } = QueryInfinite('all-whatsapp', `${WHATSAPP_URL}?account=${getWhatsAppAccount()}`)
 
   return (
     <div className='d-flex flex-column flex-lg-row'>
@@ -36,10 +36,10 @@ const ChatBox = () => {
             </form>
           </div>
 
-          <div className='card-body pt-2' id='kt_chat_contacts_body'>
+          <div className='card-body px-5 pt-2' id='kt_chat_contacts_body'>
             {/* <button className='btn btn-primary btn-sm w-100 mb-2' type='button' onClick={() => setShowCreateWhatsApp(true)}>New Chat</button> */}
             <div
-              className='scroll-y me-n5 pe-5'
+              className='scroll-y me-n5 pe-1'
               data-kt-scroll='true'
               data-kt-scroll-activate='{default: false, lg: true}'
               data-kt-scroll-max-height='auto'
@@ -48,33 +48,45 @@ const ChatBox = () => {
               data-kt-scroll-offset='0px'
               style={{ height: 'calc(100vh - 270px)' }}
             >
-              {conversationsQuery?.data?.items?.map((item: any) => {
-                if(!filter || (item?.provider_id?.toLowerCase()?.includes(filter?.toLowerCase()) || item?.name?.toLowerCase()?.includes(filter?.toLowerCase()))){
-                  return (
-                    <div className='d-flex flex-stack py-2 cursor-pointer' key={item?.id} onClick={() => setSelectedConversation(item)}>
-                      <div className='d-flex align-items-center'>
-                        <div className='symbol symbol-45px symbol-circle'>
-                          <img alt='Avatar' src={item?.customer?.avatar || toAbsoluteUrl('/media/avatars/blank.png')} />
+              {data?.pages?.map((page: any) => (
+                <div>
+                  {page?.items?.map((item: any) => {
+                    if(!filter || (item?.provider_id?.toLowerCase()?.includes(filter?.toLowerCase()) || item?.name?.toLowerCase()?.includes(filter?.toLowerCase()))){
+                      return (
+                        <div className={`d-flex flex-stack px-5 py-3 cursor-pointer rounded ${selectedConversation?.id === item?.id ? 'bg-success-subtle' : ''}`} key={item?.id} onClick={() => setSelectedConversation(item)}>
+                          <div className='d-flex align-items-center'>
+                            <div className='symbol symbol-40px symbol-circle'>
+                              <img alt='Avatar' src={item?.customer?.avatar || toAbsoluteUrl('/media/avatars/blank.png')} />
+                            </div>
+                            <div className='ms-5'>
+                              <span className='fs-5 fw-bolder text-gray-900 text-hover-primary mb-2'>
+                                {item?.name || item?.provider_id?.split('@')[0]}
+                              </span>
+                              {item?.name && <div className='fw-bold text-gray-400'>{item?.provider_id?.split('@')[0]}</div>}
+                            </div>
+                          </div>
+                          <div className='d-flex flex-column align-items-end ms-2'>
+                            <span className='text-muted fs-7 mb-1'>{item?.timestamp ? formatDate(item?.timestamp) : formatDate(new Date())}</span>
+                          </div>
                         </div>
-                        <div className='ms-5'>
-                          <span className='fs-5 fw-bolder text-gray-900 text-hover-primary mb-2'>
-                            {item?.name || item?.provider_id?.split('@')[0]}
-                          </span>
-                          {item?.name && <div className='fw-bold text-gray-400'>{item?.provider_id?.split('@')[0]}</div>}
-                        </div>
-                      </div>
-                      <div className='d-flex flex-column align-items-end ms-2'>
-                        <span className='text-muted fs-7 mb-1'>{item?.timestamp ? formatDate(item?.timestamp) : formatDate(new Date())}</span>
-                      </div>
-                    </div>
-                  )
-                }
-              }
-              )}
+                      )
+                    }
+                  })}
+                </div>
+              ))}
+              <div className="d-flex justify-content-center my-2">
+                {hasNextPage && <button className="btn btn-sm btn-outline btn-outline-primary" onClick={() => fetchNextPage()}>
+                  {isFetchingNextPage ?
+                    <span>Loading {' '} <span className='spinner-border spinner-border-sm align-middle ms-2'></span></span>
+                  : 
+                    'Load More'
+                  }
+                </button>}
+              </div>
             </div>
           </div>
 
-          {conversationsQuery?.isLoading && <LoadingComponent />}
+          {!data?.pages?.length && <LoadingComponent />}
         </div>
       </div>
 
