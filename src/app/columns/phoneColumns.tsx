@@ -27,14 +27,16 @@ export const phoneColumns = [
   },
   {
     Header: "Called At",
-    accessor: "log.start",
+    Cell: ({row}: any) => { return (
+      <span>{row?.original?.log?.callDate} {row?.original?.log?.callTime}</span>
+    )}
   },
   {
     Header: "Direction",
-    Cell: ({row}: any) => { return (row?.original?.log?.direction === 'Outgoing' ?
-      <span><i className="bi bi-telephone-outbound-fill pe-2"></i>{row?.original?.log?.direction}</span>
+    Cell: ({row}: any) => { return (row?.original?.log?.callType === 'Outgoing' ?
+      <span><i className="bi bi-telephone-outbound-fill pe-2"></i>{row?.original?.log?.callType}</span>
     :
-      <span><i className="bi bi-telephone-inbound-fill pe-2"></i>{row?.original?.log?.direction}</span>
+      <span><i className="bi bi-telephone-inbound-fill pe-2"></i>{row?.original?.log?.callType}</span>
     )}
   },
   {
@@ -42,7 +44,7 @@ export const phoneColumns = [
     Cell: ({row}: any) => { return (row?.original?.state === 'Missed' ?
       <span className="badge badge-sm badge-danger">Missed</span>
     :
-      <span className="text-success">{row?.original?.log?.duration}s</span>
+      <span className="text-success">{row?.original?.log?.callDuration}</span>
     )}
   },
   // {
