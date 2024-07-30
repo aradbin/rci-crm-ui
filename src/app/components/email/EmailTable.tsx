@@ -74,7 +74,7 @@ const TableInstance = ({tableData, tableColumns}: any) => {
 const EmailTable = ({queryKey, url, params='', columns, refetch, canExpand=''}: any) => {
     const queryClient = useQueryClient()
 
-    const { data, fetchNextPage, hasNextPage, isFetching, isFetchingNextPage } = QueryInfinite(queryKey, url, params)
+    const { data, fetchNextPage, hasNextPage, isFetchingNextPage } = QueryInfinite(queryKey, url, params)
 
     useEffect(() => {
         queryClient.invalidateQueries({ queryKey: [queryKey, params] })
@@ -83,7 +83,9 @@ const EmailTable = ({queryKey, url, params='', columns, refetch, canExpand=''}: 
     const getTableData = () => {
         let tableData = []
         data?.pages?.forEach(item => {
-            tableData = tableData.concat(item?.items)
+            if(item?.items?.length > 0){
+                tableData = tableData.concat(item?.items)
+            }
         })
 
         return tableData
