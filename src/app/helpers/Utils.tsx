@@ -25,12 +25,22 @@ const formatDate = (value: any, type="") => {
   return ""
 }
 
+const formatTime = (value: any, type="") => {
+  if(value && moment(value).isValid()){
+    if(type==='input'){
+      return moment(value).format('YYYY-MM-DD')
+    }
+    return moment(value).format('hh:mm A')
+  }
+  return ""
+}
+
 const formatDateTime = (value: any, type="") => {
   if(value && moment(value).isValid()){
     if(type==='input'){
       return moment(value).format('YYYY-MM-DD')
     }
-    return moment(value).format('DD/MM/YYYY HH:MM A')
+    return moment(value).format('DD/MM/YYYY hh:mm A')
   }
   return ""
 }
@@ -127,4 +137,4 @@ const getSettingsFromUserSettings = (userSettings: any, type: string) => {
   return settings
 }
 
-export { stringifyRequestQuery, formatDate, formatDateTime, firstLetterUpperCase, getTaskPriorityBadge, getCustomerPriorityBadge, getTaskStatusBadge, getTaskTime, getTaskTimeString, getSettingsFromUserSettings }
+export { stringifyRequestQuery, formatDate, formatTime, formatDateTime, firstLetterUpperCase, getTaskPriorityBadge, getCustomerPriorityBadge, getTaskStatusBadge, getTaskTime, getTaskTimeString, getSettingsFromUserSettings }

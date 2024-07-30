@@ -46,30 +46,30 @@ const SettingCreateForm = ({show, toggleShow, updateList, type}: any) => {
                 is: () => type === 'service',
                 then: (schema) => schema.required('Service Cycle is required')
             }),
-            smtp: Yup.string().when({
-                is: () => type === 'email',
-                then: (schema) => schema.required('SMTP host is required')
-            }),
-            smtp_port: Yup.string().when({
-                is: () => type === 'email',
-                then: (schema) => schema.required('SMTP port is required')
-            }),
-            imap: Yup.string().when({
-                is: () => type === 'email',
-                then: (schema) => schema.required('IMAP host is required')
-            }),
-            imap_port: Yup.string().when({
-                is: () => type === 'email',
-                then: (schema) => schema.required('IMAP port is required')
-            }),
+            // smtp: Yup.string().when({
+            //     is: () => type === 'email',
+            //     then: (schema) => schema.required('SMTP host is required')
+            // }),
+            // smtp_port: Yup.string().when({
+            //     is: () => type === 'email',
+            //     then: (schema) => schema.required('SMTP port is required')
+            // }),
+            // imap: Yup.string().when({
+            //     is: () => type === 'email',
+            //     then: (schema) => schema.required('IMAP host is required')
+            // }),
+            // imap_port: Yup.string().when({
+            //     is: () => type === 'email',
+            //     then: (schema) => schema.required('IMAP port is required')
+            // }),
             username: Yup.string().when({
                 is: () => type === 'email',
                 then: (schema) => schema.required('Username is required')
             }),
-            password: Yup.string().when({
-                is: () => type === 'email',
-                then: (schema) => schema.required('Password is required')
-            }),
+            // password: Yup.string().when({
+            //     is: () => type === 'email',
+            //     then: (schema) => schema.required('Password is required')
+            // }),
             // access_token: Yup.string().when({
             //     is: () => type === 'whatsapp',
             //     then: (schema) => schema.required('Access Token is required')
@@ -232,7 +232,7 @@ const SettingCreateForm = ({show, toggleShow, updateList, type}: any) => {
                                 />
                                 </>}
                                 {type === 'email' && <>
-                                <div className="row">
+                                {/* <div className="row">
                                     <div className="col-md-7">
                                         <Field
                                             label="SMTP Host"
@@ -273,7 +273,7 @@ const SettingCreateForm = ({show, toggleShow, updateList, type}: any) => {
                                             size="sm"
                                         />
                                     </div>
-                                </div>
+                                </div> */}
                                 <Field
                                     label="Email"
                                     name="username"
@@ -282,14 +282,14 @@ const SettingCreateForm = ({show, toggleShow, updateList, type}: any) => {
                                     component={InputField}
                                     size="sm"
                                 />
-                                <Field
+                                {/* <Field
                                     label="Password"
                                     name="password"
                                     type="password"
                                     required="required"
                                     component={InputField}
                                     size="sm"
-                                />
+                                /> */}
                                 </>}
                                 {type === 'whatsapp' && <>
                                 {/* <Field
