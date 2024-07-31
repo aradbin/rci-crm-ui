@@ -38,4 +38,38 @@ const statuses = [
     { label: "Done", value: "done", color: "success" },
 ]
 
-export { settings, cycles, priorities, customerPriorities, statuses }
+const folders = [
+    { label: "Inbox", value: "inbox", color: "success" },
+    { label: "Sent", value: "sent", color: "info" },
+    { label: "Spam", value: "spam", color: "warning" },
+    { label: "Trash", value: "trash", color: "danger" },
+]
+
+const email = [
+    {
+        email: 'info@rciglobal.org',
+        password: '$Victoria12',
+        smtp: 'auth.smtp.1and1.co.uk',
+        port: '465',
+        imap: 'imap.1and1.co.uk',
+        imap_port: '993'
+    },
+    {
+        email: 'payroll@rciglobal.org',
+        password: 'Windsor.123@',
+        smtp: 'auth.smtp.1and1.co.uk',
+        port: '465',
+        imap: 'imap.1and1.co.uk',
+        imap_port: '993'
+    },
+    {
+        email: 'vat@rciglobal.org',
+        password: '$Windsor12',
+        smtp: 'auth.smtp.1and1.co.uk',
+        port: '465',
+        imap: 'imap.1and1.co.uk',
+        imap_port: '993'
+    }
+]
+
+export { settings, cycles, priorities, customerPriorities, statuses, folders }

@@ -46,46 +46,46 @@ const SettingCreateForm = ({show, toggleShow, updateList, type}: any) => {
                 is: () => type === 'service',
                 then: (schema) => schema.required('Service Cycle is required')
             }),
-            smtp: Yup.string().when({
-                is: () => type === 'email',
-                then: (schema) => schema.required('SMTP host is required')
-            }),
-            smtp_port: Yup.string().when({
-                is: () => type === 'email',
-                then: (schema) => schema.required('SMTP port is required')
-            }),
-            imap: Yup.string().when({
-                is: () => type === 'email',
-                then: (schema) => schema.required('IMAP host is required')
-            }),
-            imap_port: Yup.string().when({
-                is: () => type === 'email',
-                then: (schema) => schema.required('IMAP port is required')
-            }),
+            // smtp: Yup.string().when({
+            //     is: () => type === 'email',
+            //     then: (schema) => schema.required('SMTP host is required')
+            // }),
+            // smtp_port: Yup.string().when({
+            //     is: () => type === 'email',
+            //     then: (schema) => schema.required('SMTP port is required')
+            // }),
+            // imap: Yup.string().when({
+            //     is: () => type === 'email',
+            //     then: (schema) => schema.required('IMAP host is required')
+            // }),
+            // imap_port: Yup.string().when({
+            //     is: () => type === 'email',
+            //     then: (schema) => schema.required('IMAP port is required')
+            // }),
             username: Yup.string().when({
                 is: () => type === 'email',
                 then: (schema) => schema.required('Username is required')
             }),
-            password: Yup.string().when({
-                is: () => type === 'email',
-                then: (schema) => schema.required('Password is required')
-            }),
-            access_token: Yup.string().when({
-                is: () => type === 'whatsapp',
-                then: (schema) => schema.required('Access Token is required')
-            }),
+            // password: Yup.string().when({
+            //     is: () => type === 'email',
+            //     then: (schema) => schema.required('Password is required')
+            // }),
+            // access_token: Yup.string().when({
+            //     is: () => type === 'whatsapp',
+            //     then: (schema) => schema.required('Access Token is required')
+            // }),
             phone_number: Yup.string().when({
                 is: () => type === 'whatsapp',
                 then: (schema) => schema.required('Phone Number is required')
             }),
-            phone_number_id: Yup.string().when({
-                is: () => type === 'whatsapp',
-                then: (schema) => schema.required('Phone Number ID is required')
-            }),
-            whatsapp_business_account_id: Yup.string().when({
-                is: () => type === 'whatsapp',
-                then: (schema) => schema.required('Whatsapp Business Account ID is required')
-            }),
+            // phone_number_id: Yup.string().when({
+            //     is: () => type === 'whatsapp',
+            //     then: (schema) => schema.required('Phone Number ID is required')
+            // }),
+            // whatsapp_business_account_id: Yup.string().when({
+            //     is: () => type === 'whatsapp',
+            //     then: (schema) => schema.required('Whatsapp Business Account ID is required')
+            // }),
             number: Yup.string().when({
                 is: () => (type === 'voip' || type === 'phone'),
                 then: (schema) => schema.required('Number is required')
@@ -132,7 +132,8 @@ const SettingCreateForm = ({show, toggleShow, updateList, type}: any) => {
                     await createRequest(SETTINGS_URL,formData).then((response) => {
                         if(response?.status===201){
                             toast.success(`${firstLetterUpperCase(type)} Created Successfully`)
-                            updateListHandler()
+                            const qr = type === 'whatsapp' ? true : false
+                            updateListHandler(qr)
                             closeModal()
                         }
                     })
@@ -194,9 +195,9 @@ const SettingCreateForm = ({show, toggleShow, updateList, type}: any) => {
         setIdForUpdate(0)
     }
 
-    const updateListHandler = () => {
+    const updateListHandler = (qr = false) => {
         queryClient.invalidateQueries({ queryKey: ['all-settings'] })
-        updateList()
+        updateList(qr)
     }
 
     return (
@@ -231,7 +232,7 @@ const SettingCreateForm = ({show, toggleShow, updateList, type}: any) => {
                                 />
                                 </>}
                                 {type === 'email' && <>
-                                <div className="row">
+                                {/* <div className="row">
                                     <div className="col-md-7">
                                         <Field
                                             label="SMTP Host"
@@ -272,7 +273,7 @@ const SettingCreateForm = ({show, toggleShow, updateList, type}: any) => {
                                             size="sm"
                                         />
                                     </div>
-                                </div>
+                                </div> */}
                                 <Field
                                     label="Email"
                                     name="username"
@@ -281,24 +282,24 @@ const SettingCreateForm = ({show, toggleShow, updateList, type}: any) => {
                                     component={InputField}
                                     size="sm"
                                 />
-                                <Field
+                                {/* <Field
                                     label="Password"
                                     name="password"
                                     type="password"
                                     required="required"
                                     component={InputField}
                                     size="sm"
-                                />
+                                /> */}
                                 </>}
                                 {type === 'whatsapp' && <>
-                                <Field
+                                {/* <Field
                                     label="Access Token"
                                     name="access_token"
                                     type="text"
                                     required="required"
                                     component={InputField}
                                     size="sm"
-                                />
+                                /> */}
                                 <Field
                                     label="Phone Number"
                                     name="phone_number"
@@ -307,7 +308,7 @@ const SettingCreateForm = ({show, toggleShow, updateList, type}: any) => {
                                     component={InputField}
                                     size="sm"
                                 />
-                                <Field
+                                {/* <Field
                                     label="Phone Number ID"
                                     name="phone_number_id"
                                     type="text"
@@ -322,7 +323,7 @@ const SettingCreateForm = ({show, toggleShow, updateList, type}: any) => {
                                     required="required"
                                     component={InputField}
                                     size="sm"
-                                />
+                                /> */}
                                 </>}
                                 {(type === 'voip' || type === 'phone') && <>
                                 <Field

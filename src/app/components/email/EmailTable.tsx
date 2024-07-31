@@ -1,9 +1,9 @@
 import { useEffect, useMemo, useState } from "react";
 import { useQueryClient } from "react-query";
 import { useExpanded, useTable } from "react-table";
-import { Query } from "../../helpers/Queries";
-import { LoadingComponent } from "./LoadingComponent";
-import { PaginationComponent } from "./PaginationComponent";
+import { Query, QueryInfinite } from "../../helpers/Queries";
+import { PaginationComponent } from "../common/PaginationComponent";
+import { LoadingComponent } from "../common/LoadingComponent";
 
 const TableLayout = ({
     getTableProps,
@@ -71,48 +71,44 @@ const TableInstance = ({tableData, tableColumns}: any) => {
     );
 }
 
-const TableComponent = ({queryKey, url, params='', columns, refetch, canExpand=''}: any) => {
+const EmailTable = ({queryKey, url, params='', columns, refetch, canExpand=''}: any) => {
     const queryClient = useQueryClient()
 
-    const [page, setPage] = useState(1)
-    const [pageSize, setPageSize] = useState(10)
-
-    const { isLoading, isFetching, data } = Query(queryKey, url, `page=${page}&pageSize=${pageSize}${params!=="" ? "&"+params : ""}`)
-
-    const updatePage = (value: number) => {
-        setPage(value)
-    }
-
-    const updatePageSize = (value: number) => {
-        setPage(1)
-        setPageSize(value)
-    }
+    const { data, fetchNextPage, hasNextPage, isFetchingNextPage } = QueryInfinite(queryKey, url, params)
 
     useEffect(() => {
-        if(page===1){
-            queryClient.invalidateQueries({ queryKey: [queryKey, `page=1&pageSize=${pageSize}${params!=="" ? "&"+params : ""}`] })
-        }else{
-            setPage(1)
-        }
+        queryClient.invalidateQueries({ queryKey: [queryKey, params] })
     },[refetch, params])
 
-    let tableData = data?.results || data?.items || []
-    if(canExpand){
-        tableData = data?.results?.map((item: any) => {
-            return {
-                ...item,
-                subRows: item[canExpand]
+    const getTableData = () => {
+        let tableData = []
+        data?.pages?.forEach(item => {
+            if(item?.items?.length > 0){
+                tableData = tableData.concat(item?.items)
             }
         })
+
+        return tableData
     }
 
     return (
       <>
-        <TableInstance tableData={tableData || []} tableColumns={columns} />
-        {(isLoading || isFetching) && <LoadingComponent />}
-        <PaginationComponent page={page} pageSize={pageSize} count={data?.total} updatePage={updatePage} updatePageSize={updatePageSize} />
+        <TableInstance tableData={getTableData() || []} tableColumns={columns} />
+        {!data?.pages?.length && <LoadingComponent />}
+
+        <div className="d-flex justify-content-center">
+            {hasNextPage && <button className="btn btn-sm btn-outline btn-outline-primary" onClick={() => fetchNextPage()}>
+                {isFetchingNextPage ?
+                    <span>
+                        Loading {' '} <span className='spinner-border spinner-border-sm align-middle ms-2'></span>
+                    </span>
+                : 
+                    'Load More'
+                }
+            </button>}
+        </div>
       </>
     );
 }
 
-export {TableComponent}
+export {EmailTable}

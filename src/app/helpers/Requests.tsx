@@ -10,6 +10,16 @@ async function getRequest(url: string, query?: string) {
     })
 }
 
+async function getRequestBlob(url: string, query?: string) {
+  return await axios
+    .get(`${url}${query ? `?${query}` : ""}`, {
+      // responseType: 'blob'
+    })
+    .catch((error) => {
+      catchError(error)
+    })
+}
+
 async function createRequest(url: string, values: any) {
   return await axios
     .post(url, values)
@@ -64,4 +74,4 @@ const catchError = (error: any) => {
   toast.error(error?.response?.data?.message)
 }
 
-export { getRequest, createRequest, createRequestWithFile, updateRequest, deleteRequest }
+export { getRequest, getRequestBlob, createRequest, createRequestWithFile, updateRequest, deleteRequest }

@@ -10,38 +10,39 @@ import { TextAreaField } from "../fields/TextAreaField"
 import { AppContext } from "../../providers/AppProvider"
 import { useAuth } from "../../modules/auth"
 import { getSettingsFromUserSettings } from "../../helpers/Utils"
+import { useQueryClient } from "react-query"
 
 const WhatsAppCreateForm = () => {
     const { currentUser } = useAuth()
     const [show, setShow] = useState(false)
     const { idForWhatsApp, setIdForWhatsApp, showCreateWhatsApp, setShowCreateWhatsApp } = useContext(AppContext)
+    const queryClient = useQueryClient()
 
     const formik = useFormik({
         initialValues: {
             sender_number: getSettingsFromUserSettings(currentUser?.userSettings, 'whatsapp').phone_number,
             recipient_number: "",
-            msg_body: "",
+            text: "",
             template_name: "",
             message_type: "text",
         },
         validationSchema: Yup.object().shape({
             recipient_number: Yup.string().required('Recipient Number is required'),
-            msg_body: Yup.string().required('Message is required'),
+            text: Yup.string().required('Message is required'),
         }),
         onSubmit: async (values, {setSubmitting}) => {
             setSubmitting(true)
-            try {
-                await createRequest(WHATSAPP_URL, values).then((response) => {
-                    if(response?.status===201){
-                        toast.success('Message Sent Successfully')
-                        closeModal()
-                    }
-                })
-            } catch (ex) {
-                console.error(ex)
-            } finally {
+            await createRequest(WHATSAPP_URL, values).then((response) => {
+                console.log(response)
+                if(response?.data?.chat_id){
+                    queryClient.invalidateQueries({ queryKey: ['all-whatsapp'] })
+                    closeModal()
+                }
+            }).catch((error) => {
+                console.log(error)
+            }).finally(() => {
                 setSubmitting(false)
-            }
+            })
         },
     })
 
@@ -101,7 +102,7 @@ const WhatsAppCreateForm = () => {
                                 />
                                 <Field
                                     label="Body"
-                                    name="msg_body"
+                                    name="text"
                                     type="text"
                                     required="required"
                                     component={TextAreaField}

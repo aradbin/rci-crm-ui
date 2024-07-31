@@ -2,40 +2,76 @@
 import {useContext, useEffect, useState} from 'react'
 import clsx from 'clsx'
 import { toAbsoluteUrl } from '../../../_metronic/helpers'
-import { getRequest } from '../../helpers/Requests'
+import { createRequest, getRequest } from '../../helpers/Requests'
 import { WHATSAPP_URL } from '../../helpers/ApiEndpoints'
 import { useAuth } from '../../modules/auth'
-import { formatDateTime } from '../../helpers/Utils'
+import { formatDateTime, formatTime, getSettingsFromUserSettings } from '../../helpers/Utils'
 import { SocketContext } from '../../providers/SocketProvider'
-import ChatImage from './ChatImage'
+import ChatAttachment from './ChatAttachment'
+import { LoadingComponent } from '../common/LoadingComponent'
 
 const ChatInner = ({conversation}: any) => {
   const { currentUser } = useAuth()
-  const { socket, whatsapp, setWhatsApp } = useContext(SocketContext)
+  const { socketCommunication, whatsapp, setWhatsApp } = useContext(SocketContext)
 
   const [message, setMessage] = useState<string>('')
+  const [loading, setLoading] = useState<boolean>(false)
 
   useEffect(() => {
     if(conversation?.id){
-      getRequest(`${WHATSAPP_URL}/${conversation?.id}`).then((response) => {
-        setWhatsApp(response)
-      })
+      getWhatsApp(false)
     }
   },[conversation])
 
+  const getWhatsApp = (keep = true) => {
+    setLoading(true)
+    if(!keep){
+      setWhatsApp([])
+    }
+    getRequest(`${WHATSAPP_URL}/${conversation?.id}`).then((response) => {
+      setWhatsApp(response?.items || [])
+    }).finally(() => {
+      setLoading(false)
+    })
+  }
+
   const sendMessage = () => {
-    if(socket){
-      const payload: any = { sender: currentUser?.id, receiver: conversation?.id, message }
-      if(conversation?.id){
-        payload.conversation_id = conversation?.id
+    if(socketCommunication){
+      const payload: any = {
+        conversation_id: conversation?.id,
+        sender_number: getSettingsFromUserSettings(currentUser?.userSettings, 'whatsapp').phone_number,
+        text: message
       }
-      socket.emit('whatsapp', payload, (response: any) => {
+      socketCommunication.emit('whatsapp', payload, (response: any) => {
         setWhatsApp(prevMessages => {
           const currentMessages = [...prevMessages]
-          currentMessages.unshift(response)
+          currentMessages.unshift({
+            is_sender: 1,
+            text: message,
+          })
           return currentMessages
         })
         setMessage('')
+      })
+    }else{
+      setLoading(true)
+      createRequest(WHATSAPP_URL, {
+        conversation_id: conversation?.id || null,
+        text: message
+      }).then((response) => {
+        setWhatsApp(prevMessages => {
+          const currentMessages = [...prevMessages]
+          currentMessages.unshift({
+            is_sender: 1,
+            text: message,
+          })
+          return currentMessages
+        })
+        setMessage('')
+      }).catch((error) => {
+        console.log(error)
+      }).finally(() => {
+        setLoading(false)
       })
     }
   }
@@ -56,24 +92,11 @@ const ChatInner = ({conversation}: any) => {
           </div>
           <div className='ms-5'>
             <a href='#' className='fs-5 fw-bolder text-gray-900 text-hover-primary mb-2'>
-              {conversation?.customer?.name || conversation?.recipient_id}
+              {conversation?.name || conversation?.provider_id?.split('@')[0]}
             </a>
-            {conversation?.customer?.name && <div className='fw-bold text-gray-400'>{conversation?.recipient_id}</div>}
+            {conversation?.name && <div className='fw-bold text-gray-400'>{conversation?.provider_id?.split('@')[0]}</div>}
           </div>
         </div>
-        {/* <div className='card-toolbar'>
-          <div className='me-n3'>
-            <button
-              className='btn btn-sm btn-icon btn-active-light-primary'
-              data-kt-menu-trigger='click'
-              data-kt-menu-placement='bottom-end'
-              data-kt-menu-flip='top-end'
-            >
-              <i className='bi bi-three-dots fs-2'></i>
-            </button>
-            <Dropdown1 />
-          </div>
-        </div> */}
       </div>
 
       <div
@@ -92,59 +115,53 @@ const ChatInner = ({conversation}: any) => {
           style={{ height: 'calc(100vh - 321px)' }}
         >
           {whatsapp?.map((item: any, index: number) => {
-            const state = item?.user ? 'primary' : 'info'
-            const contentClass = `d-flex justify-content-${item?.user ? 'end' : 'start'} mb-10`
+            const state = item?.is_event === 1 ? 'warning' : item?.is_sender === 1 ? 'success' : 'info'
+            const contentClass = `d-flex justify-content-${item?.is_event === 1 ? 'center' : item?.is_sender === 1 ? 'end' : 'start'} ${item?.is_event === 1 ? 'my-4' : 'mb-1'}`
             return (
               <div
                 key={index}
-                className={clsx('d-flex', contentClass, 'mb-10')}
+                className={`${contentClass} flex-column align-items align-items-${item.is_sender === 1 ? 'end' : 'start'}`}
               >
+                {item?.edited ? <span className='fs-9 text-muted'>Edited</span> : <></>}
                 <div
-                  className={clsx('d-flex flex-column align-items', `align-items-${item.user ? 'end' : 'start'}`
-                  )}
+                  className={`px-3 py-2 rounded bg-light-${state} text-dark fw-bold mw-lg-400px`}
+                  data-kt-element='message-text'
+                  style={{ overflowWrap: 'anywhere' }}
                 >
-                  <div className='d-flex align-items-center mb-2'>
-                    {item?.user ? (
-                      <>
-                        <div className='me-3'>
-                          <span className='text-muted fs-7 mb-1'>{formatDateTime(item.created_at)}</span>
-                          <a href='#' className='fs-5 fw-bolder text-gray-900 text-hover-primary ms-1'>
-                            {item?.user?.name}
+                  {item?.attachments && item?.attachments?.map((attachment: any, index: number) =>
+                    <ChatAttachment key={index} message={item} attachment={attachment} />
+                  )}
+                  {item?.attachments?.length > 0 && item?.text && <div className="separator border-2 my-1"></div>}
+                  <div className='d-flex gap-2 align-items-end justify-content-between'>
+                    {item?.text ?
+                      <p className={`text-wrap p-0 pb-1 m-0 ${item?.is_event === 1 ? 'text-center' : ''}`}>
+                        {item?.text?.startsWith('http') ?
+                          <a href={item?.text} target='_blank' rel="noreferrer" className='text-primary'>
+                            {item?.text}
                           </a>
-                        </div>
-                        <div className='symbol  symbol-35px symbol-circle '>
-                          <img alt='Avatar' src={item?.user?.avatar || toAbsoluteUrl('/media/avatars/blank.png')} />
-                        </div>
-                      </>
-                    ) : (
-                      <>
-                        <div className='symbol  symbol-35px symbol-circle '>
-                          <img alt='Avatar' src={conversation?.customer?.avatar || toAbsoluteUrl('/media/avatars/blank.png')} />
-                        </div>
-                        <div className='ms-3'>
-                          <span className='fs-5 fw-bolder text-gray-900 text-hover-primary mb-2'>
-                            {item?.customer?.name || conversation?.recipient_id}
-                          </span>
-                          {item?.customer?.name && <div className='fw-bold text-gray-400'>{item?.recipient_id}</div>}
-                        </div>
-                      </>
-                    )}
+                        :
+                          item?.text
+                        }
+                      </p>
+                    :
+                      <p className='p-0 m-0'>&nbsp;</p>
+                    }
+                    {item?.is_event === 0 && <p className='d-flex p-0 m-0 fs-8 fw-normal text-right text-nowrap'>
+                      {item?.timestamp && <span className='text-muted'>{formatTime(item?.timestamp)}</span>}
+                      {item?.is_sender === 1 &&
+                        <span className='ms-1'>
+                          {item?.seen === 1 ?
+                            <i className="bi bi-check-all text-success" />
+                          :
+                            item?.delivered === 1 ?
+                              <i className="bi bi-check-all" />
+                            :
+                              <i className="bi bi-check" />
+                          }
+                        </span>
+                      }
+                    </p>}
                   </div>
-
-                  {item?.payload?.entry[0]?.changes[0]?.value?.messages[0]?.type === 'text' &&
-                    <div className={clsx(
-                        'p-5 rounded',
-                        `bg-light-${state}`,
-                        'text-dark fw-bold mw-lg-400px',
-                        `text-${item?.user ? 'end' : 'start'}`
-                      )}
-                      data-kt-element='message-text'
-                      dangerouslySetInnerHTML={{__html: item?.payload?.entry[0]?.changes[0]?.value?.messages[0]?.text?.body}}
-                    />
-                  }
-                  {(item?.payload?.entry[0]?.changes[0]?.value?.messages[0]?.type === 'image' && item?.payload?.entry[0]?.changes[0]?.value?.messages[0]?.image?.id) &&
-                    <ChatImage id={item?.payload?.entry[0]?.changes[0]?.value?.messages[0]?.image?.id} />
-                  }
                 </div>
               </div>
             )
@@ -174,6 +191,7 @@ const ChatInner = ({conversation}: any) => {
           Send
         </button>
       </div>
+      {loading && <LoadingComponent />}
     </div>
   </>)
 }

@@ -25,17 +25,28 @@ const formatDate = (value: any, type="") => {
   return ""
 }
 
+const formatTime = (value: any, type="") => {
+  if(value && moment(value).isValid()){
+    if(type==='input'){
+      return moment(value).format('YYYY-MM-DD')
+    }
+    return moment(value).format('hh:mm A')
+  }
+  return ""
+}
+
 const formatDateTime = (value: any, type="") => {
   if(value && moment(value).isValid()){
     if(type==='input'){
       return moment(value).format('YYYY-MM-DD')
     }
-    return moment(value).format('DD/MM/YYYY HH:MM A')
+    return moment(value).format('DD/MM/YYYY hh:mm A')
   }
   return ""
 }
 
 const firstLetterUpperCase = (string: string) => {
+  string = string.toLowerCase().replaceAll('_', ' ');
   return string.charAt(0).toUpperCase() + string.slice(1);
 }
 
@@ -100,7 +111,8 @@ const getSettingsFromUserSettings = (userSettings: any, type: string) => {
       if(type === 'email'){
         settings = {
           label: `${item?.settings?.name} (${item?.settings?.metadata?.username})`,
-          value: item?.settings?.id
+          value: item?.settings?.id,
+          username: item?.settings?.metadata?.username
         }
       }else if(type === 'whatsapp'){
         settings = {
@@ -125,4 +137,4 @@ const getSettingsFromUserSettings = (userSettings: any, type: string) => {
   return settings
 }
 
-export { stringifyRequestQuery, formatDate, formatDateTime, firstLetterUpperCase, getTaskPriorityBadge, getCustomerPriorityBadge, getTaskStatusBadge, getTaskTime, getTaskTimeString, getSettingsFromUserSettings }
+export { stringifyRequestQuery, formatDate, formatTime, formatDateTime, firstLetterUpperCase, getTaskPriorityBadge, getCustomerPriorityBadge, getTaskStatusBadge, getTaskTime, getTaskTimeString, getSettingsFromUserSettings }
