@@ -1,9 +1,10 @@
 const API_URL_LOCAL = 'http://localhost:8080'
 const API_URL_PROD = 'https://api.rci.rest'
 const API_URL_COMMUNICATION_LOCAL = 'http://localhost:8081'
+const API_URL_COMMUNICATION_PROD = 'http://64.227.164.119:8081'
 
-const BASE_URL = API_URL_LOCAL
-const BASE_URL_COMMUNICATION = API_URL_COMMUNICATION_LOCAL
+const BASE_URL = API_URL_PROD
+const BASE_URL_COMMUNICATION = API_URL_COMMUNICATION_PROD
 
 const AUTH_URL = `${BASE_URL}/auth`
 const USERS_URL = `${BASE_URL}/users`
