@@ -20,7 +20,7 @@ const ChatAttachment = ({message, attachment}: any) => {
     const getImageUrl = async () => {
         const options = {
             method: 'GET',
-            headers: {accept: '*/*', 'X-API-KEY': 'wFwfk/cP.ccLHavfhlifHp25s9DEHK/51sQRJl2mUu15Wxy/j0Nc='}
+            headers: {accept: '*/*', 'X-API-KEY': 'vR5WwQLJ.XaiBvDhfEsWaZcnDqu040dFhWnkIleJAktktMubAM8k='}
           };
           
           await fetch(`https://api6.unipile.com:13614/api/v1/messages/${message?.id}/attachments/${attachment?.id}`, options)
