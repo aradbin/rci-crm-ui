@@ -34,20 +34,7 @@ const SocketComponent = () => {
         setVoip(response)
       })
 
-      // socket to communication server
-      const socketCommunicationInstance = io(BASE_URL_COMMUNICATION, {
-        query: {
-          userId: currentUser?.id
-        }
-      })
-
-      socketCommunicationInstance.on('connect', () => {
-        console.log('Connected to communication');
-      })
-
-      setSocketCommunication(socketCommunicationInstance)
-      
-      socketCommunicationInstance.on('whatsapp', (response: any) => {
+      socketInstance.on('whatsapp', (response: any) => {
         setWhatsApp(prevMessages => {
           const currentMessages = [...prevMessages]
           if(currentMessages[currentMessages.length - 1]?.chat_id === response?.chat_id){
@@ -59,10 +46,23 @@ const SocketComponent = () => {
           return currentMessages
         })
       })
+
+      // socket to communication server
+      // const socketCommunicationInstance = io(BASE_URL_COMMUNICATION, {
+      //   query: {
+      //     userId: currentUser?.id
+      //   }
+      // })
+
+      // socketCommunicationInstance.on('connect', () => {
+      //   console.log('Connected to communication');
+      // })
+
+      // setSocketCommunication(socketCommunicationInstance)
         
       return () => {
         socketInstance.disconnect();
-        socketCommunicationInstance.disconnect();
+        // socketCommunicationInstance.disconnect();
         console.log('Disconnected from server')
       };
     },[])
