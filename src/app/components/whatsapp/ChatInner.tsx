@@ -12,7 +12,7 @@ import { LoadingComponent } from '../common/LoadingComponent'
 
 const ChatInner = ({conversation}: any) => {
   const { currentUser } = useAuth()
-  const { socketCommunication, whatsapp, setWhatsApp } = useContext(SocketContext)
+  const { socket, whatsapp, setWhatsApp } = useContext(SocketContext)
 
   const [message, setMessage] = useState<string>('')
   const [loading, setLoading] = useState<boolean>(false)
@@ -36,13 +36,14 @@ const ChatInner = ({conversation}: any) => {
   }
 
   const sendMessage = () => {
-    if(socketCommunication){
+    if(socket){
       const payload: any = {
         conversation_id: conversation?.id,
         sender_number: getSettingsFromUserSettings(currentUser?.userSettings, 'whatsapp').phone_number,
         text: message
       }
-      socketCommunication.emit('whatsapp', payload, (response: any) => {
+      console.log(payload)
+      socket.emit('whatsapp', payload, (response: any) => {
         setWhatsApp(prevMessages => {
           const currentMessages = [...prevMessages]
           currentMessages.unshift({
