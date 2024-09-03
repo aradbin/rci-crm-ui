@@ -1,7 +1,5 @@
 import { useEffect, useState } from "react"
-import { getRequest, getRequestBlob } from "../../helpers/Requests"
-import { WHATSAPP_URL } from "../../helpers/ApiEndpoints"
-import axios from "axios"
+import { QueryUnipileAttachment } from "../../helpers/Queries"
 
 const ChatAttachment = ({message, attachment}: any) => {
     const [imgUrl, setImgUrl] = useState("")
@@ -9,42 +7,32 @@ const ChatAttachment = ({message, attachment}: any) => {
     const [vidUrl, setVidUrl] = useState("")
     const [pdfUrl, setPdfUrl] = useState("")
     const [otherUrl, setOtherUrl] = useState("")
-    const [loading, setLoading] = useState(true)
+    
+    const {isLoading, data} = QueryUnipileAttachment(`attachment-${message?.id}-${attachment?.id}`, `/messages/${message?.id}/attachments/${attachment?.id}`)
 
     useEffect(() => {
-        if(message?.id && attachment && imgUrl === "" && audUrl === "" && vidUrl === "" && pdfUrl === "" && otherUrl === "") {
+        if(message?.id && attachment && data && imgUrl === "" && audUrl === "" && vidUrl === "" && pdfUrl === "" && otherUrl === "") {
             getImageUrl()
         }
-    },[message])
+    },[data])
 
     const getImageUrl = async () => {
-        const options = {
-            method: 'GET',
-            headers: {accept: '*/*', 'X-API-KEY': 'vR5WwQLJ.XaiBvDhfEsWaZcnDqu040dFhWnkIleJAktktMubAM8k='}
-          };
-          
-          await fetch(`https://api6.unipile.com:13614/api/v1/messages/${message?.id}/attachments/${attachment?.id}`, options)
-            .then(async (response: any) => {
-                const data = await response.blob()
-                const url = URL.createObjectURL(data)
-                if (response.headers.get('Content-Type').startsWith('image/')) {
-                    setImgUrl(url)
-                } else if (response.headers.get('Content-Type').startsWith('audio/')) {
-                    setAudUrl(url)
-                } else if (response.headers.get('Content-Type').startsWith('video/')) {
-                    setVidUrl(url)
-                } else if (response.headers.get('Content-Type').startsWith('application/pdf')) {
-                    setPdfUrl(url)
-                } else {
-                    setOtherUrl(url)
-                }
-            })
-            .catch(err => console.error(err))
-            .finally(() => setLoading(false))
+        const url = URL.createObjectURL(data)
+        if (data?.type?.startsWith('image/')) {
+            setImgUrl(url)
+        } else if (data?.type?.startsWith('audio/')) {
+            setAudUrl(url)
+        } else if (data?.type?.startsWith('video/')) {
+            setVidUrl(url)
+        } else if (data?.type?.startsWith('application/pdf')) {
+            setPdfUrl(url)
+        } else {
+            setOtherUrl(url)
+        }
     }
 
     return (<div className="mw-100">
-        {loading &&
+        {isLoading &&
             <div className="d-flex justify-content-center align-items-center" style={{ width: '100%', height: '100px', backgroundColor: '#92929f' }}>
                 <span className='spinner-border spinner-border-sm'></span>
             </div>

@@ -1,5 +1,6 @@
 import { useInfiniteQuery, useQuery } from "react-query"
 import { getRequest } from "../helpers/Requests"
+import { UNIPILE_API_KEY, UNIPILE_BASE_URL } from "./ApiEndpoints"
 
 const Query = (queryKey: any, url: string, params: string = "") => {
     const queryInstance = useQuery([queryKey, params], () => getRequest(url, params), {
@@ -19,4 +20,18 @@ const QueryInfinite = (queryKey: any, url: string, params: string = "") => {
     return queryInstance
 }
 
-export { Query, QueryInfinite }
+const QueryUnipileAttachment = (queryKey: any, url: string, params: string = "") => {
+    const queryInstance = useQuery([queryKey, params], () => fetch(`${UNIPILE_BASE_URL}${url}`, {
+        method: 'GET',
+        headers: {accept: '*/*', 'X-API-KEY': `${UNIPILE_API_KEY}`}
+    }).then(async (response: any) => {
+        const data = await response.blob()
+        return data
+    }), {
+        keepPreviousData: true,
+    })
+
+    return queryInstance
+}
+
+export { Query, QueryInfinite, QueryUnipileAttachment }
