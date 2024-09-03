@@ -1,20 +1,20 @@
 /* eslint-disable jsx-a11y/anchor-is-valid */
-import {useContext, useEffect, useState} from 'react'
-import clsx from 'clsx'
+import {useContext, useEffect, useRef, useState} from 'react'
 import { toAbsoluteUrl } from '../../../_metronic/helpers'
 import { createRequest, getRequest } from '../../helpers/Requests'
-import { WHATSAPP_URL } from '../../helpers/ApiEndpoints'
-import { useAuth } from '../../modules/auth'
-import { formatDateTime, formatTime, getSettingsFromUserSettings } from '../../helpers/Utils'
+import { UNIPILE_API_KEY, UNIPILE_BASE_URL, WHATSAPP_URL } from '../../helpers/ApiEndpoints'
+import { formatTime } from '../../helpers/Utils'
 import { SocketContext } from '../../providers/SocketProvider'
 import ChatAttachment from './ChatAttachment'
 import { LoadingComponent } from '../common/LoadingComponent'
+import { Modal } from 'react-bootstrap'
 
 const ChatInner = ({conversation}: any) => {
-  const { currentUser } = useAuth()
-  const { socket, whatsapp, setWhatsApp } = useContext(SocketContext)
+  const { whatsapp, setWhatsApp } = useContext(SocketContext)
 
+  const fileInputRef = useRef<any>(null)
   const [message, setMessage] = useState<string>('')
+  const [files, setFiles] = useState<any>(null)
   const [loading, setLoading] = useState<boolean>(false)
 
   useEffect(() => {
@@ -36,51 +36,71 @@ const ChatInner = ({conversation}: any) => {
   }
 
   const sendMessage = () => {
-    if(socket){
-      const payload: any = {
-        conversation_id: conversation?.id,
-        sender_number: getSettingsFromUserSettings(currentUser?.userSettings, 'whatsapp').phone_number,
-        text: message
-      }
-      console.log(payload)
-      socket.emit('whatsapp', payload, (response: any) => {
-        setWhatsApp(prevMessages => {
-          const currentMessages = [...prevMessages]
-          currentMessages.unshift({
-            is_sender: 1,
-            text: message,
-          })
-          return currentMessages
-        })
-        setMessage('')
-      })
-    }else{
-      setLoading(true)
-      createRequest(WHATSAPP_URL, {
-        conversation_id: conversation?.id || null,
-        text: message
-      }).then((response) => {
-        setWhatsApp(prevMessages => {
-          const currentMessages = [...prevMessages]
-          currentMessages.unshift({
-            is_sender: 1,
-            text: message,
-          })
-          return currentMessages
-        })
-        setMessage('')
-      }).catch((error) => {
-        console.log(error)
-      }).finally(() => {
-        setLoading(false)
+    if(!files && message === ''){
+      return
+    }
+    setLoading(true)
+    const payload = new FormData()
+    if(message){
+      payload.append('text', message)
+    }
+    if(files && Object.keys(files).length > 0){
+      Object.keys(files)?.forEach((key: any) => {
+        payload.append('attachments', files[key])
       })
     }
+    const options = {
+      method: 'POST',
+      headers: {
+        accept: 'application/json',
+        'content-type': 'multipart/form-data',
+        'X-API-KEY': `${UNIPILE_API_KEY}`
+      }
+    }
+    createRequest(`${UNIPILE_BASE_URL}/chats/${conversation?.id}/messages`, payload, options).then((response) => {
+      setWhatsApp(prevMessages => {
+        const currentMessages = [...prevMessages]
+        currentMessages.unshift({
+          is_sender: 1,
+          text: message,
+          timestamp: new Date(),
+        })
+        return currentMessages
+      })
+      setMessage('')
+      setFiles(null)
+    }).catch((error) => {
+      console.log(error)
+    }).finally(() => {
+      setLoading(false)
+    })
   }
 
   const onEnterPress = (e: React.KeyboardEvent<HTMLTextAreaElement>) => {
     if (e.keyCode === 13 && e.shiftKey === false) {
       e.preventDefault()
       sendMessage()
+    }
+  }
+
+  const handleClick = () => {
+    fileInputRef?.current?.click(); 
+  }
+
+  function renderFile(file: any) {
+    switch (true) {
+      case file.type.includes('image'):
+        return <img src={URL.createObjectURL(file)} style={{ width: '150px', height: '100%' }} alt={file.name} />;
+      case file.type.includes('video'):
+        return <video src={URL.createObjectURL(file)} style={{ width: '150px', height: '100%' }} controls />;
+      case file.type.includes('audio'):
+        return <audio src={URL.createObjectURL(file)} style={{ width: '150px', height: '100%' }} controls />;
+      case file.type.includes('pdf'):
+        return <embed src={URL.createObjectURL(file)} style={{ width: '150px', height: '100%' }} />;
+      case file.type.includes('text'):
+        return <embed src={URL.createObjectURL(file)} style={{ width: '150px', height: '100%' }} />;
+      default:
+        return <p style={{ width: '150px', height: '100%', textAlign: 'center', padding: '10px', paddingTop: '50%', wordBreak: 'break-all' }}>{file.name}</p>;
     }
   }
 
@@ -182,7 +202,15 @@ const ChatInner = ({conversation}: any) => {
           onChange={(e) => setMessage(e.target.value)}
           onKeyDown={onEnterPress}
         ></textarea>
-
+        <button
+          className='btn btn-icon btn-sm btn-secondary ms-2'
+          type='button'
+          data-kt-element='send'
+          onClick={handleClick}
+        >
+          <i className="fa-solid fa-file-arrow-up" />
+        </button>
+        <input type='file' multiple ref={fileInputRef} onChange={(e) => {setFiles(e.target.files); console.log(e.target.files)}} style={{ display: 'none' }} />
         <button
           className='btn btn-primary btn-sm ms-2'
           type='button'
@@ -194,6 +222,37 @@ const ChatInner = ({conversation}: any) => {
       </div>
       {loading && <LoadingComponent />}
     </div>
+
+    <Modal className="fade" size='lg' aria-hidden='true' show={files} centered animation>
+      <div className="modal-content">
+        <div className="modal-body scroll-y mx-2 mx-xl-2 my-2">
+          <div className='d-flex flex-column'>
+            <div className='d-flex flex-row gap-2'>
+              {files && Object.values(files).map((file: any, index: number) => (
+                <div key={index} className='border me-4'>
+                  {renderFile(file)}
+                </div>
+              ))}
+            </div>
+          </div>
+        </div>
+        <div className="modal-footer">
+          <button type="button" className="btn btn-sm btn-primary w-125px me-3" disabled={loading} onClick={sendMessage}>
+              {loading ? (
+                  <span>
+                      Please wait {' '}
+                      <span className='spinner-border spinner-border-sm align-middle ms-2'></span>
+                  </span>
+              ) : (
+                  <span>Send</span>
+              )}
+          </button>
+          <button type="button" className='btn btn-sm btn-outline btn-light w-125px' aria-disabled={loading} onClick={() => setFiles(null)}>
+              Cancel
+          </button>
+        </div>
+      </div>
+    </Modal>
   </>)
 }
 

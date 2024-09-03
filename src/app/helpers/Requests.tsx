@@ -10,19 +10,17 @@ async function getRequest(url: string, query?: string) {
     })
 }
 
-async function getRequestBlob(url: string, query?: string) {
+async function getRequestBlob(url: string, query?: string, options?: any) {
   return await axios
-    .get(`${url}${query ? `?${query}` : ""}`, {
-      // responseType: 'blob'
-    })
+    .get(`${url}${query ? `?${query}` : ""}`, options)
     .catch((error) => {
       catchError(error)
     })
 }
 
-async function createRequest(url: string, values: any) {
+async function createRequest(url: string, values: any, options: any = {}) {
   return await axios
-    .post(url, values)
+    .post(url, values, options)
     .catch((error) => {
       catchError(error)
     })
