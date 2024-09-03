@@ -10,6 +10,7 @@ import { TextAreaField } from "../fields/TextAreaField"
 import { AppContext } from "../../providers/AppProvider"
 import { useAuth } from "../../modules/auth"
 import { getSettingsFromUserSettings } from "../../helpers/Utils"
+import { FileField } from "../fields/FileField"
 
 const EmailCreateForm = () => {
     const { currentUser } = useAuth()
@@ -22,6 +23,7 @@ const EmailCreateForm = () => {
             subject: "",
             text: "",
             html: "",
+            attachments: []
         },
         validationSchema: Yup.object().shape({
             toEmail: Yup.string().required('To email address is required'),
@@ -119,6 +121,15 @@ const EmailCreateForm = () => {
                                     required="required"
                                     component={TextAreaField}
                                     size="sm"
+                                />
+                                <Field
+                                    label="Attachments"
+                                    name="attachments"
+                                    type="file"
+                                    component={FileField}
+                                    size="sm"
+                                    onChangeHandler={(files: any) => formik.setFieldValue("attachments", files)}
+                                    multiple
                                 />
                             </div>
                         </div>
