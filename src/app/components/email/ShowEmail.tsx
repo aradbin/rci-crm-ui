@@ -8,6 +8,7 @@ import { formatDateTime, getSettingsFromUserSettings } from "../../helpers/Utils
 import clsx from "clsx"
 import { useAuth } from "../../modules/auth"
 import { toast } from "react-toastify"
+import EmailAttachment from "./EmailAttachment"
 
 const ShowEmail = () => {
     const { currentUser } = useAuth()
@@ -94,6 +95,11 @@ const ShowEmail = () => {
                 </div>
                 <div className="modal-body scroll-y mx-2 mx-xl-2 my-2">
                     {email && <div style={email?.body ? { background: "white", color: "black" } : {}} dangerouslySetInnerHTML={{ __html: email?.body ? email?.body : email?.body_plain}} />}
+                    <div className="d-flex gap-2 mt-5">
+                        {email?.attachments?.map((item: any, index: number) => 
+                            <EmailAttachment key={index} email={email?.id} attachment={item?.id} />
+                        )}
+                    </div>
                 </div>
                 {reply && <div className='modal-body mx-2 mx-xl-2 my-2'>
                     <textarea

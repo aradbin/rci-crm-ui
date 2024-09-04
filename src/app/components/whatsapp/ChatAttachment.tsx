@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react"
-import { QueryUnipileAttachment } from "../../helpers/Queries"
+import { QueryUnipile } from "../../helpers/Queries"
 
 const ChatAttachment = ({message, attachment}: any) => {
     const [imgUrl, setImgUrl] = useState("")
@@ -8,10 +8,10 @@ const ChatAttachment = ({message, attachment}: any) => {
     const [pdfUrl, setPdfUrl] = useState("")
     const [otherUrl, setOtherUrl] = useState("")
     
-    const {isLoading, data} = QueryUnipileAttachment(`attachment-${message?.id}-${attachment?.id}`, `/messages/${message?.id}/attachments/${attachment?.id}`)
+    const {isLoading, data} = QueryUnipile(`chat-attachment-${message}-${attachment}`, `/messages/${message}/attachments/${attachment}`, 'attachment')
 
     useEffect(() => {
-        if(message?.id && attachment && data && imgUrl === "" && audUrl === "" && vidUrl === "" && pdfUrl === "" && otherUrl === "") {
+        if(message && attachment && data && imgUrl === "" && audUrl === "" && vidUrl === "" && pdfUrl === "" && otherUrl === "") {
             getImageUrl()
         }
     },[data])

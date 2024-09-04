@@ -150,7 +150,7 @@ const ChatInner = ({conversation}: any) => {
                   style={{ overflowWrap: 'anywhere' }}
                 >
                   {item?.attachments && item?.attachments?.map((attachment: any, index: number) =>
-                    <ChatAttachment key={index} message={item} attachment={attachment} />
+                    <ChatAttachment key={index} message={item?.id} attachment={attachment?.id} />
                   )}
                   {item?.attachments?.length > 0 && item?.text && <div className="separator border-2 my-1"></div>}
                   <div className='d-flex gap-2 align-items-end justify-content-between'>

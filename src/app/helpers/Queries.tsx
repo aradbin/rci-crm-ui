@@ -20,13 +20,18 @@ const QueryInfinite = (queryKey: any, url: string, params: string = "") => {
     return queryInstance
 }
 
-const QueryUnipileAttachment = (queryKey: any, url: string, params: string = "") => {
+const QueryUnipile = (queryKey: any, url: string, params: string = "") => {
     const queryInstance = useQuery([queryKey, params], () => fetch(`${UNIPILE_BASE_URL}${url}`, {
         method: 'GET',
         headers: {accept: '*/*', 'X-API-KEY': `${UNIPILE_API_KEY}`}
     }).then(async (response: any) => {
-        const data = await response.blob()
-        return data
+        if(params === 'attachment'){
+            const data = await response.blob()
+            return data
+        }else{
+            const data = await response.json()
+            return data
+        }
     }), {
         keepPreviousData: true,
     })
@@ -34,4 +39,4 @@ const QueryUnipileAttachment = (queryKey: any, url: string, params: string = "")
     return queryInstance
 }
 
-export { Query, QueryInfinite, QueryUnipileAttachment }
+export { Query, QueryInfinite, QueryUnipile }
