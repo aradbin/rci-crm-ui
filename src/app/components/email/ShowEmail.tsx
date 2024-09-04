@@ -1,5 +1,5 @@
 import { createRequest, getRequest } from "../../helpers/Requests"
-import { EMAIL_URL } from "../../helpers/ApiEndpoints"
+import { EMAIL_URL, UNIPILE_API_KEY, UNIPILE_BASE_URL } from "../../helpers/ApiEndpoints"
 import { Modal } from "react-bootstrap"
 import { useContext, useEffect, useState } from "react"
 import { LoadingComponent } from "../common/LoadingComponent"
@@ -9,6 +9,7 @@ import clsx from "clsx"
 import { useAuth } from "../../modules/auth"
 import { toast } from "react-toastify"
 import EmailAttachment from "./EmailAttachment"
+import { QueryUnipile } from "../../helpers/Queries"
 
 const ShowEmail = () => {
     const { currentUser } = useAuth()
@@ -18,7 +19,10 @@ const ShowEmail = () => {
     const [email, setEmail] = useState<any>(null)
     const [reply, setReply] = useState(false)
     const [text, setText] = useState('')
+    const [files, setFiles] = useState<any>(null)
     const { idForDetails, setIdForDetails } = useContext(AppContext)
+
+    const { data: unipileAccounts } = QueryUnipile('unipile-accounts', `/accounts`)
 
     useEffect(() => {
         if(idForDetails && idForDetails !== 0){
@@ -34,16 +38,41 @@ const ShowEmail = () => {
     },[idForDetails])
 
     const sendReply = async () => {
+        setLoadingReply(true)
         try {
-            setLoadingReply(true)
-            const formData = {
-                account: getSettingsFromUserSettings(currentUser?.userSettings, 'email').username,
-                toEmail: email?.from_attendee?.identifier,
-                subject: `Re: ${email?.subject}`,
-                text: text,
-                reply_to: email?.id
+            const account = getSettingsFromUserSettings(currentUser?.userSettings, 'email').username
+            if(!account){
+                throw new Error('No assigned email address')
             }
-            await createRequest(EMAIL_URL,formData).then((response) => {
+            const emailAccount = unipileAccounts?.items?.find((item: any) => item?.name === account);
+            if (!emailAccount) {
+                throw new Error('Email address is not connected')
+            }
+
+            const formData = new FormData()
+            formData.append('account_id', emailAccount?.id)
+            formData.append('subject', `Re: ${email?.subject}`)
+            formData.append('body', text)
+            formData.append('to', JSON.stringify([
+                {
+                    identifier: email?.from_attendee?.identifier,
+                },
+            ]))
+            formData.append('reply_to', email?.id)
+            if(files && Object.keys(files).length > 0){
+                Object.keys(files)?.forEach((key: any) => {
+                    formData.append('attachments', files[key])
+                })
+            }
+            const options = {
+                method: 'POST',
+                headers: {
+                    accept: 'application/json',
+                    'content-type': 'multipart/form-data',
+                    'X-API-KEY': `${UNIPILE_API_KEY}`
+                }
+            }
+            await createRequest(`${UNIPILE_BASE_URL}/emails`, formData, options).then((response) => {
                 if(response?.status===201 && response?.data?.tracking_id){
                     toast.success('Email Sent Successfully')
                     closeModal()
@@ -95,7 +124,7 @@ const ShowEmail = () => {
                 </div>
                 <div className="modal-body scroll-y mx-2 mx-xl-2 my-2">
                     {email && <div style={email?.body ? { background: "white", color: "black" } : {}} dangerouslySetInnerHTML={{ __html: email?.body ? email?.body : email?.body_plain}} />}
-                    <div className="d-flex gap-2 mt-5">
+                    <div className="d-flex gap-3 mt-5">
                         {email?.attachments?.map((item: any, index: number) => 
                             <EmailAttachment key={index} email={email?.id} attachment={item?.id} />
                         )}
@@ -112,7 +141,8 @@ const ShowEmail = () => {
                         rows={10}
                         onChange={(e) => setText(e.target.value)}
                     />
-                    <div className="d-flex mt-2 justify-content-end gap-2">
+                    <input type="file" className='form-control form-control-sm w-100 mt-5 mb-5 mb-lg-0' onChange={(e) => setFiles(e.target.files)} />
+                    <div className="d-flex mt-3 justify-content-end gap-2">
                         <button type="button" className='btn btn-sm btn-primary w-125px' aria-disabled={loadingReply} onClick={sendReply}>
                             {loadingReply ?
                                 <span>

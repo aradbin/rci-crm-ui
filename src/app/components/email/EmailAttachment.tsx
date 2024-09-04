@@ -31,7 +31,7 @@ const EmailAttachment = ({email, attachment}: any) => {
         }
     }
 
-    return (<div className="border me-4">
+    return (<div className="border">
         {isLoading &&
             <div className="d-flex justify-content-center align-items-center" style={{ width: '100px', height: '100px', backgroundColor: '#92929f' }}>
                 <span className='spinner-border spinner-border-sm'></span>

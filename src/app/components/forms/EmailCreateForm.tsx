@@ -16,7 +16,7 @@ import { QueryUnipile } from "../../helpers/Queries"
 const EmailCreateForm = () => {
     const { currentUser } = useAuth()
     const [show, setShow] = useState(false)
-    const [files, setFiles] = useState(false)
+    const [files, setFiles] = useState(null)
     const { idForEmail, setIdForEmail, showCreateEmail, setShowCreateEmail } = useContext(AppContext)
 
     const { data: unipileAccounts } = QueryUnipile('unipile-accounts', `/accounts`)
@@ -40,14 +40,13 @@ const EmailCreateForm = () => {
                 if(!account){
                     throw new Error('No assigned email address')
                 }
-                const accounts = await unipileAccounts.json();
-                const email = accounts?.items?.find((item: any) => item?.name === account);
-                if (!email) {
+                const emailAccount = unipileAccounts?.items?.find((item: any) => item?.name === account);
+                if (!emailAccount) {
                     throw new Error('Email address is not connected')
                 }
 
                 const formData = new FormData()
-                formData.append('account_id', email?.id)
+                formData.append('account_id', emailAccount?.id)
                 formData.append('subject', values.subject)
                 formData.append('body', values.text)
                 formData.append('to', JSON.stringify([
