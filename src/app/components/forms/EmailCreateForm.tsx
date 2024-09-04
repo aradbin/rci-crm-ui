@@ -1,7 +1,7 @@
 import { Field, FormikProvider, useFormik } from "formik"
 import * as Yup from 'yup'
 import { createRequest } from "../../helpers/Requests"
-import { EMAIL_URL } from "../../helpers/ApiEndpoints"
+import { EMAIL_URL, UNIPILE_API_KEY, UNIPILE_BASE_URL } from "../../helpers/ApiEndpoints"
 import { InputField } from "../fields/InputField"
 import { Modal } from "react-bootstrap"
 import { toast } from "react-toastify"
@@ -11,19 +11,22 @@ import { AppContext } from "../../providers/AppProvider"
 import { useAuth } from "../../modules/auth"
 import { getSettingsFromUserSettings } from "../../helpers/Utils"
 import { FileField } from "../fields/FileField"
+import { QueryUnipile } from "../../helpers/Queries"
 
 const EmailCreateForm = () => {
     const { currentUser } = useAuth()
     const [show, setShow] = useState(false)
+    const [files, setFiles] = useState(false)
     const { idForEmail, setIdForEmail, showCreateEmail, setShowCreateEmail } = useContext(AppContext)
+
+    const { data: unipileAccounts } = QueryUnipile('unipile-accounts', `/accounts`)
 
     const formik = useFormik({
         initialValues: {
             toEmail: "",
             subject: "",
             text: "",
-            html: "",
-            attachments: []
+            html: ""
         },
         validationSchema: Yup.object().shape({
             toEmail: Yup.string().required('To email address is required'),
@@ -33,11 +36,39 @@ const EmailCreateForm = () => {
         onSubmit: async (values, {setSubmitting}) => {
             setSubmitting(true)
             try {
-                const formData = {
-                    ...values,
-                    account: getSettingsFromUserSettings(currentUser?.userSettings, 'email').username
+                const account = getSettingsFromUserSettings(currentUser?.userSettings, 'email').username
+                if(!account){
+                    throw new Error('No assigned email address')
                 }
-                await createRequest(EMAIL_URL,formData).then((response) => {
+                const accounts = await unipileAccounts.json();
+                const email = accounts?.items?.find((item: any) => item?.name === account);
+                if (!email) {
+                    throw new Error('Email address is not connected')
+                }
+
+                const formData = new FormData()
+                formData.append('account_id', email?.id)
+                formData.append('subject', values.subject)
+                formData.append('body', values.text)
+                formData.append('to', JSON.stringify([
+                    {
+                        identifier: values.toEmail,
+                    },
+                ]))
+                if(files && Object.keys(files).length > 0){
+                    Object.keys(files)?.forEach((key: any) => {
+                        formData.append('attachments', files[key])
+                    })
+                }
+                const options = {
+                    method: 'POST',
+                    headers: {
+                      accept: 'application/json',
+                      'content-type': 'multipart/form-data',
+                      'X-API-KEY': `${UNIPILE_API_KEY}`
+                    }
+                }
+                await createRequest(`${UNIPILE_BASE_URL}/emails`, formData, options).then((response) => {
                     if(response?.status===201 && response?.data?.tracking_id){
                         toast.success('Email Sent Successfully')
                         closeModal()
@@ -128,7 +159,7 @@ const EmailCreateForm = () => {
                                     type="file"
                                     component={FileField}
                                     size="sm"
-                                    onChangeHandler={(files: any) => formik.setFieldValue("attachments", files)}
+                                    onChangeHandler={(files: any) => setFiles(files)}
                                     multiple
                                 />
                             </div>
