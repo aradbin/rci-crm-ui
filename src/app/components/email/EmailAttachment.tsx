@@ -8,7 +8,7 @@ const EmailAttachment = ({email, attachment}: any) => {
     const [pdfUrl, setPdfUrl] = useState("")
     const [otherUrl, setOtherUrl] = useState("")
     
-    const {isLoading, data} = QueryUnipile(`email-attachment-${email}-${attachment}`, `/emails/${email}/attachments/${attachment}`, 'attachment')
+    const {isLoading, data} = QueryUnipile(`email-attachment-${email}-${attachment?.id}`, `/emails/${email}/attachments/${attachment?.id}`, 'attachment')
 
     useEffect(() => {
         if(email && attachment && data && imgUrl === "" && audUrl === "" && vidUrl === "" && pdfUrl === "" && otherUrl === "") {
@@ -31,17 +31,17 @@ const EmailAttachment = ({email, attachment}: any) => {
         }
     }
 
-    return (<div className="border">
+    return (<div className="border" style={{ width: '150px', height: '100%', minHeight: '100px' }}>
         {isLoading &&
-            <div className="d-flex justify-content-center align-items-center" style={{ width: '100px', height: '100px', backgroundColor: '#92929f' }}>
+            <div className="d-flex justify-content-center align-items-center" style={{ width: '150px', height: '100px', backgroundColor: '#92929f' }}>
                 <span className='spinner-border spinner-border-sm'></span>
             </div>
         }
-        {imgUrl !== "" && <a href={imgUrl} target="_blank" rel="noopener noreferrer"><img src={imgUrl} alt="WhatsApp Image" className="img-fluid" style={{ width: '150px', height: '100%' }} /></a>}
-        {vidUrl !== "" && <video src={vidUrl} controls className="img-fluid" style={{ width: '150px', height: '100%' }} />}
-        {audUrl !== "" && <audio src={audUrl} controls style={{ width: '150px', height: '100%' }} />}
-        {pdfUrl !== "" && <a href={pdfUrl} target="_blank" rel="noopener noreferrer" style={{ width: '150px', height: '100%' }}>{attachment?.file_name}</a>}
-        {otherUrl !== "" && <a href={otherUrl} target="_blank" rel="noopener noreferrer" style={{ width: '150px', height: '100%' }}>{attachment?.file_name}</a>}
+        {imgUrl !== "" && <a href={imgUrl} target="_blank" rel="noopener noreferrer"><img src={imgUrl} alt="WhatsApp Image" className="img-fluid" style={{ width: '100%', height: '100%' }} /></a>}
+        {vidUrl !== "" && <video src={vidUrl} controls className="img-fluid" style={{ width: '100%', height: '100%' }} />}
+        {audUrl !== "" && <audio src={audUrl} controls style={{ width: '100%', height: '100%' }} />}
+        {pdfUrl !== "" && <a href={pdfUrl} target="_blank" rel="noopener noreferrer" style={{ width: '150px', height: '100%', textAlign: 'center', padding: '10px', paddingTop: '50%', wordBreak: 'break-all' }}>{attachment?.name}</a>}
+        {otherUrl !== "" && <a href={otherUrl} target="_blank" rel="noopener noreferrer" style={{ width: '150px', height: '100%', textAlign: 'center', padding: '10px', paddingTop: '50%', wordBreak: 'break-all' }}>{attachment?.name}</a>}
     </div>)
 }
 

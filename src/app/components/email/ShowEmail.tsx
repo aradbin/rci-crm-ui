@@ -126,7 +126,7 @@ const ShowEmail = () => {
                     {email && <div style={email?.body ? { background: "white", color: "black" } : {}} dangerouslySetInnerHTML={{ __html: email?.body ? email?.body : email?.body_plain}} />}
                     <div className="d-flex gap-3 mt-5">
                         {email?.attachments?.map((item: any, index: number) => 
-                            <EmailAttachment key={index} email={email?.id} attachment={item?.id} />
+                            <EmailAttachment key={index} email={email?.id} attachment={item} />
                         )}
                     </div>
                 </div>
