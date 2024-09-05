@@ -22,5 +22,6 @@ export const UNIPILE_BASE_URL = 'https://api6.unipile.com:13614/api/v1'
 export const UNIPILE_API_KEY = 'vR5WwQLJ.XaiBvDhfEsWaZcnDqu040dFhWnkIleJAktktMubAM8k='
 
 export const ACCOUNTS_UNIPILE_URL = `${UNIPILE_BASE_URL}/accounts`
-export const WHATSAPP_UNIPILE_URL = `${UNIPILE_BASE_URL}/chats`
+export const CHATS_UNIPILE_URL = `${UNIPILE_BASE_URL}/chats`
+export const MESSAGES_UNIPILE_URL = `${UNIPILE_BASE_URL}/messages`
 export const EMAIL_UNIPILE_URL = `${UNIPILE_BASE_URL}/emails`

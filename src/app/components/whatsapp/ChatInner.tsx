@@ -1,39 +1,22 @@
 /* eslint-disable jsx-a11y/anchor-is-valid */
-import {useContext, useEffect, useRef, useState} from 'react'
+import { useRef, useState } from 'react'
 import { toAbsoluteUrl } from '../../../_metronic/helpers'
-import { createRequest, getRequest } from '../../helpers/Requests'
-import { UNIPILE_API_KEY, UNIPILE_BASE_URL, WHATSAPP_URL } from '../../helpers/ApiEndpoints'
+import { createRequest } from '../../helpers/Requests'
+import { CHATS_UNIPILE_URL, UNIPILE_API_KEY, UNIPILE_BASE_URL } from '../../helpers/ApiEndpoints'
 import { formatTime } from '../../helpers/Utils'
-import { SocketContext } from '../../providers/SocketProvider'
 import ChatAttachment from './ChatAttachment'
 import { LoadingComponent } from '../common/LoadingComponent'
 import { Modal } from 'react-bootstrap'
+import { QueryInfiniteUnipile } from '../../helpers/Queries'
 
 const ChatInner = ({conversation}: any) => {
-  const { whatsapp, setWhatsApp } = useContext(SocketContext)
 
   const fileInputRef = useRef<any>(null)
   const [message, setMessage] = useState<string>('')
   const [files, setFiles] = useState<any>(null)
   const [loading, setLoading] = useState<boolean>(false)
 
-  useEffect(() => {
-    if(conversation?.id){
-      getWhatsApp(false)
-    }
-  },[conversation])
-
-  const getWhatsApp = (keep = true) => {
-    setLoading(true)
-    if(!keep){
-      setWhatsApp([])
-    }
-    getRequest(`${WHATSAPP_URL}/${conversation?.id}`).then((response) => {
-      setWhatsApp(response?.items || [])
-    }).finally(() => {
-      setLoading(false)
-    })
-  }
+  const { data, fetchNextPage, hasNextPage, isFetchingNextPage } = QueryInfiniteUnipile(`whatsapp-${conversation?.id}`, `${CHATS_UNIPILE_URL}/${conversation?.id}/messages`)
 
   const sendMessage = () => {
     if(!files && message === ''){
@@ -58,15 +41,6 @@ const ChatInner = ({conversation}: any) => {
       }
     }
     createRequest(`${UNIPILE_BASE_URL}/chats/${conversation?.id}/messages`, payload, options).then((response) => {
-      setWhatsApp(prevMessages => {
-        const currentMessages = [...prevMessages]
-        currentMessages.unshift({
-          is_sender: 1,
-          text: message,
-          timestamp: new Date(),
-        })
-        return currentMessages
-      })
       setMessage('')
       setFiles(null)
     }).catch((error) => {
@@ -135,58 +109,71 @@ const ChatInner = ({conversation}: any) => {
           data-kt-scroll-offset='5px'
           style={{ height: 'calc(100vh - 321px)' }}
         >
-          {whatsapp?.map((item: any, index: number) => {
-            const state = item?.is_event === 1 ? 'warning' : item?.is_sender === 1 ? 'success' : 'info'
-            const contentClass = `d-flex justify-content-${item?.is_event === 1 ? 'center' : item?.is_sender === 1 ? 'end' : 'start'} ${item?.is_event === 1 ? 'my-4' : 'mb-1'}`
-            return (
-              <div
-                key={index}
-                className={`${contentClass} flex-column align-items align-items-${item.is_sender === 1 ? 'end' : 'start'}`}
-              >
-                {item?.edited ? <span className='fs-9 text-muted'>Edited</span> : <></>}
-                <div
-                  className={`px-3 py-2 rounded bg-light-${state} text-dark fw-bold mw-lg-400px`}
-                  data-kt-element='message-text'
-                  style={{ overflowWrap: 'anywhere' }}
-                >
-                  {item?.attachments && item?.attachments?.map((attachment: any, index: number) =>
-                    <ChatAttachment key={index} message={item?.id} attachment={attachment} />
-                  )}
-                  {item?.attachments?.length > 0 && item?.text && <div className="separator border-2 my-1"></div>}
-                  <div className='d-flex gap-2 align-items-end justify-content-between'>
-                    {item?.text ?
-                      <p className={`text-wrap p-0 pb-1 m-0 ${item?.is_event === 1 ? 'text-center' : ''}`}>
-                        {item?.text?.startsWith('http') ?
-                          <a href={item?.text} target='_blank' rel="noreferrer" className='text-primary'>
-                            {item?.text}
-                          </a>
-                        :
-                          item?.text
-                        }
-                      </p>
-                    :
-                      <p className='p-0 m-0'>&nbsp;</p>
-                    }
-                    {item?.is_event === 0 && <p className='d-flex p-0 m-0 fs-8 fw-normal text-right text-nowrap'>
-                      {item?.timestamp && <span className='text-muted'>{formatTime(item?.timestamp)}</span>}
-                      {item?.is_sender === 1 &&
-                        <span className='ms-1'>
-                          {item?.seen === 1 ?
-                            <i className="bi bi-check-all text-success" />
-                          :
-                            item?.delivered === 1 ?
-                              <i className="bi bi-check-all" />
+          {data?.pages?.map((page: any, index: number) => (
+            <div key={index}>
+              {page?.items?.map((item: any, index: number) => {
+                const state = item?.is_event === 1 ? 'warning' : item?.is_sender === 1 ? 'success' : 'info'
+                const contentClass = `d-flex justify-content-${item?.is_event === 1 ? 'center' : item?.is_sender === 1 ? 'end' : 'start'} ${item?.is_event === 1 ? 'my-4' : 'mb-1'}`
+                return (
+                  <div
+                    key={index}
+                    className={`${contentClass} flex-column align-items align-items-${item.is_sender === 1 ? 'end' : 'start'}`}
+                  >
+                    {item?.edited ? <span className='fs-9 text-muted'>Edited</span> : <></>}
+                    <div
+                      className={`px-3 py-2 rounded bg-light-${state} text-dark fw-bold mw-lg-400px`}
+                      data-kt-element='message-text'
+                      style={{ overflowWrap: 'anywhere' }}
+                    >
+                      {item?.attachments && item?.attachments?.map((attachment: any, index: number) =>
+                        <ChatAttachment key={index} message={item?.id} attachment={attachment} />
+                      )}
+                      {item?.attachments?.length > 0 && item?.text && <div className="separator border-2 my-1"></div>}
+                      <div className='d-flex gap-2 align-items-end justify-content-between'>
+                        {item?.text ?
+                          <p className={`text-wrap p-0 pb-1 m-0 ${item?.is_event === 1 ? 'text-center' : ''}`}>
+                            {item?.text?.startsWith('http') ?
+                              <a href={item?.text} target='_blank' rel="noreferrer" className='text-primary'>
+                                {item?.text}
+                              </a>
                             :
-                              <i className="bi bi-check" />
+                              item?.text
+                            }
+                          </p>
+                        :
+                          <p className='p-0 m-0'>&nbsp;</p>
+                        }
+                        {item?.is_event === 0 && <p className='d-flex p-0 m-0 fs-8 fw-normal text-right text-nowrap'>
+                          {item?.timestamp && <span className='text-muted'>{formatTime(item?.timestamp)}</span>}
+                          {item?.is_sender === 1 &&
+                            <span className='ms-1'>
+                              {item?.seen === 1 ?
+                                <i className="bi bi-check-all text-success" />
+                              :
+                                item?.delivered === 1 ?
+                                  <i className="bi bi-check-all" />
+                                :
+                                  <i className="bi bi-check" />
+                              }
+                            </span>
                           }
-                        </span>
-                      }
-                    </p>}
+                        </p>}
+                      </div>
+                    </div>
                   </div>
-                </div>
-              </div>
-            )
-          })}
+                )
+              })}
+            </div>
+          ))}
+          <div className="d-flex justify-content-center my-2">
+            {hasNextPage && <button className="btn btn-sm btn-outline btn-outline-primary" onClick={() => fetchNextPage()}>
+              {isFetchingNextPage ?
+                <span>Loading {' '} <span className='spinner-border spinner-border-sm align-middle ms-2'></span></span>
+              : 
+                'Load More'
+              }
+            </button>}
+          </div>
         </div>
       </div>
       <div

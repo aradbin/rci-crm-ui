@@ -1,7 +1,7 @@
 /* eslint-disable jsx-a11y/anchor-is-valid */
 import { useState } from 'react'
 import { toAbsoluteUrl } from '../../../_metronic/helpers'
-import { WHATSAPP_UNIPILE_URL } from '../../helpers/ApiEndpoints'
+import { CHATS_UNIPILE_URL } from '../../helpers/ApiEndpoints'
 import { QueryInfiniteUnipile } from '../../helpers/Queries'
 import { ChatInner } from './ChatInner'
 import { formatDate, getSettingsFromUserSettings } from '../../helpers/Utils'
@@ -17,7 +17,7 @@ const ChatBox = () => {
     return getSettingsFromUserSettings(currentUser?.userSettings, 'whatsapp').unipile_account_id
   }
 
-  const { data, fetchNextPage, hasNextPage, isFetchingNextPage } = QueryInfiniteUnipile('all-whatsapp', `${WHATSAPP_UNIPILE_URL}?account_id=${getWhatsAppAccount()}`)
+  const { data, fetchNextPage, hasNextPage, isFetchingNextPage } = QueryInfiniteUnipile('all-whatsapp', `${CHATS_UNIPILE_URL}?account_id=${getWhatsAppAccount()}`)
 
   return (
     <div className='d-flex flex-column flex-lg-row'>
@@ -48,8 +48,8 @@ const ChatBox = () => {
               data-kt-scroll-offset='0px'
               style={{ height: 'calc(100vh - 270px)' }}
             >
-              {data?.pages?.map((page: any) => (
-                <div>
+              {data?.pages?.map((page: any, index: number) => (
+                <div key={index}>
                   {page?.items?.map((item: any) => {
                     if(!filter || (item?.provider_id?.toLowerCase()?.includes(filter?.toLowerCase()) || item?.name?.toLowerCase()?.includes(filter?.toLowerCase()))){
                       return (
