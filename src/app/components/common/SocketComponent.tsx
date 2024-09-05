@@ -1,7 +1,7 @@
 import { useContext, useEffect } from "react"
 import { SocketContext } from "../../providers/SocketProvider"
 import { io } from "socket.io-client";
-import { BASE_URL, BASE_URL_COMMUNICATION } from "../../helpers/ApiEndpoints";
+import { BASE_URL } from "../../helpers/ApiEndpoints";
 import { useAuth } from "../../modules/auth";
 
 const SocketComponent = () => {
@@ -46,23 +46,9 @@ const SocketComponent = () => {
           return currentMessages
         })
       })
-
-      // socket to communication server
-      // const socketCommunicationInstance = io(BASE_URL_COMMUNICATION, {
-      //   query: {
-      //     userId: currentUser?.id
-      //   }
-      // })
-
-      // socketCommunicationInstance.on('connect', () => {
-      //   console.log('Connected to communication');
-      // })
-
-      // setSocketCommunication(socketCommunicationInstance)
         
       return () => {
         socketInstance.disconnect();
-        // socketCommunicationInstance.disconnect();
         console.log('Disconnected from server')
       };
     },[])

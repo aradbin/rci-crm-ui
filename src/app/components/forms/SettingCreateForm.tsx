@@ -24,19 +24,11 @@ const SettingCreateForm = ({show, toggleShow, updateList, type}: any) => {
             // for service
             cycle: "",
             // for email
-            smtp: "",
-            smtp_port: "",
-            imap: "",
-            imap_port: "",
             username: "",
-            password: "",
-            // for whatsapp
-            access_token: "",
-            phone_number: "",
-            phone_number_id: "",
-            whatsapp_business_account_id: "",
-            // for voip && phone
+            // for whatsapp, voip && phone
             number: "",
+            // for whatsapp & email
+            unipile_account_id: "",
             // for customer
             fields: []
         },
@@ -46,48 +38,12 @@ const SettingCreateForm = ({show, toggleShow, updateList, type}: any) => {
                 is: () => type === 'service',
                 then: (schema) => schema.required('Service Cycle is required')
             }),
-            // smtp: Yup.string().when({
-            //     is: () => type === 'email',
-            //     then: (schema) => schema.required('SMTP host is required')
-            // }),
-            // smtp_port: Yup.string().when({
-            //     is: () => type === 'email',
-            //     then: (schema) => schema.required('SMTP port is required')
-            // }),
-            // imap: Yup.string().when({
-            //     is: () => type === 'email',
-            //     then: (schema) => schema.required('IMAP host is required')
-            // }),
-            // imap_port: Yup.string().when({
-            //     is: () => type === 'email',
-            //     then: (schema) => schema.required('IMAP port is required')
-            // }),
             username: Yup.string().when({
                 is: () => type === 'email',
                 then: (schema) => schema.required('Username is required')
             }),
-            // password: Yup.string().when({
-            //     is: () => type === 'email',
-            //     then: (schema) => schema.required('Password is required')
-            // }),
-            // access_token: Yup.string().when({
-            //     is: () => type === 'whatsapp',
-            //     then: (schema) => schema.required('Access Token is required')
-            // }),
-            phone_number: Yup.string().when({
-                is: () => type === 'whatsapp',
-                then: (schema) => schema.required('Phone Number is required')
-            }),
-            // phone_number_id: Yup.string().when({
-            //     is: () => type === 'whatsapp',
-            //     then: (schema) => schema.required('Phone Number ID is required')
-            // }),
-            // whatsapp_business_account_id: Yup.string().when({
-            //     is: () => type === 'whatsapp',
-            //     then: (schema) => schema.required('Whatsapp Business Account ID is required')
-            // }),
             number: Yup.string().when({
-                is: () => (type === 'voip' || type === 'phone'),
+                is: () => (type === 'whatsapp' || type === 'voip' || type === 'phone'),
                 then: (schema) => schema.required('Number is required')
             }),
         }),
@@ -95,38 +51,12 @@ const SettingCreateForm = ({show, toggleShow, updateList, type}: any) => {
             setSubmitting(true)
             try {
                 const formData = { name: values.name, type: type, metadata: {}}
-                if(type === 'service'){
-                    formData.metadata = {
-                        cycle: values.cycle,
-                    }
-                }
-                if(type === 'email'){
-                    formData.metadata = {
-                        smtp: values.smtp,
-                        smtp_port: values.smtp_port,
-                        imap: values.imap,
-                        imap_port: values.imap_port,
-                        username: values.username,
-                        password: values.password,
-                    }
-                }
-                if(type === 'whatsapp'){
-                    formData.metadata = {
-                        access_token: values.access_token,
-                        phone_number: values.phone_number,
-                        phone_number_id: values.phone_number_id,
-                        whatsapp_business_account_id: values.whatsapp_business_account_id,
-                    }
-                }
-                if(type === 'voip' || type === 'phone'){
-                    formData.metadata = {
-                        number: values.number,
-                    }
-                }
-                if(type === 'customer'){
-                    formData.metadata = {
-                        fields: values.fields,
-                    }
+                formData.metadata = {
+                    cycle: values.cycle,
+                    username: values.username,
+                    number: values.number,
+                    unipile_account_id: values.unipile_account_id,
+                    fields: values.fields,
                 }
                 if(idForUpdate === 0){
                     await createRequest(SETTINGS_URL,formData).then((response) => {
@@ -160,29 +90,10 @@ const SettingCreateForm = ({show, toggleShow, updateList, type}: any) => {
             setLoading(true)
             getRequest(`${SETTINGS_URL}/${idForUpdate}`).then((response) => {
                 formik.setFieldValue("name",response.name)
-                if(type === 'service'){
-                    formik.setFieldValue("cycle", response?.metadata?.cycle)
-                }
-                if(type === 'email'){
-                    formik.setFieldValue("smtp", response?.metadata?.smtp)
-                    formik.setFieldValue("smtp_port", response?.metadata?.smtp_port)
-                    formik.setFieldValue("imap", response?.metadata?.imap)
-                    formik.setFieldValue("imap_port", response?.metadata?.imap_port)
-                    formik.setFieldValue("username", response?.metadata?.username)
-                    formik.setFieldValue("password", response?.metadata?.password)
-                }
-                if(type === 'whatsapp'){
-                    formik.setFieldValue("access_token", response?.metadata?.access_token)
-                    formik.setFieldValue("phone_number", response?.metadata?.phone_number)
-                    formik.setFieldValue("phone_number_id", response?.metadata?.phone_number_id)
-                    formik.setFieldValue("whatsapp_business_account_id", response?.metadata?.whatsapp_business_account_id)
-                }
-                if(type === 'voip' || type === 'phone'){
-                    formik.setFieldValue("number", response?.metadata?.number)
-                }
-                if(type === 'customer'){
-                    formik.setFieldValue("customer", response?.metadata?.customer)
-                }
+                formik.setFieldValue("cycle", response?.metadata?.cycle)
+                formik.setFieldValue("username", response?.metadata?.username)
+                formik.setFieldValue("number", response?.metadata?.number)
+                formik.setFieldValue("unipile_account_id", response?.metadata?.unipile_account_id)
             }).finally(() => {
                 setLoading(false)
             })
@@ -221,138 +132,46 @@ const SettingCreateForm = ({show, toggleShow, updateList, type}: any) => {
                                     component={InputField}
                                     size="sm"
                                 />
-                                {type === 'service' && <>
-                                <Field
-                                    label="Cycle"
-                                    name="cycle"
-                                    options={cycles}
-                                    required="required"
-                                    component={SelectField}
-                                    size="sm"
-                                />
-                                </>}
-                                {type === 'email' && <>
-                                {/* <div className="row">
-                                    <div className="col-md-7">
-                                        <Field
-                                            label="SMTP Host"
-                                            name="smtp"
-                                            type="text"
-                                            required="required"
-                                            component={InputField}
-                                            size="sm"
-                                        />
-                                    </div>
-                                    <div className="col-md-5">
-                                        <Field
-                                            label="SMTP Port"
-                                            name="smtp_port"
-                                            type="text"
-                                            required="required"
-                                            component={InputField}
-                                            size="sm"
-                                        />
-                                    </div>
-                                    <div className="col-md-7">
-                                        <Field
-                                            label="IMAP Host"
-                                            name="imap"
-                                            type="text"
-                                            required="required"
-                                            component={InputField}
-                                            size="sm"
-                                        />
-                                    </div>
-                                    <div className="col-md-5">
-                                        <Field
-                                            label="IMAP Port"
-                                            name="imap_port"
-                                            type="text"
-                                            required="required"
-                                            component={InputField}
-                                            size="sm"
-                                        />
-                                    </div>
-                                </div> */}
-                                <Field
-                                    label="Email"
-                                    name="username"
-                                    type="email"
-                                    required="required"
-                                    component={InputField}
-                                    size="sm"
-                                />
-                                {/* <Field
-                                    label="Password"
-                                    name="password"
-                                    type="password"
-                                    required="required"
-                                    component={InputField}
-                                    size="sm"
-                                /> */}
-                                </>}
-                                {type === 'whatsapp' && <>
-                                {/* <Field
-                                    label="Access Token"
-                                    name="access_token"
-                                    type="text"
-                                    required="required"
-                                    component={InputField}
-                                    size="sm"
-                                /> */}
-                                <Field
-                                    label="Phone Number"
-                                    name="phone_number"
-                                    type="text"
-                                    required="required"
-                                    component={InputField}
-                                    size="sm"
-                                />
-                                {/* <Field
-                                    label="Phone Number ID"
-                                    name="phone_number_id"
-                                    type="text"
-                                    required="required"
-                                    component={InputField}
-                                    size="sm"
-                                />
-                                <Field
-                                    label="Whatsapp Business Account ID"
-                                    name="whatsapp_business_account_id"
-                                    type="text"
-                                    required="required"
-                                    component={InputField}
-                                    size="sm"
-                                /> */}
-                                </>}
-                                {(type === 'voip' || type === 'phone') && <>
-                                <Field
-                                    label="Number"
-                                    name="number"
-                                    type="text"
-                                    required="required"
-                                    component={InputField}
-                                    size="sm"
-                                />
-                                </>}
-                                {type === 'customer' && <>
-                                <Field
-                                    label="Field Name"
-                                    name="field_name[]"
-                                    type="text"
-                                    required="required"
-                                    component={InputField}
-                                    size="sm"
-                                />
-                                <Field
-                                    label="Field Type"
-                                    name="field_type[]"
-                                    type="text"
-                                    required="required"
-                                    component={InputField}
-                                    size="sm"
-                                />
-                                </>}
+                                {type === 'service' &&
+                                    <Field
+                                        label="Cycle"
+                                        name="cycle"
+                                        options={cycles}
+                                        required="required"
+                                        component={SelectField}
+                                        size="sm"
+                                    />
+                                }
+                                {type === 'email' &&
+                                    <Field
+                                        label="Email"
+                                        name="username"
+                                        type="email"
+                                        required="required"
+                                        component={InputField}
+                                        size="sm"
+                                    />
+                                }
+                                {(type === 'whatsapp' || type === 'voip' || type === 'phone') &&
+                                    <Field
+                                        label="Number"
+                                        name="number"
+                                        type="text"
+                                        required="required"
+                                        component={InputField}
+                                        size="sm"
+                                    />
+                                }
+                                {(type === 'email' || type === 'whatsapp') &&
+                                    <Field
+                                        label="Account ID"
+                                        name="unipile_account_id"
+                                        type="text"
+                                        // required="required"
+                                        component={InputField}
+                                        size="sm"
+                                    />
+                                }
                             </div>
                         </div>
                         <div className="modal-footer">

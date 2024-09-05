@@ -112,13 +112,15 @@ const getSettingsFromUserSettings = (userSettings: any, type: string) => {
         settings = {
           label: `${item?.settings?.name} (${item?.settings?.metadata?.username})`,
           value: item?.settings?.id,
-          username: item?.settings?.metadata?.username
+          username: item?.settings?.metadata?.username,
+          unipile_account_id: item?.settings?.metadata?.unipile_account_id
         }
       }else if(type === 'whatsapp'){
         settings = {
-          label: `${item?.settings?.name} (${item?.settings?.metadata?.phone_number})`,
+          label: `${item?.settings?.name} (${item?.settings?.metadata?.number})`,
           value: item?.settings?.id,
-          phone_number: item?.settings?.metadata?.phone_number
+          number: item?.settings?.metadata?.number,
+          unipile_account_id: item?.settings?.metadata?.unipile_account_id
         }
       }else if(type === 'phone'){
         settings = {
@@ -134,6 +136,7 @@ const getSettingsFromUserSettings = (userSettings: any, type: string) => {
       }
     }
   })
+  
   return settings
 }
 

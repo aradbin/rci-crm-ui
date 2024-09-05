@@ -1,18 +1,11 @@
 import axios, {AxiosResponse} from 'axios'
 import { toast } from 'react-toastify'
+import { UNIPILE_API_KEY } from './ApiEndpoints'
 
 async function getRequest(url: string, query?: string) {
   return await axios
     .get(`${url}${query ? `?${query}` : ""}`)
     .then((d: AxiosResponse<any>) => d.data)
-    .catch((error) => {
-      catchError(error)
-    })
-}
-
-async function getRequestBlob(url: string, query?: string, options?: any) {
-  return await axios
-    .get(`${url}${query ? `?${query}` : ""}`, options)
     .catch((error) => {
       catchError(error)
     })
@@ -54,6 +47,20 @@ async function deleteRequest(url: string) {
     })
 }
 
+const getRequestUnipile = (url: string, query: string = "", attachment: boolean = false) => {
+  return fetch(`${url}${query !== '' ? `?${query}` : ''}`, {
+    method: 'GET',
+    headers: {accept: '*/*', 'X-API-KEY': `${UNIPILE_API_KEY}`}
+  }).then(async (response: any) => {
+    if(attachment){
+      const data = await response.blob()
+      return data
+    }
+    const data = await response.json()
+    return data
+  })
+}
+
 const catchError = (error: any) => {
   // if(error?.response?.data?.statusCode===401){
   //   toast.error(error?.response?.data?.message)
@@ -72,4 +79,4 @@ const catchError = (error: any) => {
   toast.error(error?.response?.data?.message)
 }
 
-export { getRequest, getRequestBlob, createRequest, createRequestWithFile, updateRequest, deleteRequest }
+export { getRequest, createRequest, createRequestWithFile, updateRequest, deleteRequest, getRequestUnipile }

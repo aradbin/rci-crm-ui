@@ -1,8 +1,8 @@
 /* eslint-disable jsx-a11y/anchor-is-valid */
 import { useState } from 'react'
 import { toAbsoluteUrl } from '../../../_metronic/helpers'
-import { WHATSAPP_URL } from '../../helpers/ApiEndpoints'
-import { Query, QueryInfinite } from '../../helpers/Queries'
+import { WHATSAPP_UNIPILE_URL } from '../../helpers/ApiEndpoints'
+import { QueryInfiniteUnipile } from '../../helpers/Queries'
 import { ChatInner } from './ChatInner'
 import { formatDate, getSettingsFromUserSettings } from '../../helpers/Utils'
 import { LoadingComponent } from '../common/LoadingComponent'
@@ -14,10 +14,10 @@ const ChatBox = () => {
   const [selectedConversation, setSelectedConversation]: any = useState()
 
   const getWhatsAppAccount = () => {
-    return getSettingsFromUserSettings(currentUser?.userSettings, 'whatsapp').phone_number
+    return getSettingsFromUserSettings(currentUser?.userSettings, 'whatsapp').unipile_account_id
   }
 
-  const { data, fetchNextPage, hasNextPage, isFetching, isFetchingNextPage } = QueryInfinite('all-whatsapp', `${WHATSAPP_URL}?account=${getWhatsAppAccount()}`)
+  const { data, fetchNextPage, hasNextPage, isFetchingNextPage } = QueryInfiniteUnipile('all-whatsapp', `${WHATSAPP_UNIPILE_URL}?account_id=${getWhatsAppAccount()}`)
 
   return (
     <div className='d-flex flex-column flex-lg-row'>
