@@ -17,7 +17,7 @@ const ChatBox = () => {
     return getSettingsFromUserSettings(currentUser?.userSettings, 'whatsapp').unipile_account_id
   }
 
-  const { data, fetchNextPage, hasNextPage, isFetchingNextPage } = QueryInfiniteUnipile('all-whatsapp', `${CHATS_UNIPILE_URL}?account_id=${getWhatsAppAccount()}`)
+  const { data, fetchNextPage, hasNextPage, isFetchingNextPage } = QueryInfiniteUnipile(`all-whatsapp-${getWhatsAppAccount()}`, `${CHATS_UNIPILE_URL}?account_id=${getWhatsAppAccount()}`)
 
   return (
     <div className='d-flex flex-column flex-lg-row'>
@@ -64,6 +64,7 @@ const ChatBox = () => {
                               </span>
                               {item?.name && <div className='fw-bold text-gray-400'>{item?.provider_id?.split('@')[0]}</div>}
                             </div>
+                            {item?.unread === 1 &&item?.unread_count > 0 && <span className="badge badge-circle badge-success ms-3">{item?.unread_count}</span>}
                           </div>
                           <div className='d-flex flex-column align-items-end ms-2'>
                             <span className='text-muted fs-7 mb-1'>{item?.timestamp ? formatDate(item?.timestamp) : formatDate(new Date())}</span>

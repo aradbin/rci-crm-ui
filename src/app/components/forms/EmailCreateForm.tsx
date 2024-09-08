@@ -1,7 +1,7 @@
 import { Field, FormikProvider, useFormik } from "formik"
 import * as Yup from 'yup'
-import { createRequest } from "../../helpers/Requests"
-import { EMAIL_URL, UNIPILE_API_KEY, UNIPILE_BASE_URL } from "../../helpers/ApiEndpoints"
+import { createRequestUnipile } from "../../helpers/Requests"
+import { UNIPILE_BASE_URL } from "../../helpers/ApiEndpoints"
 import { InputField } from "../fields/InputField"
 import { Modal } from "react-bootstrap"
 import { toast } from "react-toastify"
@@ -59,15 +59,7 @@ const EmailCreateForm = () => {
                         formData.append('attachments', files[key])
                     })
                 }
-                const options = {
-                    method: 'POST',
-                    headers: {
-                      accept: 'application/json',
-                      'content-type': 'multipart/form-data',
-                      'X-API-KEY': `${UNIPILE_API_KEY}`
-                    }
-                }
-                await createRequest(`${UNIPILE_BASE_URL}/emails`, formData, options).then((response) => {
+                await createRequestUnipile(`${UNIPILE_BASE_URL}/emails`, formData).then((response) => {
                     if(response?.status===201 && response?.data?.tracking_id){
                         toast.success('Email Sent Successfully')
                         closeModal()

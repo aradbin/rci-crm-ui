@@ -1,22 +1,40 @@
 /* eslint-disable jsx-a11y/anchor-is-valid */
-import { useRef, useState } from 'react'
+import { Fragment, useEffect, useRef, useState } from 'react'
 import { toAbsoluteUrl } from '../../../_metronic/helpers'
-import { createRequest } from '../../helpers/Requests'
-import { CHATS_UNIPILE_URL, UNIPILE_API_KEY, UNIPILE_BASE_URL } from '../../helpers/ApiEndpoints'
+import { createRequestUnipile, updateRequestUnipile } from '../../helpers/Requests'
+import { CHATS_UNIPILE_URL } from '../../helpers/ApiEndpoints'
 import { formatTime } from '../../helpers/Utils'
 import ChatAttachment from './ChatAttachment'
 import { LoadingComponent } from '../common/LoadingComponent'
 import { Modal } from 'react-bootstrap'
 import { QueryInfiniteUnipile } from '../../helpers/Queries'
+import { useQueryClient } from 'react-query'
 
 const ChatInner = ({conversation}: any) => {
-
   const fileInputRef = useRef<any>(null)
   const [message, setMessage] = useState<string>('')
   const [files, setFiles] = useState<any>(null)
   const [loading, setLoading] = useState<boolean>(false)
 
-  const { data, fetchNextPage, hasNextPage, isFetchingNextPage } = QueryInfiniteUnipile(`whatsapp-${conversation?.id}`, `${CHATS_UNIPILE_URL}/${conversation?.id}/messages`)
+  const { data, isFetching, fetchNextPage, hasNextPage, isFetchingNextPage, refetch } = QueryInfiniteUnipile(`whatsapp-${conversation?.id}`, `${CHATS_UNIPILE_URL}/${conversation?.id}/messages`)
+
+  const queryClient = useQueryClient()
+
+  useEffect(() => {
+    if(data?.pages[0]?.items[0]?.account_id){
+      const payload = {
+        action: 'setReadStatus',
+        value: true
+      }
+      updateRequestUnipile(`${CHATS_UNIPILE_URL}/${conversation?.id}`, JSON.stringify(payload)).then((response) => {
+        queryClient.invalidateQueries({ queryKey: [`all-whatsapp-${data?.pages[0]?.items[0]?.account_id}`] })
+      }).catch((error) => {
+        console.log(error)
+      }).finally(() => {
+        setLoading(false)
+      })
+    }
+  }, [data])
 
   const sendMessage = () => {
     if(!files && message === ''){
@@ -32,15 +50,8 @@ const ChatInner = ({conversation}: any) => {
         payload.append('attachments', files[key])
       })
     }
-    const options = {
-      method: 'POST',
-      headers: {
-        accept: 'application/json',
-        'content-type': 'multipart/form-data',
-        'X-API-KEY': `${UNIPILE_API_KEY}`
-      }
-    }
-    createRequest(`${UNIPILE_BASE_URL}/chats/${conversation?.id}/messages`, payload, options).then((response) => {
+    createRequestUnipile(`${CHATS_UNIPILE_URL}/${conversation?.id}/messages`, payload).then((response) => {
+      refetch()
       setMessage('')
       setFiles(null)
     }).catch((error) => {
@@ -110,7 +121,7 @@ const ChatInner = ({conversation}: any) => {
           style={{ height: 'calc(100vh - 321px)' }}
         >
           {data?.pages?.map((page: any, index: number) => (
-            <div key={index}>
+            <Fragment key={index}>
               {page?.items?.map((item: any, index: number) => {
                 const state = item?.is_event === 1 ? 'warning' : item?.is_sender === 1 ? 'success' : 'info'
                 const contentClass = `d-flex justify-content-${item?.is_event === 1 ? 'center' : item?.is_sender === 1 ? 'end' : 'start'} ${item?.is_event === 1 ? 'my-4' : 'mb-1'}`
@@ -163,7 +174,7 @@ const ChatInner = ({conversation}: any) => {
                   </div>
                 )
               })}
-            </div>
+            </Fragment>
           ))}
           <div className="d-flex justify-content-center my-2">
             {hasNextPage && <button className="btn btn-sm btn-outline btn-outline-primary" onClick={() => fetchNextPage()}>
@@ -197,17 +208,21 @@ const ChatInner = ({conversation}: any) => {
         >
           <i className="fa-solid fa-file-arrow-up" />
         </button>
-        <input type='file' multiple ref={fileInputRef} onChange={(e) => {setFiles(e.target.files); console.log(e.target.files)}} style={{ display: 'none' }} />
+        <input type='file' multiple ref={fileInputRef} onChange={(e) => {setFiles(e.target.files)}} style={{ display: 'none' }} />
         <button
           className='btn btn-primary btn-sm ms-2'
           type='button'
           data-kt-element='send'
           onClick={sendMessage}
         >
-          Send
+          {loading ? (
+            <span className='spinner-border spinner-border-sm align-middle'></span>
+          ) : (
+              <span>Send</span>
+          )}
         </button>
       </div>
-      {loading && <LoadingComponent />}
+      {!data?.pages?.length && isFetching && <LoadingComponent />}
     </div>
 
     <Modal className="fade" size='lg' aria-hidden='true' show={files} centered animation>

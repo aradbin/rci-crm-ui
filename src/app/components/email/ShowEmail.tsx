@@ -1,4 +1,4 @@
-import { createRequest, getRequest } from "../../helpers/Requests"
+import { createRequestUnipile, getRequest } from "../../helpers/Requests"
 import { EMAIL_URL, UNIPILE_API_KEY, UNIPILE_BASE_URL } from "../../helpers/ApiEndpoints"
 import { Modal } from "react-bootstrap"
 import { useContext, useEffect, useState } from "react"
@@ -72,7 +72,7 @@ const ShowEmail = () => {
                     'X-API-KEY': `${UNIPILE_API_KEY}`
                 }
             }
-            await createRequest(`${UNIPILE_BASE_URL}/emails`, formData, options).then((response) => {
+            await createRequestUnipile(`${UNIPILE_BASE_URL}/emails`, formData).then((response) => {
                 if(response?.status===201 && response?.data?.tracking_id){
                     toast.success('Email Sent Successfully')
                     closeModal()

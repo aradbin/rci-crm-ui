@@ -2,7 +2,7 @@ import axios, {AxiosResponse} from 'axios'
 import { toast } from 'react-toastify'
 import { UNIPILE_API_KEY } from './ApiEndpoints'
 
-async function getRequest(url: string, query?: string) {
+export async function getRequest(url: string, query?: string) {
   return await axios
     .get(`${url}${query ? `?${query}` : ""}`)
     .then((d: AxiosResponse<any>) => d.data)
@@ -11,15 +11,15 @@ async function getRequest(url: string, query?: string) {
     })
 }
 
-async function createRequest(url: string, values: any, options: any = {}) {
+export async function createRequest(url: string, values: any) {
   return await axios
-    .post(url, values, options)
+    .post(url, values)
     .catch((error) => {
       catchError(error)
     })
 }
 
-async function createRequestWithFile(url: string, values: any) {
+export async function createRequestWithFile(url: string, values: any) {
   return await axios
     .post(url, values, {
       headers: {
@@ -31,7 +31,7 @@ async function createRequestWithFile(url: string, values: any) {
     })
 }
 
-async function updateRequest(url: string, values: any) {
+export async function updateRequest(url: string, values: any) {
   return await axios
     .patch(url, values)
     .catch((error) => {
@@ -39,7 +39,7 @@ async function updateRequest(url: string, values: any) {
     })
 }
 
-async function deleteRequest(url: string) {
+export async function deleteRequest(url: string) {
   return await axios
     .delete(url)
     .catch((error) => {
@@ -47,8 +47,8 @@ async function deleteRequest(url: string) {
     })
 }
 
-const getRequestUnipile = (url: string, query: string = "", attachment: boolean = false) => {
-  return fetch(`${url}${query !== '' ? `?${query}` : ''}`, {
+export async function getRequestUnipile(url: string, query: string = "", attachment: boolean = false){
+  return await fetch(`${url}${query !== '' ? `?${query}` : ''}`, {
     method: 'GET',
     headers: {accept: '*/*', 'X-API-KEY': `${UNIPILE_API_KEY}`}
   }).then(async (response: any) => {
@@ -59,6 +59,34 @@ const getRequestUnipile = (url: string, query: string = "", attachment: boolean 
     const data = await response.json()
     return data
   })
+}
+
+export async function createRequestUnipile(url: string, values: any) {
+  return await axios
+    .post(url, values, {
+      headers: {
+        accept: 'application/json',
+        'content-type': 'multipart/form-data',
+        'X-API-KEY': `${UNIPILE_API_KEY}`
+      }
+    })
+    .catch((error) => {
+      catchError(error)
+    })
+}
+
+export async function updateRequestUnipile(url: string, values: any) {
+  return await axios
+    .patch(url, values, {
+      headers: {
+        accept: 'application/json',
+        'content-type': 'application/json',
+        'X-API-KEY': `${UNIPILE_API_KEY}`
+      }
+    })
+    .catch((error) => {
+      catchError(error)
+    })
 }
 
 const catchError = (error: any) => {
@@ -78,5 +106,3 @@ const catchError = (error: any) => {
   // }
   toast.error(error?.response?.data?.message)
 }
-
-export { getRequest, createRequest, createRequestWithFile, updateRequest, deleteRequest, getRequestUnipile }

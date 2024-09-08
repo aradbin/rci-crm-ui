@@ -3,9 +3,11 @@ import { SocketContext } from "../../providers/SocketProvider"
 import { io } from "socket.io-client";
 import { BASE_URL } from "../../helpers/ApiEndpoints";
 import { useAuth } from "../../modules/auth";
+import { useQueryClient } from "react-query";
 
 const SocketComponent = () => {
-    const { setSocket, setSocketCommunication, setMessages, setWhatsApp, setVoip } = useContext(SocketContext)
+    const { setSocket, setMessages, setWhatsApp, setVoip } = useContext(SocketContext)
+    const queryClient = useQueryClient()
     const { currentUser } = useAuth()
 
     useEffect(() => {
@@ -35,16 +37,8 @@ const SocketComponent = () => {
       })
 
       socketInstance.on('whatsapp', (response: any) => {
-        setWhatsApp(prevMessages => {
-          const currentMessages = [...prevMessages]
-          if(currentMessages[currentMessages.length - 1]?.chat_id === response?.chat_id){
-            currentMessages.unshift({
-              is_sender: 0,
-              text: response?.message,
-            }) 
-          }
-          return currentMessages
-        })
+        queryClient.invalidateQueries({ queryKey: [`all-whatsapp-${response?.account_id}`] })
+        queryClient.invalidateQueries({ queryKey: [`whatsapp-${response?.chat_id}`] })
       })
         
       return () => {

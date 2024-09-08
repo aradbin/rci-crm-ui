@@ -30,7 +30,7 @@ const QueryUnipile = (queryKey: any, url: string, params: string = "", attachmen
 
 const QueryInfiniteUnipile = (queryKey: any, url: string, params: string = "") => {
     const queryInstance = useInfiniteQuery([queryKey, params], ({ pageParam }) => {
-        return getRequestUnipile(`${url}${params !== '' ? `?${params}` : ''}${pageParam ? `&cursor=${pageParam}` : ''}`)
+        return getRequestUnipile(`${url}${params !== '' ? `?${params}` : ''}${pageParam ? (params !== '' ? `&cursor=${pageParam}` : `?cursor=${pageParam}`) : ''}`)
     }, {
         getNextPageParam: (lastPage, _) => lastPage.cursor,
     })
