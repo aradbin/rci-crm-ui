@@ -20,9 +20,10 @@ const QueryInfinite = (queryKey: any, url: string, params: string = "") => {
     return queryInstance
 }
 
-const QueryUnipile = (queryKey: any, url: string, params: string = "", attachment: boolean = false) => {
+const QueryUnipile = (queryKey: any, url: string, params: string = "", attachment: boolean = false, enabled: boolean = true) => {
     const queryInstance = useQuery([queryKey, params], () => getRequestUnipile(url, params, attachment), {
         keepPreviousData: true,
+        enabled: enabled
     })
 
     return queryInstance

@@ -1,7 +1,7 @@
 import { Field, FormikProvider, useFormik } from "formik"
 import * as Yup from 'yup'
 import { createRequestUnipile } from "../../helpers/Requests"
-import { UNIPILE_BASE_URL } from "../../helpers/ApiEndpoints"
+import { EMAIL_UNIPILE_URL } from "../../helpers/ApiEndpoints"
 import { InputField } from "../fields/InputField"
 import { Modal } from "react-bootstrap"
 import { toast } from "react-toastify"
@@ -11,15 +11,12 @@ import { AppContext } from "../../providers/AppProvider"
 import { useAuth } from "../../modules/auth"
 import { getSettingsFromUserSettings } from "../../helpers/Utils"
 import { FileField } from "../fields/FileField"
-import { QueryUnipile } from "../../helpers/Queries"
 
 const EmailCreateForm = () => {
     const { currentUser } = useAuth()
     const [show, setShow] = useState(false)
     const [files, setFiles] = useState(null)
     const { idForEmail, setIdForEmail, showCreateEmail, setShowCreateEmail } = useContext(AppContext)
-
-    const { data: unipileAccounts } = QueryUnipile('unipile-accounts', `/accounts`)
 
     const formik = useFormik({
         initialValues: {
@@ -36,17 +33,13 @@ const EmailCreateForm = () => {
         onSubmit: async (values, {setSubmitting}) => {
             setSubmitting(true)
             try {
-                const account = getSettingsFromUserSettings(currentUser?.userSettings, 'email').username
+                const account = getSettingsFromUserSettings(currentUser?.userSettings, 'email')?.unipile_account_id
                 if(!account){
                     throw new Error('No assigned email address')
                 }
-                const emailAccount = unipileAccounts?.items?.find((item: any) => item?.name === account);
-                if (!emailAccount) {
-                    throw new Error('Email address is not connected')
-                }
 
                 const formData = new FormData()
-                formData.append('account_id', emailAccount?.id)
+                formData.append('account_id', account)
                 formData.append('subject', values.subject)
                 formData.append('body', values.text)
                 formData.append('to', JSON.stringify([
@@ -59,7 +52,7 @@ const EmailCreateForm = () => {
                         formData.append('attachments', files[key])
                     })
                 }
-                await createRequestUnipile(`${UNIPILE_BASE_URL}/emails`, formData).then((response) => {
+                await createRequestUnipile(EMAIL_UNIPILE_URL, formData).then((response) => {
                     if(response?.status===201 && response?.data?.tracking_id){
                         toast.success('Email Sent Successfully')
                         closeModal()

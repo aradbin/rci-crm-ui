@@ -1,8 +1,7 @@
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useMemo } from "react";
 import { useQueryClient } from "react-query";
 import { useExpanded, useTable } from "react-table";
-import { Query, QueryInfinite } from "../../helpers/Queries";
-import { PaginationComponent } from "../common/PaginationComponent";
+import { QueryInfiniteUnipile } from "../../helpers/Queries";
 import { LoadingComponent } from "../common/LoadingComponent";
 
 const TableLayout = ({
@@ -74,7 +73,7 @@ const TableInstance = ({tableData, tableColumns}: any) => {
 const EmailTable = ({queryKey, url, params='', columns, refetch, canExpand=''}: any) => {
     const queryClient = useQueryClient()
 
-    const { data, fetchNextPage, hasNextPage, isFetchingNextPage } = QueryInfinite(queryKey, url, params)
+    const { data, fetchNextPage, hasNextPage, isFetchingNextPage } = QueryInfiniteUnipile(queryKey, url, params)
 
     useEffect(() => {
         queryClient.invalidateQueries({ queryKey: [queryKey, params] })

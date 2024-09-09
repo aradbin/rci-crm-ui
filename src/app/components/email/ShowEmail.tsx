@@ -1,5 +1,5 @@
-import { createRequestUnipile, getRequest } from "../../helpers/Requests"
-import { EMAIL_URL, UNIPILE_API_KEY, UNIPILE_BASE_URL } from "../../helpers/ApiEndpoints"
+import { createRequestUnipile, updateRequestUnipile } from "../../helpers/Requests"
+import { EMAIL_UNIPILE_URL } from "../../helpers/ApiEndpoints"
 import { Modal } from "react-bootstrap"
 import { useContext, useEffect, useState } from "react"
 import { LoadingComponent } from "../common/LoadingComponent"
@@ -10,47 +10,50 @@ import { useAuth } from "../../modules/auth"
 import { toast } from "react-toastify"
 import EmailAttachment from "./EmailAttachment"
 import { QueryUnipile } from "../../helpers/Queries"
+import { useQueryClient } from "react-query"
 
 const ShowEmail = () => {
     const { currentUser } = useAuth()
     const [show, setShow] = useState(false)
-    const [loading, setLoading] = useState(false)
     const [loadingReply, setLoadingReply] = useState(false)
-    const [email, setEmail] = useState<any>(null)
     const [reply, setReply] = useState(false)
     const [text, setText] = useState('')
     const [files, setFiles] = useState<any>(null)
     const { idForDetails, setIdForDetails } = useContext(AppContext)
 
-    const { data: unipileAccounts } = QueryUnipile('unipile-accounts', `/accounts`)
+    const { data: email, isFetching } = QueryUnipile(`email-${idForDetails}`, `${EMAIL_UNIPILE_URL}/${idForDetails}`, '', false, idForDetails === 0 ? false : true)
+
+    const queryClient = useQueryClient()
 
     useEffect(() => {
         if(idForDetails && idForDetails !== 0){
-            setEmail(null)
             toggleShow(true)
-            setLoading(true)
-            getRequest(`${EMAIL_URL}/${idForDetails}`).then((response) => {
-                setEmail(response)
-            }).finally(() => {
-                setLoading(false)
-            })
         }
     },[idForDetails])
+
+    useEffect(() => {
+        if(email?.id && email?.folders?.find((item: string) => item === 'UNREAD')){
+          const payload = {
+            unread: false
+          }
+          updateRequestUnipile(`${EMAIL_UNIPILE_URL}/${email?.id}?account_id=${email?.account_id}`, JSON.stringify(payload), true).then((response) => {
+            queryClient.invalidateQueries({ queryKey: [`all-email-${email?.account_id}`] })
+          }).catch((error) => {
+            console.log(error)
+          })
+        }
+      }, [email])
 
     const sendReply = async () => {
         setLoadingReply(true)
         try {
-            const account = getSettingsFromUserSettings(currentUser?.userSettings, 'email').username
+            const account = getSettingsFromUserSettings(currentUser?.userSettings, 'email')?.unipile_account_id
             if(!account){
                 throw new Error('No assigned email address')
             }
-            const emailAccount = unipileAccounts?.items?.find((item: any) => item?.name === account);
-            if (!emailAccount) {
-                throw new Error('Email address is not connected')
-            }
 
             const formData = new FormData()
-            formData.append('account_id', emailAccount?.id)
+            formData.append('account_id', account)
             formData.append('subject', `Re: ${email?.subject}`)
             formData.append('body', text)
             formData.append('to', JSON.stringify([
@@ -64,15 +67,7 @@ const ShowEmail = () => {
                     formData.append('attachments', files[key])
                 })
             }
-            const options = {
-                method: 'POST',
-                headers: {
-                    accept: 'application/json',
-                    'content-type': 'multipart/form-data',
-                    'X-API-KEY': `${UNIPILE_API_KEY}`
-                }
-            }
-            await createRequestUnipile(`${UNIPILE_BASE_URL}/emails`, formData).then((response) => {
+            await createRequestUnipile(EMAIL_UNIPILE_URL, formData).then((response) => {
                 if(response?.status===201 && response?.data?.tracking_id){
                     toast.success('Email Sent Successfully')
                     closeModal()
@@ -100,8 +95,8 @@ const ShowEmail = () => {
             <div className="modal-content">
                 <div className='modal-header'>
                     <h2 className='fw-bolder'>
-                        {email?.subject}
-                        {email && <div>
+                        {email?.id === idForDetails && email?.subject}
+                        {email && email?.id === idForDetails && <div>
                             <div className="fs-7 pt-2">
                                 <span>From: </span>
                                 <span>{email?.from_attendee?.display_name} {`<${email?.from_attendee?.identifier}>`}</span>
@@ -123,7 +118,7 @@ const ShowEmail = () => {
                     </div>
                 </div>
                 <div className="modal-body scroll-y mx-2 mx-xl-2 my-2">
-                    {email && <div style={email?.body ? { background: "white", color: "black" } : {}} dangerouslySetInnerHTML={{ __html: email?.body ? email?.body : email?.body_plain}} />}
+                    {email && email?.id === idForDetails && <div style={email?.body ? { background: "white", color: "black" } : {}} dangerouslySetInnerHTML={{ __html: email?.body ? email?.body : email?.body_plain}} />}
                     <div className="d-flex gap-3 mt-5">
                         {email?.attachments?.map((item: any, index: number) => 
                             <EmailAttachment key={index} email={email?.id} attachment={item} />
@@ -153,21 +148,21 @@ const ShowEmail = () => {
                                 'Send'
                             }
                         </button>
-                        <button type="button" className='btn btn-sm btn-outline btn-light w-125px' aria-disabled={loading} onClick={() => setReply(!reply)}>
+                        <button type="button" className='btn btn-sm btn-outline btn-light w-125px' aria-disabled={isFetching} onClick={() => setReply(!reply)}>
                             Cancel
                         </button>
                     </div>
                 </div>}
                 <div className="modal-footer">
-                    <button type="button" className='btn btn-sm btn-outline btn-light w-125px' aria-disabled={loading} onClick={() => setReply(!reply)}>
+                    <button type="button" className='btn btn-sm btn-outline btn-light w-125px' aria-disabled={isFetching} onClick={() => setReply(!reply)}>
                         Reply
                     </button>
-                    <button type="button" className='btn btn-sm btn-outline btn-light w-125px' aria-disabled={loading} onClick={closeModal}>
+                    <button type="button" className='btn btn-sm btn-outline btn-light w-125px' aria-disabled={isFetching} onClick={closeModal}>
                         Close
                     </button>
                 </div>
             </div>
-            {loading && <LoadingComponent />}
+            {isFetching && <LoadingComponent />}
         </Modal>
     )
 }

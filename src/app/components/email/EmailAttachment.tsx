@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react"
 import { QueryUnipile } from "../../helpers/Queries"
+import { EMAIL_UNIPILE_URL } from "../../helpers/ApiEndpoints"
 
 const EmailAttachment = ({email, attachment}: any) => {
     const [imgUrl, setImgUrl] = useState("")
@@ -8,7 +9,7 @@ const EmailAttachment = ({email, attachment}: any) => {
     const [pdfUrl, setPdfUrl] = useState("")
     const [otherUrl, setOtherUrl] = useState("")
     
-    const {isLoading, data} = QueryUnipile(`email-attachment-${email}-${attachment?.id}`, `/emails/${email}/attachments/${attachment?.id}`, 'attachment')
+    const {isLoading, data} = QueryUnipile(`email-attachment-${email}-${attachment?.id}`, `${EMAIL_UNIPILE_URL}/${email}/attachments/${attachment?.id}`, '', true)
 
     useEffect(() => {
         if(email && attachment && data && imgUrl === "" && audUrl === "" && vidUrl === "" && pdfUrl === "" && otherUrl === "") {

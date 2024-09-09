@@ -75,15 +75,24 @@ export async function createRequestUnipile(url: string, values: any) {
     })
 }
 
-export async function updateRequestUnipile(url: string, values: any) {
+export async function updateRequestUnipile(url: string, values: any, put: boolean = false) {
+  const option = {
+    headers: {
+      accept: 'application/json',
+      'content-type': 'application/json',
+      'X-API-KEY': `${UNIPILE_API_KEY}`
+    }
+  }
+
+  if(put){
+    return await axios
+      .put(url, values, option)
+      .catch((error) => {
+        catchError(error)
+      })
+  }
   return await axios
-    .patch(url, values, {
-      headers: {
-        accept: 'application/json',
-        'content-type': 'application/json',
-        'X-API-KEY': `${UNIPILE_API_KEY}`
-      }
-    })
+    .patch(url, values, option)
     .catch((error) => {
       catchError(error)
     })

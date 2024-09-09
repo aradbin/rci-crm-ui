@@ -40,6 +40,11 @@ const SocketComponent = () => {
         queryClient.invalidateQueries({ queryKey: [`all-whatsapp-${response?.account_id}`] })
         queryClient.invalidateQueries({ queryKey: [`whatsapp-${response?.chat_id}`] })
       })
+
+      socketInstance.on('email', (response: any) => {
+        console.log(response)
+        queryClient.invalidateQueries({ queryKey: [`all-email-${response?.account_id}`] })
+      })
         
       return () => {
         socketInstance.disconnect();

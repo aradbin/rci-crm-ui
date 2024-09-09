@@ -3,8 +3,21 @@ import { formatDate } from "../helpers/Utils"
 
 export const emailColumns = [
   {
-    Header: "From",
-    Cell: ({ row }: any) => `${row?.original?.from_attendee?.display_name} (${row?.original?.from_attendee?.identifier})`
+    Header: "Email",
+    Cell: ({ row }: any) => (
+      <>
+        {row?.original?.folders?.find((item: string) => item === 'UNREAD') ?
+          <span className="fw-bolder">
+            {`${row?.original?.role !== 'sent' ? row?.original?.from_attendee?.display_name : row?.original?.to_attendees[0]?.display_name} (${row?.original?.role !== 'sent' ? row?.original?.from_attendee?.identifier : row?.original?.to_attendees[0]?.identifier})`}
+            <span className="badge badge-light-success ms-3">New</span>
+          </span>
+        :
+          <span>
+            {`${row?.original?.role !== 'sent' ? row?.original?.from_attendee?.display_name : row?.original?.to_attendees[0]?.display_name} (${row?.original?.role !== 'sent' ? row?.original?.from_attendee?.identifier : row?.original?.to_attendees[0]?.identifier})`}
+          </span>
+        }
+      </>
+    )
   },
   {
     Header: "Subject",

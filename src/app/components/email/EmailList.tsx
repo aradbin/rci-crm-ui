@@ -1,8 +1,7 @@
 import { useEffect, useState } from "react"
-import { EMAIL_URL } from "../../helpers/ApiEndpoints"
+import { EMAIL_UNIPILE_URL } from "../../helpers/ApiEndpoints"
 import { firstLetterUpperCase, getSettingsFromUserSettings, stringifyRequestQuery } from "../../helpers/Utils"
 import { useAuth } from "../../modules/auth"
-// import { Query } from "../../helpers/Queries"
 import { emailColumns } from "../../columns/emailColumns"
 import { folders } from "../../helpers/Variables"
 import { ShowEmail } from "./ShowEmail"
@@ -15,20 +14,20 @@ const EmailList = ({ filterParams }: any) => {
     const [role, setRole] = useState('inbox')
 
     const getEmailAccount = () => {
-        const email = getSettingsFromUserSettings(currentUser?.userSettings, 'email')
-        if(email){
-            return email?.username
-        }
-
-        return ''
+        return getSettingsFromUserSettings(currentUser?.userSettings, 'email')?.unipile_account_id
     }
 
-    // const foldersQuery = Query(`all-folders-${getEmailAccount()}`, `${EMAIL_URL}/folders?account=${getEmailAccount()}`)
+    // const foldersQuery = QueryUnipile(`all-folders-${getEmailAccount()}`, `${UNIPILE_BASE_URL}/folders?account=${getEmailAccount()}`)
 
     useEffect(() => {
-        const formData = { ...filterParams }
-        formData.role = role
-        formData.account = getEmailAccount()
+        const formData: any = {
+            account_id: getEmailAccount(),
+            limit: 20,
+            role: role
+        }
+        if(filterParams?.any_email){
+            formData.any_email = filterParams?.any_email
+        }
         setParams(formData)
     },[filterParams, role])
 
@@ -41,7 +40,7 @@ const EmailList = ({ filterParams }: any) => {
             ))}
         </div>
         <div className='card-body py-3'>
-            <EmailTable queryKey="email" url={EMAIL_URL} params={stringifyRequestQuery(params)} columns={emailColumns} refetch={1} />
+            {params?.account_id && <EmailTable queryKey={`all-email-${getEmailAccount()}`} url={EMAIL_UNIPILE_URL} params={stringifyRequestQuery(params)} columns={emailColumns} refetch={1} />}
         </div>
         <ShowEmail />
     </>)

@@ -21,7 +21,7 @@ const ChatInner = ({conversation}: any) => {
   const queryClient = useQueryClient()
 
   useEffect(() => {
-    if(data?.pages[0]?.items[0]?.account_id){
+    if(data?.pages[0]?.items[0]?.account_id && conversation?.unread === 1){
       const payload = {
         action: 'setReadStatus',
         value: true
@@ -30,8 +30,6 @@ const ChatInner = ({conversation}: any) => {
         queryClient.invalidateQueries({ queryKey: [`all-whatsapp-${data?.pages[0]?.items[0]?.account_id}`] })
       }).catch((error) => {
         console.log(error)
-      }).finally(() => {
-        setLoading(false)
       })
     }
   }, [data])
