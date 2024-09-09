@@ -1,7 +1,7 @@
 import { Field, FormikProvider, useFormik } from "formik"
 import * as Yup from 'yup'
-import { createRequest } from "../../helpers/Requests"
-import { WHATSAPP_URL } from "../../helpers/ApiEndpoints"
+import { createRequestUnipile } from "../../helpers/Requests"
+import { CHATS_UNIPILE_URL } from "../../helpers/ApiEndpoints"
 import { InputField } from "../fields/InputField"
 import { Modal } from "react-bootstrap"
 import { toast } from "react-toastify"
@@ -20,11 +20,9 @@ const WhatsAppCreateForm = () => {
 
     const formik = useFormik({
         initialValues: {
-            sender_number: getSettingsFromUserSettings(currentUser?.userSettings, 'whatsapp').phone_number,
+            account_id: getSettingsFromUserSettings(currentUser?.userSettings, 'whatsapp').unipile_account_id,
             recipient_number: "",
             text: "",
-            template_name: "",
-            message_type: "text",
         },
         validationSchema: Yup.object().shape({
             recipient_number: Yup.string().required('Recipient Number is required'),
@@ -32,10 +30,15 @@ const WhatsAppCreateForm = () => {
         }),
         onSubmit: async (values, {setSubmitting}) => {
             setSubmitting(true)
-            await createRequest(WHATSAPP_URL, values).then((response) => {
-                console.log(response)
+            const payload = {
+                account_id: values.account_id,
+                attendees_ids: [values.recipient_number],
+                text: values.text
+            }
+            await createRequestUnipile(CHATS_UNIPILE_URL, payload).then((response) => {
                 if(response?.data?.chat_id){
-                    queryClient.invalidateQueries({ queryKey: ['all-whatsapp'] })
+                    toast.success('Message Sent Successfully')
+                    queryClient.invalidateQueries({ queryKey: [`all-whatsapp-${values.account_id}`] })
                     closeModal()
                 }
             }).catch((error) => {
