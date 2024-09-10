@@ -16,6 +16,7 @@ const ChatInner = ({conversation}: any) => {
   const [message, setMessage] = useState<string>('')
   const [files, setFiles] = useState<any>(null)
   const [loading, setLoading] = useState<boolean>(false)
+  const [loadingTask, setLoadingTask] = useState<boolean>(false)
 
   const { data, isFetching, fetchNextPage, hasNextPage, isFetchingNextPage, refetch } = QueryInfiniteUnipile(`whatsapp-${conversation?.id}`, `${CHATS_UNIPILE_URL}/${conversation?.id}/messages`)
 
@@ -72,6 +73,7 @@ const ChatInner = ({conversation}: any) => {
   }
 
   const createTask = (item: any) => {
+    setLoadingTask(true)
     const payload = {
       title: item?.text
     }
@@ -79,6 +81,8 @@ const ChatInner = ({conversation}: any) => {
       if(response?.status===201){
         toast.success('Task Created Successfully')
       }
+    }).finally(() => {
+      setLoadingTask(false)
     })
   }
 
@@ -241,6 +245,7 @@ const ChatInner = ({conversation}: any) => {
         </button>
       </div>
       {!data?.pages?.length && isFetching && <LoadingComponent />}
+      {loadingTask && <LoadingComponent />}
     </div>
 
     <Modal className="fade" size='lg' aria-hidden='true' show={files} centered animation>
