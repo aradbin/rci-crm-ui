@@ -63,6 +63,18 @@ const getTaskPriorityBadge = (value: number) => {
   return ''
 }
 
+const isUrl = (string: string) => {
+  let url: any;
+  
+  try {
+    url = new URL(string);
+  } catch (_) {
+    return false;  
+  }
+
+  return url.protocol === "http:" || url.protocol === "https:";
+}
+
 const getCustomerPriorityBadge = (value: number) => {
   if(value===2){
     return 'text-info'
@@ -140,4 +152,4 @@ const getSettingsFromUserSettings = (userSettings: any, type: string) => {
   return settings
 }
 
-export { stringifyRequestQuery, formatDate, formatTime, formatDateTime, firstLetterUpperCase, getTaskPriorityBadge, getCustomerPriorityBadge, getTaskStatusBadge, getTaskTime, getTaskTimeString, getSettingsFromUserSettings }
+export { stringifyRequestQuery, formatDate, formatTime, formatDateTime, firstLetterUpperCase, isUrl, getTaskPriorityBadge, getCustomerPriorityBadge, getTaskStatusBadge, getTaskTime, getTaskTimeString, getSettingsFromUserSettings }

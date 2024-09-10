@@ -57,3 +57,16 @@ html[data-bs-theme='dark'] .splash-screen .light-logo {
 html[data-bs-theme='dark'] .splash-screen .dark-logo {
   display: block;
 }
+
+/* Custom */
+.dropdown-on-hover .dropdown-icon {
+  display: none;
+}
+
+.dropdown-on-hover:hover .dropdown-icon {
+  display: block;
+}
+
+.dropdown-toggle-no-caret::after {
+  display: none !important;
+}
