@@ -17,7 +17,7 @@ export function HeaderWrapper() {
       <div
         id='kt_app_header_container'
         className={clsx(
-          'app-container flex-lg-grow-1',
+          'app-container flex-lg-grow-1 w-100',
           classes.headerContainer.join(' '),
           config.app?.header?.default?.containerClass
         )}
