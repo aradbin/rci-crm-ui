@@ -13,7 +13,7 @@ const DashboardPage = () => {
   const { data: tasks } = Query('task-count', `${TASKS_URL}/count`)
 
   const getTaskProgress = () => {
-    const total = tasks.reduce((acc: number, cur: any) => acc + parseInt(cur.count), 0)
+    const total = tasks?.reduce((acc: number, cur: any) => acc + parseInt(cur.count), 0)
     const success = tasks?.find((item: any) => item?.status === 'done')?.count || 0
 
     return `${Math.round((success / total) * 100)}%`
