@@ -20,7 +20,7 @@ const DashboardPage = () => {
   }
   
   return (
-    <div className='row g-5 g-xl-8'>
+    <div className='row g-5 g-xl-5'>
       <div className='col-md-6 col-xl-3'>
         <StatisticsWidget5
           className='card-xl-stretch mb-xl-8'
@@ -31,6 +31,7 @@ const DashboardPage = () => {
           titleColor='white'
           description='Total Active Users'
           descriptionColor='white'
+          url='/users'
         />
       </div>
 
@@ -44,6 +45,7 @@ const DashboardPage = () => {
           titleColor='white'
           description='Total Active Customers'
           descriptionColor='white'
+          url='/customers'
         />
       </div>
 
@@ -57,6 +59,7 @@ const DashboardPage = () => {
           titleColor='white'
           description='Total Serivce Providing'
           descriptionColor='white'
+          url='/settings'
         />
       </div>
 
@@ -70,10 +73,11 @@ const DashboardPage = () => {
           titleColor='white'
           description='Total Task Completed'
           descriptionColor='white'
+          url='/tasks'
         />
       </div>
 
-      <div className='col-md-6 col-xl-6'>
+      <div className='col-md-6 col-xl-6 mt-0'>
           <StatisticsWidget6
             className='card-xl-stretch mb-xl-8'
             color='success'

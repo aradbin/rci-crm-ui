@@ -1,6 +1,7 @@
 /* eslint-disable jsx-a11y/anchor-is-valid */
 import React from 'react'
 import {KTIcon} from '../../../helpers'
+import { Link } from 'react-router-dom'
 
 type Props = {
   className: string
@@ -11,6 +12,7 @@ type Props = {
   titleColor?: string
   description: string
   descriptionColor?: string
+  url?: string
 }
 
 const StatisticsWidget5: React.FC<Props> = ({
@@ -22,9 +24,10 @@ const StatisticsWidget5: React.FC<Props> = ({
   titleColor,
   description,
   descriptionColor,
+  url = '#',
 }) => {
   return (
-    <a href='#' className={`card bg-${color} hoverable ${className}`}>
+    <Link to={url} className={`card bg-${color} hoverable ${className}`}>
       <div className='card-body'>
         <KTIcon iconName={svgIcon} className={`text-${iconColor} fs-3x ms-n1`} />
 
@@ -32,7 +35,7 @@ const StatisticsWidget5: React.FC<Props> = ({
 
         <div className={`fw-semibold text-${descriptionColor}`}>{description}</div>
       </div>
-    </a>
+    </Link>
   )
 }
 

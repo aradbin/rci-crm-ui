@@ -14,9 +14,9 @@ const StatisticsWidget6: React.FC<Props> = ({className, color, title, descriptio
     <div className={`card bg-light-${color} ${className}`}>
       {/* begin::Body */}
       <div className='card-body my-3'>
-        <a href='#' className={`card-title fw-bold text-${color} fs-5 mb-3 d-block`}>
+        <span className={`card-title fw-bold text-${color} fs-5 mb-3 d-block`}>
           {description}
-        </a>
+        </span>
 
         <div className='py-1'>
           <span className='text-dark fs-1 fw-bold me-2'>{progress}</span>
