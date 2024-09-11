@@ -5,6 +5,7 @@ import {KTIcon, toAbsoluteUrl} from '../../../helpers'
 import {useLayout} from '../../core'
 import {Header} from './Header'
 import {Navbar} from './Navbar'
+import GlobalSearchComponent from '../../../../app/components/common/GlobalSearchComponent'
 
 export function HeaderWrapper() {
   const {config, classes} = useLayout()
@@ -73,6 +74,8 @@ export function HeaderWrapper() {
             </Link>
           </div>
         )}
+
+        <GlobalSearchComponent />
 
         <div
           id='kt_app_header_wrapper'
