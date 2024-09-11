@@ -1,7 +1,7 @@
-export const API_URL_LOCAL = 'http://localhost:8000'
+export const API_URL_LOCAL = 'http://localhost:8080'
 export const API_URL_PROD = 'https://api.rci.rest'
 
-export const BASE_URL = API_URL_LOCAL
+export const BASE_URL = API_URL_PROD
 
 export const AUTH_URL = `${BASE_URL}/auth`
 export const USERS_URL = `${BASE_URL}/users`
