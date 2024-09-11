@@ -27,7 +27,7 @@ const DashboardPage = () => {
           svgIcon='profile-user'
           color='primary'
           iconColor='white'
-          title={`${users?.length}`}
+          title={`${users?.length || 0}`}
           titleColor='white'
           description='Total Active Users'
           descriptionColor='white'
@@ -40,7 +40,7 @@ const DashboardPage = () => {
           svgIcon='bank'
           color='danger'
           iconColor='white'
-          title={`${customers?.length}`}
+          title={`${customers?.length || 0}`}
           titleColor='white'
           description='Total Active Customers'
           descriptionColor='white'
