@@ -9,15 +9,18 @@ import { useContext, useEffect, useState } from "react"
 import { LoadingComponent } from "../common/LoadingComponent"
 import { AppContext } from "../../providers/AppProvider"
 import { useQueryClient } from "react-query"
-import { customerPriorities } from "../../helpers/Variables"
+import { businessTypes, customerPriorities, customerTypes } from "../../helpers/Variables"
 import { SelectField } from "../fields/SelectField"
+import { SearchableSelectField } from "../fields/SearchableSelectField"
 
 const CustomerCreateForm = ({show, toggleShow, updateList}: any) => {
     const [loading, setLoading] = useState(false)
-    const { idForUpdate, setIdForUpdate } = useContext(AppContext)
+    const { idForUpdate, idForStatus, setIdForStatus, setIdForUpdate } = useContext(AppContext)
     const queryClient = useQueryClient()
 
     const priorityOptions = customerPriorities
+    const customerTypeOptions = customerTypes
+    const businessTypeOptions = businessTypes
 
     const formik = useFormik({
         initialValues: {
@@ -26,7 +29,10 @@ const CustomerCreateForm = ({show, toggleShow, updateList}: any) => {
             contact: "",
             address: "",
             priority: "1",
-            optional_contact: ""
+            optional_contact: "",
+            customer_type: "",
+            business_type: "",
+            status: true
         },
         validationSchema: Yup.object().shape({
             name: Yup.string().required('Name is required'),
@@ -39,7 +45,7 @@ const CustomerCreateForm = ({show, toggleShow, updateList}: any) => {
             setSubmitting(true)
             try {
                 const formData = { ...values, priority: parseInt(values?.priority)}
-                if(idForUpdate === 0){
+                if(idForUpdate === 0 && idForStatus === 0){
                     await createRequest(CUSTOMERS_URL,formData).then((response) => {
                         if(response?.status===201){
                             toast.success('Customer Created Successfully')
@@ -48,7 +54,7 @@ const CustomerCreateForm = ({show, toggleShow, updateList}: any) => {
                         }
                     })
                 }else{
-                    await updateRequest(`${CUSTOMERS_URL}/${idForUpdate}`,formData).then((response) => {
+                    await updateRequest(`${CUSTOMERS_URL}/${idForUpdate > 0 ? idForUpdate : idForStatus}`,formData).then((response) => {
                         if(response?.status===200){
                             toast.success('Customer Updated Successfully')
                             updateListHandler()
@@ -65,26 +71,30 @@ const CustomerCreateForm = ({show, toggleShow, updateList}: any) => {
     })
 
     useEffect(() => {
-        if(idForUpdate > 0){
+        if(idForUpdate > 0 || idForStatus > 0){
             toggleShow(true)
             setLoading(true)
-            getRequest(`${CUSTOMERS_URL}/${idForUpdate}`).then((response) => {
+            getRequest(`${CUSTOMERS_URL}/${idForUpdate > 0 ? idForUpdate : idForStatus}`).then((response) => {
                 formik.setFieldValue("name",response.name)
                 formik.setFieldValue("email",response.email)
                 formik.setFieldValue("contact",response.contact)
                 formik.setFieldValue("address",response.address)
                 formik.setFieldValue("optional_contact",response.optional_contact)
                 formik.setFieldValue("priority",response?.priority)
+                formik.setFieldValue("customer_type",response?.customer_type)
+                formik.setFieldValue("business_type",response?.business_type)
+                formik.setFieldValue("status",response?.status)
             }).finally(() => {
                 setLoading(false)
             })
         }
-    },[idForUpdate])
+    },[idForUpdate, idForStatus])
 
     const closeModal = () => {
         formik.resetForm()
         toggleShow(false)
         setIdForUpdate(0)
+        setIdForStatus(0)
     }
 
     const updateListHandler = () => {
@@ -96,7 +106,7 @@ const CustomerCreateForm = ({show, toggleShow, updateList}: any) => {
         <Modal className="fade" aria-hidden='true' show={show} centered animation>
             <div className="modal-content">
                 <div className='modal-header'>
-                    <h2 className='fw-bolder'>{idForUpdate === 0 ? 'Create' : 'Update'} Customer</h2>
+                    <h2 className='fw-bolder'>{(idForUpdate === 0 && idForStatus === 0) ? 'Create' : 'Update'} Customer</h2>
                     <div className='btn btn-icon btn-sm btn-active-icon-primary' onClick={() => closeModal()}>
                         <i className="fa fa-times fs-2"></i>
                     </div>
@@ -104,56 +114,77 @@ const CustomerCreateForm = ({show, toggleShow, updateList}: any) => {
                 <FormikProvider value={formik}>
                     <form className="form" onSubmit={formik.handleSubmit} noValidate>
                         <div className="modal-body scroll-y mx-2 mx-xl-2 my-2">
-                            <div className='d-flex flex-column'>
-                                <Field
-                                    label="Name"
-                                    name="name"
-                                    type="text"
-                                    required="required"
-                                    component={InputField}
-                                    size="sm"
-                                />
-                                <Field
-                                    label="Email"
-                                    name="email"
-                                    type="email"
-                                    required="required"
-                                    component={InputField}
-                                    size="sm"
-                                />
-                                <Field
-                                    label="Contact"
-                                    name="contact"
-                                    type="text"
-                                    required="required"
-                                    component={InputField}
-                                    size="sm"
-                                />
-                                <Field
-                                    label="Address"
-                                    name="address"
-                                    type="text"
-                                    required="required"
-                                    component={InputField}
-                                    size="sm"
-                                />
-                                <Field
-                                    label="Alternative Contact"
-                                    name="optional_contact"
-                                    type="text"
-                                    required="required"
-                                    component={InputField}
-                                    size="sm"
-                                />
-                                <Field
-                                    label="Priority"
-                                    name="priority"
-                                    options={priorityOptions}
-                                    required="required"
-                                    component={SelectField}
-                                    size="sm"
-                                />
-                            </div>
+                            {idForStatus > 0 ? 
+                                <div className="d-flex flex-column">
+                                    <h2 className="text-center">{formik.values.status ? 'Deactivate' : 'Activate'} Customer</h2>
+                                    <p className="text-center">Are you sure?</p>
+                                    <input type="hidden" name="status" value={formik.values.status ? 0 : 1} onChange={(e) => formik.setFieldValue("status", e.target.value)} />
+                                </div>
+                            :
+                                <div className='d-flex flex-column'>
+                                    <Field
+                                        label="Name"
+                                        name="name"
+                                        type="text"
+                                        required="required"
+                                        component={InputField}
+                                        size="sm"
+                                    />
+                                    <Field
+                                        label="Email"
+                                        name="email"
+                                        type="email"
+                                        required="required"
+                                        component={InputField}
+                                        size="sm"
+                                    />
+                                    <Field
+                                        label="Contact"
+                                        name="contact"
+                                        type="text"
+                                        required="required"
+                                        component={InputField}
+                                        size="sm"
+                                    />
+                                    <Field
+                                        label="Address"
+                                        name="address"
+                                        type="text"
+                                        required="required"
+                                        component={InputField}
+                                        size="sm"
+                                    />
+                                    <Field
+                                        label="Alternative Contact"
+                                        name="optional_contact"
+                                        type="text"
+                                        component={InputField}
+                                        size="sm"
+                                    />
+                                    <Field
+                                        label="Priority"
+                                        name="priority"
+                                        options={priorityOptions}
+                                        required="required"
+                                        component={SelectField}
+                                        size="sm"
+                                    />
+                                    <Field
+                                        label="Customer Type"
+                                        name="customer_type"
+                                        options={customerTypeOptions}
+                                        component={SearchableSelectField}
+                                        size="sm"
+                                    />
+                                    <Field
+                                        label="Business Type"
+                                        name="business_type"
+                                        options={businessTypeOptions}
+                                        component={SearchableSelectField}
+                                        size="sm"
+                                    />
+                                </div>
+                            }
                         </div>
                         <div className="modal-footer">
                             <button type="submit" className="btn btn-sm btn-primary w-125px me-3" disabled={formik.isSubmitting}>

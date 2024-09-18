@@ -8,6 +8,7 @@ const AppContext = createContext({
 
     idForDetails: 0, setIdForDetails: (id: number) => {},
     idForUpdate: 0, setIdForUpdate: (id: number) => {},
+    idForStatus: 0, setIdForStatus: (id: number) => {},
     idForDelete: 0, setIdForDelete: (id: number) => {},
 
     idForEmail: "", setIdForEmail: (id: string) => {},
@@ -40,6 +41,7 @@ const AppProvider = ({children}: any) => {
 
     const [idForDetails, setIdForDetails] = useState(0)
     const [idForUpdate, setIdForUpdate] = useState(0)
+    const [idForStatus, setIdForStatus] = useState(0)
     const [idForDelete, setIdForDelete] = useState(0)
 
     const [idForEmail, setIdForEmail] = useState("")
@@ -72,6 +74,7 @@ const AppProvider = ({children}: any) => {
 
             idForDetails, setIdForDetails,
             idForUpdate, setIdForUpdate,
+            idForStatus, setIdForStatus,
             idForDelete, setIdForDelete,
 
             idForEmail, setIdForEmail,
