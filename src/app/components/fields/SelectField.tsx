@@ -26,7 +26,7 @@ export const SelectField = ({
                     >
                         <option value="">Select</option>
                         {options.map((item: any) => (
-                            <option value={item.id} key={item.id}>{item.name}</option>
+                            <option value={item.value} key={item.value}>{item.label}</option>
                         ))}
                     </select>
                 </div>
@@ -42,7 +42,7 @@ export const SelectField = ({
                 >
                     <option value="">Select</option>
                     {options.map((item: any) => (
-                        <option value={item.id} key={item.id}>{item.name}</option>
+                        <option value={item.value} key={item.value}>{item.label}</option>
                     ))}
                 </select>
             }
