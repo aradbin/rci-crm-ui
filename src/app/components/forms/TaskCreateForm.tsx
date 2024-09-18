@@ -36,7 +36,7 @@ const TaskCreateForm = () => {
     const formik = useFormik({
         initialValues: {
             title: "",
-            type_id: "",
+            // type_id: "",
             description: "",
             due_date: "",
             estimation: "",
@@ -151,7 +151,7 @@ const TaskCreateForm = () => {
             setLoading(true)
             getRequest(`${TASKS_URL}/${idForTaskUpdate}`).then((response) => {
                 formik.setFieldValue("title",response.title)
-                formik.setFieldValue("type_id",response.type_id)
+                // formik.setFieldValue("type_id",response.type_id)
                 formik.setFieldValue("description",response.description || "")
                 formik.setFieldValue("due_date",formatDate(response.due_date, 'input'))
                 formik.setFieldValue("estimation",response.estimation)
@@ -208,13 +208,13 @@ const TaskCreateForm = () => {
                                     component={InputField}
                                     size="sm"
                                 />
-                                <Field
+                                {/* <Field
                                     label="Type"
                                     name="type_id"
                                     options={typeOptions}
                                     component={SearchableSelectField}
                                     size="sm"
-                                />
+                                /> */}
                                 <Field
                                     label="Description"
                                     name="description"
