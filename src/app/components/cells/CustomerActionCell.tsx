@@ -6,13 +6,12 @@ const CustomerActionCell = ({ item }: any) => {
   const { setIdForUpdate, setIdForStatus } = useContext(AppContext)
 
   return (
-    <div className='d-flex justify-content-end align-items-center'>
-      <div className='form-check form-check-solid form-switch p-0 pt-1'>
-        <input type="checkbox" className="form-check-input w-35px h-20px mb-3 mb-lg-0" defaultChecked={item?.status} onChange={() => setIdForStatus(item?.id)} />
-        <label className='form-check-label'></label>
-      </div>
-      <button className="btn btn-icon btn-bg-light btn-active-color-primary btn-sm me-1" onClick={() => setIdForUpdate(item?.id)}>
+    <div className='d-flex justify-content-end gap-2'>
+      <button className="btn btn-icon btn-bg-light btn-color-primary btn-sm" onClick={() => setIdForUpdate(item?.id)}>
         <KTIcon iconName='pencil' className='fs-3' />
+      </button>
+      <button className={`btn btn-icon btn-bg-light btn-color-${item?.status ? 'danger' : 'success'} btn-sm`} onClick={() => setIdForStatus(item?.id)}>
+        <KTIcon iconName={item?.status ? 'shield-cross' : 'shield-tick'} className='fs-1' />
       </button>
     </div>
   )

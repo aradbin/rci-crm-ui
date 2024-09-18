@@ -38,9 +38,5 @@ export const customerSettingsColumns = [
   {
     Header: "Active",
     Cell: ({row}: any) =>  <CustomerSettingsActiveActionCell item={row?.original} />
-  },
-  {
-    Header: "Actions",
-    Cell: ({ row }: any) => <CustomerSettingsActionCell item={row?.original} />
   }
 ]

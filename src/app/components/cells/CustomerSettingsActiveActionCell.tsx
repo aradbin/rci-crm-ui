@@ -33,7 +33,7 @@ const CustomerSettingsActiveActionCell = ({ item }: any) => {
   }
 
   return (
-    <div className='d-flex justify-content-center flex-shrink-0'>
+    <div className='d-flex justify-content-center'>
       <div className="form-check form-switch form-check-custom form-check-solid me-1">
         <input className="form-check-input w-35px h-20px cursor-pointer" type="checkbox" defaultChecked={item?.customerSettingsSingle?.is_active || false} onChange={handleToggle} />
       </div>
