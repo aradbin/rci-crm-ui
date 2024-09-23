@@ -1,37 +1,54 @@
-import { useState } from "react"
+import { useContext, useEffect, useState } from "react"
 import { KTCard, KTCardBody, KTIcon } from "../../../_metronic/helpers"
 import { TableComponent } from "../../components/common/TableComponent"
 import { CUSTOMERS_URL } from "../../helpers/ApiEndpoints"
 import { ToolbarComponent } from "../../components/common/ToolbarComponent"
-import { stringifyRequestQuery } from "../../helpers/Utils"
+import { getSettingsOptions, stringifyRequestQuery } from "../../helpers/Utils"
 import { CustomerCreateForm } from "../../components/forms/CustomerCreateForm"
 import { customerColumns } from "../../columns/customerColumns"
 import { FilterComponent } from "../../components/common/FilterComponent"
 import { CustomerImportForm } from "../../components/forms/CustomerImportForm"
+import { AppContext } from "../../providers/AppProvider"
 
 const breadCrumbs = [
     { title: 'Customer Management', path: '/customers', isSeparator: false },
     { isSeparator: true },
 ]
 
-const filter = {
-    initialValues: {
-        name: "",
-        email: "",
-        contact: ""
-    },
-    fields: [
-        { label: "Name", name: "name" },
-        { label: "Email", name: "email" },
-        { label: "Contact", name: "contact" },
-    ]
-}
-
 const CustomersPage = () => {
     const [params, setParams] = useState("")
     const [refetch, setRefetch] = useState(0)
     const [showCreate, setShowCreate] = useState(false)
     const [showImport, setShowImport] = useState(false)
+
+    const { settings } = useContext(AppContext)
+
+    const filter = {
+        initialValues: {
+            name: "",
+            email: "",
+            contact: "",
+            customer_type: "",
+            business_type: "",
+            status: ""
+        },
+        fields: [
+            { label: "Name", name: "name" },
+            { label: "Email", name: "email" },
+            { label: "Contact", name: "contact" },
+            { label: "Customer Type", name: "customer_type", type: "select", options: getSettingsOptions(settings, 'customer-type') },
+            { label: "Business Type", name: "business_type", type: "select", options: getSettingsOptions(settings, 'business-type') },
+            { label: "Status", name: "status", type: "select", options: [
+                { label: 'Active', value: true },
+                { label: 'Inactive', value: false },
+            ]},
+        ]
+    }
+
+    useEffect(() => {
+        filter.fields[3].options = getSettingsOptions(settings, 'customer-type')
+        filter.fields[4].options = getSettingsOptions(settings, 'business-type')
+    },[settings])
 
     const handleFilterSubmit = (values: any) => {
         setParams(stringifyRequestQuery({...values}))

@@ -2,7 +2,7 @@ import moment from "moment"
 import { isNotEmpty } from "../../_metronic/helpers"
 import { statuses } from "./Variables"
 
-const stringifyRequestQuery = (values: any) => {
+export const stringifyRequestQuery = (values: any) => {
     const filter = values
       ? Object.entries(values as Object)
           .filter((obj) => isNotEmpty(obj[1]))
@@ -15,7 +15,7 @@ const stringifyRequestQuery = (values: any) => {
     return filter
 }
 
-const formatDate = (value: any, type="") => {
+export const formatDate = (value: any, type="") => {
   if(value && moment(value).isValid()){
     if(type==='input'){
       return moment(value).format('YYYY-MM-DD')
@@ -25,7 +25,7 @@ const formatDate = (value: any, type="") => {
   return ""
 }
 
-const formatTime = (value: any, type="") => {
+export const formatTime = (value: any, type="") => {
   if(value && moment(value).isValid()){
     if(type==='input'){
       return moment(value).format('YYYY-MM-DD')
@@ -35,7 +35,7 @@ const formatTime = (value: any, type="") => {
   return ""
 }
 
-const formatDateTime = (value: any, type="") => {
+export const formatDateTime = (value: any, type="") => {
   if(value && moment(value).isValid()){
     if(type==='input'){
       return moment(value).format('YYYY-MM-DD')
@@ -45,12 +45,12 @@ const formatDateTime = (value: any, type="") => {
   return ""
 }
 
-const firstLetterUpperCase = (string: string) => {
+export const firstLetterUpperCase = (string: string) => {
   string = string.toLowerCase().replaceAll('_', ' ');
   return string.charAt(0).toUpperCase() + string.slice(1);
 }
 
-const getTaskPriorityBadge = (value: number) => {
+export const getTaskPriorityBadge = (value: number) => {
   if(value===1){
     return <span className="badge badge-light-primary">Low</span>
   }
@@ -63,7 +63,7 @@ const getTaskPriorityBadge = (value: number) => {
   return ''
 }
 
-const isUrl = (string: string) => {
+export const isUrl = (string: string) => {
   let url: any;
   
   try {
@@ -75,7 +75,7 @@ const isUrl = (string: string) => {
   return url.protocol === "http:" || url.protocol === "https:";
 }
 
-const getCustomerPriorityBadge = (value: number) => {
+export const getCustomerPriorityBadge = (value: number) => {
   if(value===2){
     return 'text-info'
   }
@@ -85,13 +85,13 @@ const getCustomerPriorityBadge = (value: number) => {
   return ''
 }
 
-const getTaskStatusBadge = (value: string) => {
+export const getTaskStatusBadge = (value: string) => {
   const status = statuses.find(item => item.value === value)
   
   return <span className={`badge badge-${status?.color}`}>{status?.label}</span>
 }
 
-const getTaskTime = (logs: any) => {
+export const getTaskTime = (logs: any) => {
   let milliseconds = 0
   let start = null
   logs?.map((item: any) => {
@@ -112,11 +112,11 @@ const getTaskTime = (logs: any) => {
   return milliseconds
 }
 
-const getTaskTimeString = (milliseconds: number) => {
+export const getTaskTimeString = (milliseconds: number) => {
   return moment.utc(moment.duration(milliseconds).as('milliseconds')).format('HH:mm:ss')
 }
 
-const getSettingsFromUserSettings = (userSettings: any, type: string) => {
+export const getSettingsFromUserSettings = (userSettings: any, type: string) => {
   let settings: any = { label: null, value: null }
   userSettings?.map((item: any) => {
     if(item?.deleted_at === null && item?.settings?.type === type){
@@ -152,4 +152,17 @@ const getSettingsFromUserSettings = (userSettings: any, type: string) => {
   return settings
 }
 
-export { stringifyRequestQuery, formatDate, formatTime, formatDateTime, firstLetterUpperCase, isUrl, getTaskPriorityBadge, getCustomerPriorityBadge, getTaskStatusBadge, getTaskTime, getTaskTimeString, getSettingsFromUserSettings }
+export const getSettingsOptions = (settings: any, type: string) => {
+  let options: any = []
+  options = settings?.filter((item: any) => item?.type === type)?.map((item: any) => (
+    {
+      label: `
+        ${item?.name}
+        ${type === 'email' ? `(${item.metadata.username})` : ``}
+        ${(type === 'whatsapp' || type === 'phone' || type === 'voip') ? `(${item.metadata.number})` : ``}
+      `,
+      value: item?.id
+    }))
+
+  return options
+}

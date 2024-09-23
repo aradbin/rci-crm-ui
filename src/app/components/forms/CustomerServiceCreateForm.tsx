@@ -12,10 +12,10 @@ import { SearchableSelectField } from "../fields/SearchableSelectField"
 import { RadioField } from "../fields/RadioField"
 import { priorities } from "../../helpers/Variables"
 import { SelectField } from "../fields/SelectField"
+import { getSettingsOptions } from "../../helpers/Utils"
 
 const CustomerServiceCreateForm = ({customerId, updateList}: any) => {
     const [loading, setLoading] = useState(false)
-    const [serviceOptions, setServiceOptions] = useState([])
     const [show, setShow] = useState(false)
     const { idForCustomerServiceCreate, setIdForCustomerServiceCreate, idForCustomerServiceUpdate, setIdForCustomerServiceUpdate, settings } = useContext(AppContext)
 
@@ -126,18 +126,6 @@ const CustomerServiceCreateForm = ({customerId, updateList}: any) => {
         }
     },[idForCustomerServiceCreate, idForCustomerServiceUpdate])
 
-    useEffect(() => {
-        if(settings?.length > 0){
-            const services: any = []
-            settings?.map((item: any) => {
-                if(item.type === 'service'){
-                    services.push({ label: item?.name, value: item?.id })
-                }
-            })
-            setServiceOptions(services)
-        }
-    }, [settings]);
-
     const closeModal = () => {
         formik.resetForm()
         toggleShow(false)
@@ -168,7 +156,7 @@ const CustomerServiceCreateForm = ({customerId, updateList}: any) => {
                                 <Field
                                     label="Service"
                                     name="settings_id"
-                                    options={serviceOptions}
+                                    options={getSettingsOptions(settings, 'service')}
                                     required="required"
                                     component={SearchableSelectField}
                                     size="sm"

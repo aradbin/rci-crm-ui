@@ -5,12 +5,12 @@ import { TASKS_URL } from "../../helpers/ApiEndpoints"
 import { InputField } from "../fields/InputField"
 import { Modal } from "react-bootstrap"
 import { toast } from "react-toastify"
-import { useContext, useEffect, useMemo, useState } from "react"
+import { useContext, useEffect, useState } from "react"
 import { LoadingComponent } from "../common/LoadingComponent"
 import { AppContext } from "../../providers/AppProvider"
 import { TextAreaField } from "../fields/TextAreaField"
 import { SearchableSelectField } from "../fields/SearchableSelectField"
-import { formatDate } from "../../helpers/Utils"
+import { formatDate, getSettingsOptions } from "../../helpers/Utils"
 import { priorities } from "../../helpers/Variables"
 import { SelectField } from "../fields/SelectField"
 import { useQueryClient } from "react-query"
@@ -18,15 +18,12 @@ import { RadioField } from "../fields/RadioField"
 
 type assigneeOptionType = { label: string, value: number }
 type customerOptionType = { label: string, value: number }
-type typeOptionType = { label: string, value: number }
 
 const TaskCreateForm = () => {
     const [show, setShow] = useState(false)
     const [loading, setLoading] = useState(false)
     const [customerOptions, setCustomerOptions] = useState<customerOptionType[]>([])
     const [assigneeOptions, setAssigneeOptions] = useState<assigneeOptionType[]>([])
-    const [typeOptions, setTypeOptions] = useState<typeOptionType[]>([])
-    const [serviceOptions, setServiceOptions] = useState<typeOptionType[]>([])
 
     const queryClient = useQueryClient()
     const { idForTaskUpdate, setIdForTaskUpdate, showCreateTask, setShowCreateTask, showCreateSubTask, setShowCreateSubTask, refetchTask, setRefetchTask, users, customers, settings } = useContext(AppContext)
@@ -36,7 +33,6 @@ const TaskCreateForm = () => {
     const formik = useFormik({
         initialValues: {
             title: "",
-            // type_id: "",
             description: "",
             due_date: "",
             estimation: "",
@@ -109,23 +105,6 @@ const TaskCreateForm = () => {
     }
 
     useEffect(() => {
-        const array: typeOptionType[] = [];
-        const serviceArray: typeOptionType[] = [];
-        if(settings?.length > 0){
-            settings?.map((item: any) => {
-                if(item.type === 'task'){
-                    array.push({ label: item?.name, value: item?.id })
-                }
-                if(item.type === 'service'){
-                    serviceArray.push({ label: item?.name, value: item?.id })
-                }
-            })
-        }
-        setTypeOptions(array)
-        setServiceOptions(serviceArray)
-    }, [settings]);
-
-    useEffect(() => {
         let array: customerOptionType[] = [];
         if(customers?.length > 0){
             array = customers?.map((item: any) => {
@@ -151,7 +130,6 @@ const TaskCreateForm = () => {
             setLoading(true)
             getRequest(`${TASKS_URL}/${idForTaskUpdate}`).then((response) => {
                 formik.setFieldValue("title",response.title)
-                // formik.setFieldValue("type_id",response.type_id)
                 formik.setFieldValue("description",response.description || "")
                 formik.setFieldValue("due_date",formatDate(response.due_date, 'input'))
                 formik.setFieldValue("estimation",response.estimation)
@@ -208,13 +186,6 @@ const TaskCreateForm = () => {
                                     component={InputField}
                                     size="sm"
                                 />
-                                {/* <Field
-                                    label="Type"
-                                    name="type_id"
-                                    options={typeOptions}
-                                    component={SearchableSelectField}
-                                    size="sm"
-                                /> */}
                                 <Field
                                     label="Description"
                                     name="description"
@@ -255,7 +226,7 @@ const TaskCreateForm = () => {
                                 <Field
                                     label="Service"
                                     name="settings_id"
-                                    options={serviceOptions}
+                                    options={getSettingsOptions(settings, 'service')}
                                     component={SearchableSelectField}
                                     size="sm"
                                 />

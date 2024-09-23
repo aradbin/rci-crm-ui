@@ -9,18 +9,17 @@ import { useContext, useEffect, useState } from "react"
 import { LoadingComponent } from "../common/LoadingComponent"
 import { AppContext } from "../../providers/AppProvider"
 import { useQueryClient } from "react-query"
-import { businessTypes, customerPriorities, customerTypes } from "../../helpers/Variables"
+import { customerPriorities } from "../../helpers/Variables"
 import { SelectField } from "../fields/SelectField"
 import { SearchableSelectField } from "../fields/SearchableSelectField"
+import { getSettingsOptions } from "../../helpers/Utils"
 
 const CustomerCreateForm = ({show, toggleShow, updateList}: any) => {
     const [loading, setLoading] = useState(false)
-    const { idForUpdate, idForStatus, setIdForStatus, setIdForUpdate } = useContext(AppContext)
+    const { idForUpdate, idForStatus, setIdForStatus, setIdForUpdate, settings } = useContext(AppContext)
     const queryClient = useQueryClient()
 
     const priorityOptions = customerPriorities
-    const customerTypeOptions = customerTypes
-    const businessTypeOptions = businessTypes
 
     const formik = useFormik({
         initialValues: {
@@ -44,7 +43,12 @@ const CustomerCreateForm = ({show, toggleShow, updateList}: any) => {
         onSubmit: async (values, {setSubmitting}) => {
             setSubmitting(true)
             try {
-                const formData = { ...values, priority: parseInt(values?.priority)}
+                const formData: any = { 
+                    ...values,
+                    priority: parseInt(values?.priority),
+                    customer_type: values?.customer_type !== '' ? parseInt(values?.customer_type) : null,
+                    business_type: values?.business_type !== '' ? parseInt(values?.business_type) : null,
+                }
                 if(idForUpdate === 0 && idForStatus === 0){
                     await createRequest(CUSTOMERS_URL,formData).then((response) => {
                         if(response?.status===201){
@@ -172,14 +176,14 @@ const CustomerCreateForm = ({show, toggleShow, updateList}: any) => {
                                     <Field
                                         label="Customer Type"
                                         name="customer_type"
-                                        options={customerTypeOptions}
+                                        options={getSettingsOptions(settings, 'customer-type')}
                                         component={SearchableSelectField}
                                         size="sm"
                                     />
                                     <Field
                                         label="Business Type"
                                         name="business_type"
-                                        options={businessTypeOptions}
+                                        options={getSettingsOptions(settings, 'business-type')}
                                         component={SearchableSelectField}
                                         size="sm"
                                     />

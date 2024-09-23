@@ -25,7 +25,7 @@ export const SelectField = ({
                         aria-label="Select example"
                     >
                         <option value="">Select</option>
-                        {options.map((item: any) => (
+                        {options?.map((item: any) => (
                             <option value={item.value} key={item.value}>{item.label}</option>
                         ))}
                     </select>
@@ -41,7 +41,7 @@ export const SelectField = ({
                     aria-label="Select example"
                 >
                     <option value="">Select</option>
-                    {options.map((item: any) => (
+                    {options?.map((item: any) => (
                         <option value={item.value} key={item.value}>{item.label}</option>
                     ))}
                 </select>

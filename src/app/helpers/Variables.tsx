@@ -6,8 +6,10 @@ export const settings = [
     { label: 'VoIP', value: 'voip', icon: 'fa-solid fa-headphones' },
     { label: 'Departments', value: 'department', icon: 'fa-solid fa-building' },
     { label: 'Designations', value: 'designation', icon: 'fa-solid fa-user-tie' },
+    { label: 'Customer Types', value: 'customer-type', icon: 'fa-solid fa-user' },
+    { label: 'Business Types', value: 'business-type', icon: 'fa-solid fa-building' },
     // { label: 'Task Types', value: 'task', icon: 'fa-solid fa-list-check' },
-    { label: 'Customer Informations', value: 'customer', icon: 'fa-solid fa-user' },
+    // { label: 'Customer Informations', value: 'customer', icon: 'fa-solid fa-user' },
 ]
 
 export const cycles = [
@@ -29,21 +31,6 @@ export const customerPriorities = [
     { label: "Regular", value: 1 },
     { label: "Medium", value: 2 },
     { label: "High", value: 3 }
-]
-
-export const customerTypes = [
-    { label: "Company", value: 'company' },
-    { label: "Sole Trader", value: 'sole_trader' },
-    { label: "Individual", value: 'individual' },
-    { label: "Partnership", value: 'partnership' },
-    { label: "Trust", value: 'trust' },
-    { label: "Charity", value: 'charity' },
-]
-
-export const businessTypes = [
-    { label: "Restaurant", value: 'restaurant' },
-    { label: "Gym", value: 'gym' },
-    { label: "Other", value: 'other' },
 ]
 
 export const statuses = [

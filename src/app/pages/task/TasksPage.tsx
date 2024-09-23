@@ -3,6 +3,7 @@ import { ToolbarComponent } from "../../components/common/ToolbarComponent"
 import { FilterComponent } from "../../components/common/FilterComponent"
 import { AppContext } from "../../providers/AppProvider"
 import TaskList from "../../components/task/TaskList"
+import { getSettingsOptions } from "../../helpers/Utils"
 
 const breadCrumbs = [
     { title: 'Task Management', path: '/tasks', isSeparator: false },
@@ -23,17 +24,16 @@ const TasksPage = () => {
         fields: [
             { label: "ID", name: "id", type: "number" },
             { label: "Title", name: "title" },
-            { label: "Service", name: "settings_id", type: "select", options: [] },
+            { label: "Service", name: "settings_id", type: "select", options: getSettingsOptions(settings, 'service') },
             { label: "Sort By", name: "sort", type: "select", options: [
-                { id: 'priorityLowToHigh', name: "Priority (Low to High)" },
-                { id: 'priorityHighToLow', name: "Priority (High to Low)" },
+                { label: "Priority (Low to High)", value: 'priorityLowToHigh' },
+                { label: "Priority (High to Low)", value: 'priorityHighToLow' },
             ] },
         ]
     }
 
     useEffect(() => {
-        const serviceOptions = settings?.filter((item: any) => item?.type === 'service')
-        filter.fields[2].options = serviceOptions
+        filter.fields[2].options = getSettingsOptions(settings, 'service')
     },[settings])
 
     const handleFilterSubmit = (values: any) => {

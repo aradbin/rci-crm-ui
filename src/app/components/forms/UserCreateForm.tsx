@@ -10,17 +10,11 @@ import { AppContext } from "../../providers/AppProvider"
 import { LoadingComponent } from "../common/LoadingComponent"
 import { Query } from "../../helpers/Queries"
 import { SearchableSelectField } from "../fields/SearchableSelectField"
-import { getSettingsFromUserSettings } from "../../helpers/Utils"
+import { getSettingsFromUserSettings, getSettingsOptions } from "../../helpers/Utils"
 import { useQueryClient } from "react-query"
 
 const UserCreateForm = ({show, toggleShow, updateList}: any) => {
     const [loading, setLoading] = useState(false)
-    const [emailOptions, setEmailOptions] = useState([])
-    const [whatsAppOptions, setWhatsAppOptions] = useState([])
-    const [phoneOptions, setPhoneOptions] = useState([])
-    const [voipOptions, setVoipOptions] = useState([])
-    const [departmentOptions, setDepartmentOptions] = useState([])
-    const [deisgnationOptions, setDeisgnationOptions] = useState([])
     const { idForUpdate, setIdForUpdate, settings } = useContext(AppContext)
     const queryClient = useQueryClient()
 
@@ -139,43 +133,6 @@ const UserCreateForm = ({show, toggleShow, updateList}: any) => {
         }
     },[idForUpdate])
 
-    useEffect(() => {
-        if(settings?.length > 0){
-            const emails: any = []
-            const whatsapps: any = []
-            const phones: any = []
-            const voips: any = []
-            const departments: any = []
-            const designations: any = []
-            settings?.map((item: any) => {
-                if(item.type === 'email'){
-                    emails.push({ label: `${item?.name} (${item.metadata.username})`, value: item?.id })
-                }
-                if(item.type === 'whatsapp'){
-                    whatsapps.push({ label: `${item?.name} (${item.metadata.phone_number})`, value: item?.id })
-                }
-                if(item.type === 'phone'){
-                    phones.push({ label: `${item?.name} (${item.metadata.number})`, value: item?.id })
-                }
-                if(item.type === 'voip'){
-                    voips.push({ label: `${item?.name} (${item.metadata.number})`, value: item?.id })
-                }
-                if(item.type === 'department'){
-                    departments.push({ label: item?.name, value: item?.id })
-                }
-                if(item.type === 'designation'){
-                    designations.push({ label: item?.name, value: item?.id })
-                }
-            })
-            setEmailOptions(emails)
-            setWhatsAppOptions(whatsapps)
-            setPhoneOptions(phones)
-            setVoipOptions(voips)
-            setDepartmentOptions(departments)
-            setDeisgnationOptions(designations)
-        }
-    }, [settings]);
-
     const closeModal = () => {
         formik.resetForm()
         toggleShow(false)
@@ -235,42 +192,42 @@ const UserCreateForm = ({show, toggleShow, updateList}: any) => {
                                 <Field
                                     label="Department"
                                     name="department_id"
-                                    options={departmentOptions}
+                                    options={getSettingsOptions(settings, 'department')}
                                     component={SearchableSelectField}
                                     size="sm"
                                 />
                                 <Field
                                     label="Designation"
                                     name="designation_id"
-                                    options={deisgnationOptions}
+                                    options={getSettingsOptions(settings, 'designation')}
                                     component={SearchableSelectField}
                                     size="sm"
                                 />
                                 <Field
                                     label="Assign Email"
                                     name="email_id"
-                                    options={emailOptions}
+                                    options={getSettingsOptions(settings, 'email')}
                                     component={SearchableSelectField}
                                     size="sm"
                                 />
                                 <Field
                                     label="Assign WhatsApp"
                                     name="whatsapp_id"
-                                    options={whatsAppOptions}
+                                    options={getSettingsOptions(settings, 'whatsapp')}
                                     component={SearchableSelectField}
                                     size="sm"
                                 />
                                 <Field
                                     label="Assign Phone"
                                     name="phone_id"
-                                    options={phoneOptions}
+                                    options={getSettingsOptions(settings, 'phone')}
                                     component={SearchableSelectField}
                                     size="sm"
                                 />
                                 <Field
                                     label="Assign VoIP"
                                     name="voip_id"
-                                    options={voipOptions}
+                                    options={getSettingsOptions(settings, 'voip')}
                                     component={SearchableSelectField}
                                     size="sm"
                                 />
