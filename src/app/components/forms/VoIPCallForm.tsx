@@ -8,6 +8,7 @@ import { TextAreaField } from "../fields/TextAreaField"
 import { SocketContext } from "../../providers/SocketProvider"
 import { useAuth } from "../../modules/auth"
 import { Link, useNavigate } from "react-router-dom"
+import { AppContext } from "../../providers/AppProvider"
 
 const VoIPCallForm = () => {
     const { currentUser } = useAuth()
@@ -15,6 +16,7 @@ const VoIPCallForm = () => {
     const [show, setShow] = useState(false)
     const [received, setReceived] = useState(false)
     const { voip, setVoip } = useContext(SocketContext)
+    const { setShowCreateTask, setTitleForCreateTask } = useContext(AppContext)
 
     const formik = useFormik({
         initialValues: {
@@ -60,6 +62,14 @@ const VoIPCallForm = () => {
         }
     }
 
+    const createTask = () => {
+        if(formik.values.note !== ''){
+            setTitleForCreateTask(formik.values.note)
+        }else{
+            setShowCreateTask(true)
+        }
+    }
+
     const closeVoIP = () => {
         formik.resetForm()
         setVoip(null)
@@ -88,15 +98,18 @@ const VoIPCallForm = () => {
                             />
                         </div>
                         <div className="d-flex flex-end">
-                            <button type="submit" className="btn btn-sm btn-primary w-125px me-3" disabled={formik.isSubmitting}>
+                            <button type="submit" className="btn btn-sm btn-success w-125px me-3" aria-disabled={formik.isSubmitting}>
                                 {formik.isSubmitting ? (
                                     <span>
                                         Please wait {' '}
                                         <span className='spinner-border spinner-border-sm align-middle ms-2'></span>
                                     </span>
                                 ) : (
-                                    <span>Submit</span>
+                                    <span>Add Note</span>
                                 )}
+                            </button>
+                            <button type="button" className='btn btn-sm btn-primary w-125px me-3' aria-disabled={formik.isSubmitting} onClick={createTask}>
+                                Create Task
                             </button>
                             <button type="button" className='btn btn-sm btn-outline btn-light w-125px' aria-disabled={formik.isSubmitting} onClick={closeVoIP}>
                                 Cancel
