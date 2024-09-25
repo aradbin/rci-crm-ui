@@ -1,5 +1,5 @@
 /* eslint-disable jsx-a11y/anchor-is-valid */
-import { Fragment, useEffect, useRef, useState } from 'react'
+import { Fragment, useContext, useEffect, useRef, useState } from 'react'
 import { toAbsoluteUrl } from '../../../_metronic/helpers'
 import { createRequest, createRequestUnipile, updateRequestUnipile } from '../../helpers/Requests'
 import { CHATS_UNIPILE_URL, TASKS_URL } from '../../helpers/ApiEndpoints'
@@ -10,6 +10,7 @@ import { Dropdown, Modal } from 'react-bootstrap'
 import { QueryInfiniteUnipile } from '../../helpers/Queries'
 import { useQueryClient } from 'react-query'
 import { toast } from 'react-toastify'
+import { AppContext } from '../../providers/AppProvider'
 
 const ChatInner = ({conversation}: any) => {
   const fileInputRef = useRef<any>(null)
@@ -17,6 +18,7 @@ const ChatInner = ({conversation}: any) => {
   const [files, setFiles] = useState<any>(null)
   const [loading, setLoading] = useState<boolean>(false)
   const [loadingTask, setLoadingTask] = useState<boolean>(false)
+  const { setTitleForCreateTask } = useContext(AppContext)
 
   const { data, isFetching, fetchNextPage, hasNextPage, isFetchingNextPage, refetch } = QueryInfiniteUnipile(`whatsapp-${conversation?.id}`, `${CHATS_UNIPILE_URL}/${conversation?.id}/messages`)
 
@@ -73,17 +75,9 @@ const ChatInner = ({conversation}: any) => {
   }
 
   const createTask = (item: any) => {
-    setLoadingTask(true)
-    const payload = {
-      title: item?.text
+    if(item?.text){
+      setTitleForCreateTask(item?.text)
     }
-    createRequest(TASKS_URL,payload).then((response) => {
-      if(response?.status===201){
-        toast.success('Task Created Successfully')
-      }
-    }).finally(() => {
-      setLoadingTask(false)
-    })
   }
 
   function renderFile(file: any) {

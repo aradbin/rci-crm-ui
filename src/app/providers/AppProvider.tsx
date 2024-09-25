@@ -25,6 +25,7 @@ const AppContext = createContext({
     idForTaskDelete: 0, setIdForTaskDelete: (id: number) => {},
     showCreateTask: false, setShowCreateTask: (val: boolean) => {},
     showCreateSubTask: 0, setShowCreateSubTask: (val: number) => {},
+    titleForCreateTask: '', setTitleForCreateTask: (val: string) => {},
     refetchTask: 0, setRefetchTask: (id: number) => {},
 
     idForCustomerServiceCreate: 0, setIdForCustomerServiceCreate: (id: number) => {},
@@ -58,6 +59,7 @@ const AppProvider = ({children}: any) => {
     const [idForTaskDelete, setIdForTaskDelete] = useState(0)
     const [showCreateTask, setShowCreateTask] = useState(false)
     const [showCreateSubTask, setShowCreateSubTask] = useState(0)
+    const [titleForCreateTask, setTitleForCreateTask] = useState('')
     const [refetchTask, setRefetchTask] = useState(0)
 
     const [idForCustomerServiceCreate, setIdForCustomerServiceCreate] = useState(0)
@@ -91,6 +93,7 @@ const AppProvider = ({children}: any) => {
             idForTaskDelete, setIdForTaskDelete,
             showCreateTask, setShowCreateTask,
             showCreateSubTask, setShowCreateSubTask,
+            titleForCreateTask, setTitleForCreateTask,
             refetchTask, setRefetchTask,
 
             idForCustomerServiceCreate, setIdForCustomerServiceCreate,

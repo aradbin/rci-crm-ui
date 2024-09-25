@@ -26,7 +26,7 @@ const TaskCreateForm = () => {
     const [assigneeOptions, setAssigneeOptions] = useState<assigneeOptionType[]>([])
 
     const queryClient = useQueryClient()
-    const { idForTaskUpdate, setIdForTaskUpdate, showCreateTask, setShowCreateTask, showCreateSubTask, setShowCreateSubTask, refetchTask, setRefetchTask, users, customers, settings } = useContext(AppContext)
+    const { idForTaskUpdate, setIdForTaskUpdate, showCreateTask, setShowCreateTask, showCreateSubTask, setShowCreateSubTask, titleForCreateTask, setTitleForCreateTask, refetchTask, setRefetchTask, users, customers, settings } = useContext(AppContext)
 
     const priorityOptions = priorities
 
@@ -149,7 +149,11 @@ const TaskCreateForm = () => {
 
     useEffect(() => {
         toggleShow(showCreateTask)
-    },[showCreateTask])
+        if(titleForCreateTask !== ""){
+            toggleShow(true)
+            formik.setFieldValue("title",titleForCreateTask)
+        }
+    },[showCreateTask, titleForCreateTask])
 
     useEffect(() => {
         if(showCreateSubTask > 0){
@@ -163,6 +167,7 @@ const TaskCreateForm = () => {
         setIdForTaskUpdate(0)
         setShowCreateTask(false)
         setShowCreateSubTask(0)
+        setTitleForCreateTask("")
     }
 
     return (
