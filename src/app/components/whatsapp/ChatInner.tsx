@@ -129,13 +129,13 @@ const ChatInner = ({conversation}: any) => {
           style={{ height: 'calc(100vh - 321px)' }}
         >
           {data?.pages?.map((page: any, index: number) => (
-            <Fragment key={index}>
+            <Fragment key={`${index}-${conversation?.id}`}>
               {page?.items?.map((item: any, index: number) => {
                 const state = item?.is_event === 1 ? 'warning' : item?.is_sender === 1 ? 'success' : 'info'
                 const contentClass = `d-flex justify-content-${item?.is_event === 1 ? 'center' : item?.is_sender === 1 ? 'end' : 'start'} ${item?.is_event === 1 ? 'my-4' : 'mb-1'}`
                 return (
                   <div
-                    key={index}
+                    key={`${index}-${conversation?.id}`}
                     className={`${contentClass} flex-column align-items align-items-${item.is_sender === 1 ? 'end' : 'start'}`}
                   >
                     {item?.edited ? <span className='fs-9 text-muted'>Edited</span> : <></>}
@@ -145,7 +145,7 @@ const ChatInner = ({conversation}: any) => {
                       style={{ overflowWrap: 'anywhere' }}
                     >
                       {item?.attachments && item?.attachments?.map((attachment: any, index: number) =>
-                        <ChatAttachment key={index} message={item?.id} attachment={attachment} />
+                        <ChatAttachment key={`${index}-${attachment.id}`} message={item?.id} attachment={attachment} />
                       )}
                       {item?.attachments?.length > 0 && item?.text && <div className="separator border-2 my-1"></div>}
                       <div className='d-flex gap-2 align-items-end justify-content-between'>
