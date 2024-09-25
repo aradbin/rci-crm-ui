@@ -89,9 +89,9 @@ const ChatInner = ({conversation}: any) => {
       case file.type.includes('audio'):
         return <audio src={URL.createObjectURL(file)} style={{ width: '150px', height: '100%' }} controls />;
       case file.type.includes('pdf'):
-        return <embed src={URL.createObjectURL(file)} style={{ width: '150px', height: '100%' }} />;
+        return <iframe src={URL.createObjectURL(file)} style={{ width: '150px', height: '100%' }} />;
       case file.type.includes('text'):
-        return <embed src={URL.createObjectURL(file)} style={{ width: '150px', height: '100%' }} />;
+        return <iframe src={URL.createObjectURL(file)} style={{ width: '150px', height: '100%' }} />;
       default:
         return <p style={{ width: '150px', height: '100%', textAlign: 'center', padding: '10px', paddingTop: '50%', wordBreak: 'break-all' }}>{file.name}</p>;
     }
