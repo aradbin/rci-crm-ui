@@ -11,7 +11,6 @@ import { AppContext } from "../../providers/AppProvider"
 import { useQueryClient } from "react-query"
 import { customerPriorities } from "../../helpers/Variables"
 import { SelectField } from "../fields/SelectField"
-import { SearchableSelectField } from "../fields/SearchableSelectField"
 import { getSettingsOptions } from "../../helpers/Utils"
 
 const CustomerCreateForm = ({show, toggleShow, updateList}: any) => {
@@ -177,14 +176,14 @@ const CustomerCreateForm = ({show, toggleShow, updateList}: any) => {
                                         label="Customer Type"
                                         name="customer_type"
                                         options={getSettingsOptions(settings, 'customer-type')}
-                                        component={SearchableSelectField}
+                                        component={SelectField}
                                         size="sm"
                                     />
                                     <Field
                                         label="Business Type"
                                         name="business_type"
                                         options={getSettingsOptions(settings, 'business-type')}
-                                        component={SearchableSelectField}
+                                        component={SelectField}
                                         size="sm"
                                     />
                                 </div>
