@@ -32,18 +32,21 @@ const ChatAttachment = ({message, attachment}: any) => {
         }
     }
 
-    return (<div className="mw-100">
-        {isLoading &&
-            <div className="d-flex justify-content-center align-items-center" style={{ width: '100%', height: '100px', backgroundColor: '#92929f' }}>
-                <span className='spinner-border spinner-border-sm'></span>
-            </div>
-        }
-        {imgUrl !== "" && <a href={imgUrl} target="_blank" rel="noopener noreferrer"><img src={imgUrl} alt="WhatsApp Image" className="img-fluid" /></a>}
-        {vidUrl !== "" && <video src={vidUrl} controls className="img-fluid" />}
-        {audUrl !== "" && <audio src={audUrl} controls />}
-        {pdfUrl !== "" && <a href={pdfUrl} target="_blank" rel="noopener noreferrer">{attachment?.file_name}</a>}
-        {otherUrl !== "" && <a href={otherUrl} target="_blank" rel="noopener noreferrer">{attachment?.file_name}</a>}
-    </div>)
+    return (
+        <div className="mw-100">
+            {isLoading &&
+                <div className="d-flex justify-content-center align-items-center" style={{ width: '100%', height: '100px', backgroundColor: '#92929f' }}>
+                    <span className='spinner-border spinner-border-sm'></span>
+                </div>
+            }
+            {imgUrl !== "" && <a href={imgUrl} target="_blank" rel="noopener noreferrer"><img src={imgUrl} alt="WhatsApp Image" className="img-fluid" /></a>}
+            {vidUrl !== "" && <video src={vidUrl} controls className="img-fluid" />}
+            {audUrl !== "" && <audio src={audUrl} controls />}
+            {pdfUrl !== "" && <iframe src={pdfUrl} width="100%" height="auto" />}
+            {pdfUrl !== "" && <a href={pdfUrl} target="_blank" rel="noopener noreferrer">{attachment?.file_name}</a>}
+            {otherUrl !== "" && <a href={otherUrl} target="_blank" rel="noopener noreferrer">{attachment?.file_name}</a>}
+        </div>
+    )
 }
 
 export default ChatAttachment
