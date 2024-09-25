@@ -152,7 +152,7 @@ const ChatInner = ({conversation}: any) => {
                         {item?.text ?
                           <p className={`text-wrap p-0 pb-1 m-0 ${item?.is_event === 1 ? 'text-center' : ''}`}>
                             {isUrl(item?.text) ?
-                              <a href={item?.text} target='_blank' rel="noreferrer" className='text-primary'>
+                              <a href={item?.text?.startsWith('http') ? item?.text : 'https://' + item?.text} target='_blank' rel="noreferrer" className='text-primary'>
                                 {item?.text}
                               </a>
                             :
