@@ -96,7 +96,7 @@ export const getTaskStatusBadge = (value: string) => {
 export const getTaskTime = (logs: any) => {
   let milliseconds = 0
   let start = null
-  logs?.map((item: any) => {
+  logs?.forEach((item: any) => {
     if(item?.action === 'start'){
       start = item.created_at
     }else{
@@ -120,7 +120,7 @@ export const getTaskTimeString = (milliseconds: number) => {
 
 export const getSettingsFromUserSettings = (userSettings: any, type: string) => {
   let settings: any = { label: null, value: null }
-  userSettings?.map((item: any) => {
+  userSettings?.forEach((item: any) => {
     if(item?.deleted_at === null && item?.settings?.type === type){
       if(type === 'email'){
         settings = {

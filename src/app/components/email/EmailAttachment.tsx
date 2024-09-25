@@ -41,7 +41,7 @@ const EmailAttachment = ({email, attachment}: any) => {
         {imgUrl !== "" && <a href={imgUrl} target="_blank" rel="noopener noreferrer"><img src={imgUrl} alt="WhatsApp Image" className="img-fluid" style={{ width: '100%', height: '100%' }} /></a>}
         {vidUrl !== "" && <video src={vidUrl} controls className="img-fluid" style={{ width: '100%', height: '100%' }} />}
         {audUrl !== "" && <audio src={audUrl} controls style={{ width: '100%', height: '100%' }} />}
-        {pdfUrl !== "" && <iframe src={pdfUrl} width="150px" height="100%" />}
+        {pdfUrl !== "" && <iframe src={pdfUrl} width="150px" height="100%" title={attachment?.name} />}
         {pdfUrl !== "" && <a href={pdfUrl} target="_blank" rel="noopener noreferrer" style={{ width: '150px', height: '100%', textAlign: 'center', padding: '10px', paddingTop: '50%', wordBreak: 'break-all' }}>{attachment?.name}</a>}
         {otherUrl !== "" && <a href={otherUrl} target="_blank" rel="noopener noreferrer" style={{ width: '150px', height: '100%', textAlign: 'center', padding: '10px', paddingTop: '50%', wordBreak: 'break-all' }}>{attachment?.name}</a>}
     </div>)

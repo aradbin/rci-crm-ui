@@ -42,7 +42,7 @@ const ChatAttachment = ({message, attachment}: any) => {
             {imgUrl !== "" && <a href={imgUrl} target="_blank" rel="noopener noreferrer"><img src={imgUrl} alt="WhatsApp Image" className="img-fluid" /></a>}
             {vidUrl !== "" && <video src={vidUrl} controls className="img-fluid" />}
             {audUrl !== "" && <audio src={audUrl} controls />}
-            {pdfUrl !== "" && <iframe src={pdfUrl} width="100%" height="auto" />}
+            {pdfUrl !== "" && <iframe src={pdfUrl} width="100%" height="auto" title={attachment?.file_name} />}
             {pdfUrl !== "" && <a href={pdfUrl} target="_blank" rel="noopener noreferrer">{attachment?.file_name}</a>}
             {otherUrl !== "" && <a href={otherUrl} target="_blank" rel="noopener noreferrer">{attachment?.file_name}</a>}
         </div>

@@ -1,15 +1,14 @@
 /* eslint-disable jsx-a11y/anchor-is-valid */
 import { Fragment, useContext, useEffect, useRef, useState } from 'react'
 import { toAbsoluteUrl } from '../../../_metronic/helpers'
-import { createRequest, createRequestUnipile, updateRequestUnipile } from '../../helpers/Requests'
-import { CHATS_UNIPILE_URL, TASKS_URL } from '../../helpers/ApiEndpoints'
+import { createRequestUnipile, updateRequestUnipile } from '../../helpers/Requests'
+import { CHATS_UNIPILE_URL } from '../../helpers/ApiEndpoints'
 import { formatTime, isUrl } from '../../helpers/Utils'
 import ChatAttachment from './ChatAttachment'
 import { LoadingComponent } from '../common/LoadingComponent'
 import { Dropdown, Modal } from 'react-bootstrap'
 import { QueryInfiniteUnipile } from '../../helpers/Queries'
 import { useQueryClient } from 'react-query'
-import { toast } from 'react-toastify'
 import { AppContext } from '../../providers/AppProvider'
 
 const ChatInner = ({conversation}: any) => {
@@ -17,7 +16,6 @@ const ChatInner = ({conversation}: any) => {
   const [message, setMessage] = useState<string>('')
   const [files, setFiles] = useState<any>(null)
   const [loading, setLoading] = useState<boolean>(false)
-  const [loadingTask, setLoadingTask] = useState<boolean>(false)
   const { setTitleForCreateTask } = useContext(AppContext)
 
   const { data, isFetching, fetchNextPage, hasNextPage, isFetchingNextPage, refetch } = QueryInfiniteUnipile(`whatsapp-${conversation?.id}`, `${CHATS_UNIPILE_URL}/${conversation?.id}/messages`)
@@ -89,9 +87,9 @@ const ChatInner = ({conversation}: any) => {
       case file.type.includes('audio'):
         return <audio src={URL.createObjectURL(file)} style={{ width: '150px', height: '100%' }} controls />;
       case file.type.includes('pdf'):
-        return <iframe src={URL.createObjectURL(file)} style={{ width: '150px', height: '100%' }} />;
+        return <iframe src={URL.createObjectURL(file)} style={{ width: '150px', height: '100%' }} title="Attachment" />;
       case file.type.includes('text'):
-        return <iframe src={URL.createObjectURL(file)} style={{ width: '150px', height: '100%' }} />;
+        return <iframe src={URL.createObjectURL(file)} style={{ width: '150px', height: '100%' }} title="Attachment" />;
       default:
         return <p style={{ width: '150px', height: '100%', textAlign: 'center', padding: '10px', paddingTop: '50%', wordBreak: 'break-all' }}>{file.name}</p>;
     }
@@ -239,7 +237,6 @@ const ChatInner = ({conversation}: any) => {
         </button>
       </div>
       {!data?.pages?.length && isFetching && <LoadingComponent />}
-      {loadingTask && <LoadingComponent />}
     </div>
 
     <Modal className="fade" size='lg' aria-hidden='true' show={files} centered animation>
