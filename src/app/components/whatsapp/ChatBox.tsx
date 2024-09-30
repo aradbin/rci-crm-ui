@@ -1,5 +1,5 @@
 /* eslint-disable jsx-a11y/anchor-is-valid */
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import { toAbsoluteUrl } from '../../../_metronic/helpers'
 import { CHATS_UNIPILE_URL } from '../../helpers/ApiEndpoints'
 import { QueryInfiniteUnipile } from '../../helpers/Queries'
@@ -11,24 +11,31 @@ import { useAuth } from '../../modules/auth'
 const ChatBox = () => {
   const { currentUser } = useAuth()
   const [filter, setFilter] = useState('')
+  const [account, setAccount] = useState(getSettingsFromUserSettings(currentUser?.userSettings, 'whatsapp')[0]?.unipile_account_id)
   const [selectedConversation, setSelectedConversation]: any = useState()
 
-  const getWhatsAppAccount = () => {
-    return getSettingsFromUserSettings(currentUser?.userSettings, 'whatsapp')?.unipile_account_id
-  }
+  const { data, fetchNextPage, hasNextPage, isFetchingNextPage } = QueryInfiniteUnipile(`all-whatsapp-${account}`, `${CHATS_UNIPILE_URL}?account_id=${account}`)
 
-  const { data, fetchNextPage, hasNextPage, isFetchingNextPage } = QueryInfiniteUnipile(`all-whatsapp-${getWhatsAppAccount()}`, `${CHATS_UNIPILE_URL}?account_id=${getWhatsAppAccount()}`)
+  useEffect(() => {
+    setSelectedConversation(null)
+  },[account])
 
   return (
     <div className='d-flex flex-column flex-lg-row'>
       <div className='flex-column flex-lg-row-auto w-100 w-lg-300px w-xl-400px mb-10 mb-lg-0'>
         <div className='card'>
-          <div className='card-header p-4' id='kt_chat_contacts_header'>
+          <div className='card-header gap-2 p-4' id='kt_chat_contacts_header'>
+            <select className='form-select' value={account} onChange={(e) => setAccount(e.target.value)}>
+              <option value='0'>Select</option>
+              {getSettingsFromUserSettings(currentUser?.userSettings, 'whatsapp')?.map((item: any) => (
+                <option value={item.unipile_account_id}>{item.label}</option>
+              ))}
+            </select>
             <form className='w-100 position-relative' autoComplete='off'>
               <span className='fa fa-search fs-6 text-lg-1 text-gray-500 position-absolute top-50 ms-5 translate-middle-y'></span>
               <input
                 type='text'
-                className='form-control form-control-solid px-15'
+                className='form-control px-15'
                 name='search'
                 placeholder='Search'
                 onChange={(e) => setFilter(e.target.value)}
@@ -46,7 +53,7 @@ const ChatBox = () => {
               data-kt-scroll-dependencies='#kt_header, #kt_toolbar, #kt_footer, #kt_chat_contacts_header'
               data-kt-scroll-wrappers='#kt_content, #kt_chat_contacts_body'
               data-kt-scroll-offset='0px'
-              style={{ height: 'calc(100vh - 270px)' }}
+              style={{ height: 'calc(100vh - 320px)' }}
             >
               {data?.pages?.map((page: any, index: number) => (
                 <div key={index}>

@@ -1,5 +1,5 @@
 import { useContext } from "react"
-import { KTCard, KTCardBody, KTIcon } from "../../../_metronic/helpers"
+import { KTCard, KTCardBody } from "../../../_metronic/helpers"
 import { ToolbarComponent } from "../../components/common/ToolbarComponent"
 import { AppContext } from "../../providers/AppProvider"
 import EmailList from "../../components/email/EmailList"
@@ -20,9 +20,7 @@ const EmailPage = () => {
         <>
             <ToolbarComponent title="Email Inbox" breadCrumbs={breadCrumbs} handleButtonClick={toggleShowCreate} />
             <KTCard className="mb-5 mb-xl-8">
-                <KTCardBody className='py-3'>
-                    <EmailList />
-                </KTCardBody>
+                <EmailList />
             </KTCard>
         </>
     )

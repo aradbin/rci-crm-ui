@@ -26,10 +26,10 @@ const UserCreateForm = ({show, toggleShow, updateList}: any) => {
             password: "",
             department_id: "",
             designation_id: "",
-            email_id: "",
-            whatsapp_id: "",
-            phone_id: "",
-            voip_id: "",
+            email_id: [],
+            whatsapp_id: [],
+            phone_id: [],
+            voip_id: [],
         },
         validationSchema: Yup.object().shape({
             name: Yup.string().required('Name is required'),
@@ -56,17 +56,17 @@ const UserCreateForm = ({show, toggleShow, updateList}: any) => {
                 if(values.designation_id !== ''){
                     settings_id.push(parseInt(values.designation_id))
                 }
-                if(values.email_id !== ''){
-                    settings_id.push(parseInt(values.email_id))
+                if(values.email_id.length > 0){
+                    settings_id.push(...values.email_id)
                 }
-                if(values.whatsapp_id !== ''){
-                    settings_id.push(parseInt(values.whatsapp_id))
+                if(values.whatsapp_id.length > 0){
+                    settings_id.push(...values.whatsapp_id)
                 }
-                if(values.phone_id !== ''){
-                    settings_id.push(parseInt(values.phone_id))
+                if(values.phone_id.length > 0){
+                    settings_id.push(...values.phone_id)
                 }
-                if(values.voip_id !== ''){
-                    settings_id.push(parseInt(values.voip_id))
+                if(values.voip_id.length > 0){
+                    settings_id.push(...values.voip_id)
                 }
                 formData.settings_id = settings_id
                 if(idForUpdate === 0){
@@ -104,28 +104,28 @@ const UserCreateForm = ({show, toggleShow, updateList}: any) => {
                 formik.setFieldValue("email",response.email)
                 formik.setFieldValue("contact",response.contact)
                 const department_id = getSettingsFromUserSettings(response.userSettings, 'department')
-                if(department_id.value){
-                    formik.setFieldValue("department_id", department_id.value)
+                if(department_id.length > 0){
+                    formik.setFieldValue("department_id", department_id[0]?.value)
                 }
                 const designation_id = getSettingsFromUserSettings(response.userSettings, 'designation')
-                if(designation_id.value){
-                    formik.setFieldValue("designation_id", designation_id.value)
+                if(designation_id.length > 0){
+                    formik.setFieldValue("designation_id", designation_id[0]?.value)
                 }
                 const email_id = getSettingsFromUserSettings(response.userSettings, 'email')
-                if(email_id.value){
-                    formik.setFieldValue("email_id", email_id.value)
+                if(email_id.length > 0){
+                    formik.setFieldValue("email_id", email_id.map((item: any) => item.value))
                 }
                 const whatsapp_id = getSettingsFromUserSettings(response.userSettings, 'whatsapp')
-                if(whatsapp_id.value){
-                    formik.setFieldValue("whatsapp_id", whatsapp_id.value)
+                if(whatsapp_id.length > 0){
+                    formik.setFieldValue("whatsapp_id", whatsapp_id.map((item: any) => item.value))
                 }
                 const phone_id = getSettingsFromUserSettings(response.userSettings, 'phone')
-                if(phone_id.value){
-                    formik.setFieldValue("phone_id", phone_id.value)
+                if(phone_id.length > 0){
+                    formik.setFieldValue("phone_id", phone_id.map((item: any) => item.value))
                 }
                 const voip_id = getSettingsFromUserSettings(response.userSettings, 'voip')
-                if(voip_id.value){
-                    formik.setFieldValue("voip_id", voip_id.value)
+                if(voip_id.length > 0){
+                    formik.setFieldValue("voip_id", voip_id.map((item: any) => item.value))
                 }
             }).finally(() => {
                 setLoading(false)
@@ -209,6 +209,7 @@ const UserCreateForm = ({show, toggleShow, updateList}: any) => {
                                     options={getSettingsOptions(settings, 'email')}
                                     component={SearchableSelectField}
                                     size="sm"
+                                    multiple
                                 />
                                 <Field
                                     label="Assign WhatsApp"
@@ -216,6 +217,7 @@ const UserCreateForm = ({show, toggleShow, updateList}: any) => {
                                     options={getSettingsOptions(settings, 'whatsapp')}
                                     component={SearchableSelectField}
                                     size="sm"
+                                    multiple
                                 />
                                 <Field
                                     label="Assign Phone"
@@ -223,6 +225,7 @@ const UserCreateForm = ({show, toggleShow, updateList}: any) => {
                                     options={getSettingsOptions(settings, 'phone')}
                                     component={SearchableSelectField}
                                     size="sm"
+                                    multiple
                                 />
                                 <Field
                                     label="Assign VoIP"
@@ -230,6 +233,7 @@ const UserCreateForm = ({show, toggleShow, updateList}: any) => {
                                     options={getSettingsOptions(settings, 'voip')}
                                     component={SearchableSelectField}
                                     size="sm"
+                                    multiple
                                 />
                             </div>
                         </div>

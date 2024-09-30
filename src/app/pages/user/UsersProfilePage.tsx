@@ -5,7 +5,7 @@ import { getRequest } from "../../helpers/Requests";
 import { TASKS_URL, USERS_URL } from "../../helpers/ApiEndpoints";
 import { AppContext } from "../../providers/AppProvider";
 import { UserCreateForm } from "../../components/forms/UserCreateForm";
-import { getSettingsFromUserSettings, stringifyRequestQuery } from "../../helpers/Utils";
+import { getSettingsFromUserSettings } from "../../helpers/Utils";
 import { LoadingComponent } from "../../components/common/LoadingComponent";
 import TaskList from "../../components/task/TaskList";
 import { statuses } from "../../helpers/Variables";
@@ -59,31 +59,45 @@ const ProfileOverview = ({ user }: any) => {
                 <div className='row mb-7'>
                     <label className='col-lg-4 fw-bold text-muted'>Department</label>
                     <div className='col-lg-8'>
-                        <span className='fw-bolder fs-6 text-dark'>{getSettingsFromUserSettings(user?.userSettings, 'department').label}</span>
+                        <span className='fw-bolder fs-6 text-dark'>{getSettingsFromUserSettings(user?.userSettings, 'department')[0]?.label}</span>
                     </div>
                 </div>
                 <div className='row mb-7'>
                     <label className='col-lg-4 fw-bold text-muted'>Designation</label>
                     <div className='col-lg-8'>
-                        <span className='fw-bolder fs-6 text-dark'>{getSettingsFromUserSettings(user?.userSettings, 'designation').label}</span>
+                        <span className='fw-bolder fs-6 text-dark'>{getSettingsFromUserSettings(user?.userSettings, 'designation')[0]?.label}</span>
                     </div>
                 </div>
                 <div className='row mb-7'>
                     <label className='col-lg-4 fw-bold text-muted'>Assigned Email</label>
                     <div className='col-lg-8'>
-                        <span className='fw-bolder fs-6 text-dark'>{getSettingsFromUserSettings(user?.userSettings, 'email').label}</span>
+                        {getSettingsFromUserSettings(user?.userSettings, 'email')?.map((item: any) => (
+                            <span className='d-block fw-bolder fs-6 text-dark' key={item.id}>{item.label}</span>
+                        ))}
                     </div>
                 </div>
                 <div className='row mb-7'>
                     <label className='col-lg-4 fw-bold text-muted'>Assigned WhatsApp</label>
                     <div className='col-lg-8'>
-                        <span className='fw-bolder fs-6 text-dark'>{getSettingsFromUserSettings(user?.userSettings, 'whatsapp').label}</span>
+                        {getSettingsFromUserSettings(user?.userSettings, 'whatsapp')?.map((item: any) => (
+                            <span className='d-block fw-bolder fs-6 text-dark' key={item.id}>{item.label}</span>
+                        ))}
                     </div>
                 </div>
                 <div className='row mb-7'>
                     <label className='col-lg-4 fw-bold text-muted'>Assigned Phone</label>
                     <div className='col-lg-8'>
-                        <a href={`tel:${getSettingsFromUserSettings(user?.userSettings, 'phone').number}`} className='fw-bolder fs-6 text-dark text-hover-primary'>{getSettingsFromUserSettings(user?.userSettings, 'phone').label}</a>
+                        {getSettingsFromUserSettings(user?.userSettings, 'phone')?.map((item: any) => (
+                            <a href={`tel:${item.number}`} className='fw-bolder fs-6 text-dark text-hover-primary'>{item.label}</a>
+                        ))}
+                    </div>
+                </div>
+                <div className='row mb-7'>
+                    <label className='col-lg-4 fw-bold text-muted'>Assigned VoIP</label>
+                    <div className='col-lg-8'>
+                        {getSettingsFromUserSettings(user?.userSettings, 'voip')?.map((item: any) => (
+                            <a href={`tel:${item.number}`} className='fw-bolder fs-6 text-dark text-hover-primary'>{item.label}</a>
+                        ))}
                     </div>
                 </div>
             </div>
@@ -156,11 +170,11 @@ const ProfileHeader = ({ user }: any) => {
                             <span className='d-flex align-items-center text-gray-400 text-hover-primary me-5 mb-2 gap-2 cursor-pointer' onClick={() => setIdForEmail(user?.email)}>
                                 <i className="fa-solid fa-envelope"></i> {user?.email}
                             </span>
-                            {getSettingsFromUserSettings(user?.userSettings, 'department').label && <span className='d-flex align-items-center text-gray-400 text-hover-primary me-5 mb-2 gap-2 cursor-pointer'>
-                                <i className="fa-solid fa-building"></i> {getSettingsFromUserSettings(user?.userSettings, 'department').label}
+                            {getSettingsFromUserSettings(user?.userSettings, 'department')?.length > 0 && <span className='d-flex align-items-center text-gray-400 text-hover-primary me-5 mb-2 gap-2 cursor-pointer'>
+                                <i className="fa-solid fa-building"></i> {getSettingsFromUserSettings(user?.userSettings, 'department')[0]?.label}
                             </span>}
-                            {getSettingsFromUserSettings(user?.userSettings, 'designation').label && <span className='d-flex align-items-center text-gray-400 text-hover-primary me-5 mb-2 gap-2 cursor-pointer'>
-                                <i className="fa-solid fa-user-tie"></i> {getSettingsFromUserSettings(user?.userSettings, 'designation').label}
+                            {getSettingsFromUserSettings(user?.userSettings, 'designation')?.length > 0 && <span className='d-flex align-items-center text-gray-400 text-hover-primary me-5 mb-2 gap-2 cursor-pointer'>
+                                <i className="fa-solid fa-user-tie"></i> {getSettingsFromUserSettings(user?.userSettings, 'designation')[0]?.label}
                             </span>}
                         </div>
                     </div>

@@ -11,6 +11,7 @@ import { AppContext } from "../../providers/AppProvider"
 import { useAuth } from "../../modules/auth"
 import { getSettingsFromUserSettings } from "../../helpers/Utils"
 import { FileField } from "../fields/FileField"
+import { SelectField } from "../fields/SelectField"
 
 const EmailCreateForm = () => {
     const { currentUser } = useAuth()
@@ -20,12 +21,14 @@ const EmailCreateForm = () => {
 
     const formik = useFormik({
         initialValues: {
+            account_id: getSettingsFromUserSettings(currentUser?.userSettings, 'email')[0]?.unipile_account_id,
             toEmail: "",
             subject: "",
             text: "",
             html: ""
         },
         validationSchema: Yup.object().shape({
+            account_id: Yup.string().required('From email address is required'),
             toEmail: Yup.string().required('To email address is required'),
             subject: Yup.string().required('Subject is required'),
             text: Yup.string().required('Body is required'),
@@ -33,13 +36,8 @@ const EmailCreateForm = () => {
         onSubmit: async (values, {setSubmitting}) => {
             setSubmitting(true)
             try {
-                const account = getSettingsFromUserSettings(currentUser?.userSettings, 'email')?.unipile_account_id
-                if(!account){
-                    throw new Error('No assigned email address')
-                }
-
                 const formData = new FormData()
-                formData.append('account_id', account)
+                formData.append('account_id', values.account_id)
                 formData.append('subject', values.subject)
                 formData.append('body', values.text)
                 formData.append('to', JSON.stringify([
@@ -86,7 +84,7 @@ const EmailCreateForm = () => {
 
     const hasEmailSettings = () => {
         let has = false
-        if(getSettingsFromUserSettings(currentUser?.userSettings, 'email').value){
+        if(getSettingsFromUserSettings(currentUser?.userSettings, 'email').length > 0){
             has = true
         }
 
@@ -113,6 +111,19 @@ const EmailCreateForm = () => {
                     <form className="form" onSubmit={formik.handleSubmit} noValidate>
                         <div className="modal-body scroll-y mx-2 mx-xl-2 my-2">
                             <div className='d-flex flex-column'>
+                                <Field
+                                    label="From"
+                                    name="account_id"
+                                    options={getSettingsFromUserSettings(currentUser?.userSettings, 'email')?.map((item: any) => (
+                                        {
+                                            label: item?.label,
+                                            value: item?.unipile_account_id
+                                        }
+                                    ))}
+                                    required="required"
+                                    component={SelectField}
+                                    size="sm"
+                                />
                                 <Field
                                     label="To"
                                     name="toEmail"

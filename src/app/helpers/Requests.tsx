@@ -71,7 +71,7 @@ export async function createRequestUnipile(url: string, values: any) {
       }
     })
     .catch((error) => {
-      catchError(error)
+      catchUnipileError(error)
     })
 }
 
@@ -88,13 +88,13 @@ export async function updateRequestUnipile(url: string, values: any, put: boolea
     return await axios
       .put(url, values, option)
       .catch((error) => {
-        catchError(error)
+        catchUnipileError(error)
       })
   }
   return await axios
     .patch(url, values, option)
     .catch((error) => {
-      catchError(error)
+      catchUnipileError(error)
     })
 }
 
@@ -114,4 +114,8 @@ const catchError = (error: any) => {
   //   toast.error('Something went wrong. Please try again')
   // }
   toast.error(error?.response?.data?.message)
+}
+
+const catchUnipileError = (error: any) => {
+  toast.error(error?.response?.data?.title)
 }

@@ -119,38 +119,38 @@ export const getTaskTimeString = (milliseconds: number) => {
 }
 
 export const getSettingsFromUserSettings = (userSettings: any, type: string) => {
-  let settings: any = { label: null, value: null }
+  let settings: any = []
   userSettings?.forEach((item: any) => {
     if(item?.deleted_at === null && item?.settings?.type === type){
       if(type === 'email'){
-        settings = {
+        settings.push({
           label: `${item?.settings?.name} (${item?.settings?.metadata?.username})`,
           value: item?.settings?.id,
           username: item?.settings?.metadata?.username,
           unipile_account_id: item?.settings?.metadata?.unipile_account_id
-        }
+        })
       }else if(type === 'whatsapp'){
-        settings = {
+        settings.push({
           label: `${item?.settings?.name} (${item?.settings?.metadata?.number})`,
           value: item?.settings?.id,
           number: item?.settings?.metadata?.number,
           unipile_account_id: item?.settings?.metadata?.unipile_account_id
-        }
-      }else if(type === 'phone'){
-        settings = {
+        })
+      }else if(type === 'phone' || type === 'voip'){
+        settings.push({
           label: `${item?.settings?.name} (${item?.settings?.metadata?.number})`,
           value: item?.settings?.id,
           number: item?.settings?.metadata?.number
-        }
+        })
       }else{
-        settings = {
+        settings.push({
           label: item?.settings?.name,
           value: item?.settings?.id
-        }
+        })
       }
     }
   })
-  
+
   return settings
 }
 

@@ -27,11 +27,11 @@ export const userColumns = [
   },
   {
     Header: "Department",
-    Cell: ({row}: any) => getSettingsFromUserSettings(row?.original?.userSettings, 'department').label
+    Cell: ({row}: any) => getSettingsFromUserSettings(row?.original?.userSettings, 'department')[0]?.label
   },
   {
     Header: "Designation",
-    Cell: ({row}: any) => getSettingsFromUserSettings(row?.original?.userSettings, 'designation').label
+    Cell: ({row}: any) => getSettingsFromUserSettings(row?.original?.userSettings, 'designation')[0]?.label
   },
   {
     Header: "Created At",

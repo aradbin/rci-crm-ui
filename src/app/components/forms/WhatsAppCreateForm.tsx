@@ -11,6 +11,7 @@ import { AppContext } from "../../providers/AppProvider"
 import { useAuth } from "../../modules/auth"
 import { getSettingsFromUserSettings } from "../../helpers/Utils"
 import { useQueryClient } from "react-query"
+import { SelectField } from "../fields/SelectField"
 
 const WhatsAppCreateForm = () => {
     const { currentUser } = useAuth()
@@ -20,11 +21,12 @@ const WhatsAppCreateForm = () => {
 
     const formik = useFormik({
         initialValues: {
-            account_id: getSettingsFromUserSettings(currentUser?.userSettings, 'whatsapp').unipile_account_id,
+            account_id: getSettingsFromUserSettings(currentUser?.userSettings, 'whatsapp')[0]?.unipile_account_id,
             recipient_number: "",
             text: "",
         },
         validationSchema: Yup.object().shape({
+            account_id: Yup.string().required('Sender Number is required'),
             recipient_number: Yup.string().required('Recipient Number is required'),
             text: Yup.string().required('Message is required'),
         }),
@@ -41,8 +43,6 @@ const WhatsAppCreateForm = () => {
                     queryClient.invalidateQueries({ queryKey: [`all-whatsapp-${values.account_id}`] })
                     closeModal()
                 }
-            }).catch((error) => {
-                console.log(error)
             }).finally(() => {
                 setSubmitting(false)
             })
@@ -68,7 +68,7 @@ const WhatsAppCreateForm = () => {
     
     const hasWhatsAppSettings = () => {
         let has = false
-        if(getSettingsFromUserSettings(currentUser?.userSettings, 'whatsapp').value){
+        if(getSettingsFromUserSettings(currentUser?.userSettings, 'whatsapp').length > 0){
             has = true
         }
 
@@ -95,6 +95,19 @@ const WhatsAppCreateForm = () => {
                     <form className="form" onSubmit={formik.handleSubmit} noValidate>
                         <div className="modal-body scroll-y mx-2 mx-xl-2 my-2">
                             <div className='d-flex flex-column'>
+                                <Field
+                                    label="From"
+                                    name="account_id"
+                                    options={getSettingsFromUserSettings(currentUser?.userSettings, 'whatsapp')?.map((item: any) => (
+                                        {
+                                            label: item?.label,
+                                            value: item?.unipile_account_id
+                                        }
+                                    ))}
+                                    required="required"
+                                    component={SelectField}
+                                    size="sm"
+                                />
                                 <Field
                                     label="To"
                                     name="recipient_number"
