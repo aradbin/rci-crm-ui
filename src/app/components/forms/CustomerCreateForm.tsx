@@ -28,8 +28,8 @@ const CustomerCreateForm = ({show, toggleShow, updateList}: any) => {
             address: "",
             priority: "1",
             optional_contact: "",
-            customer_type: "",
-            business_type: "",
+            customer_type_id: "",
+            business_type_id: "",
             status: true
         },
         validationSchema: Yup.object().shape({
@@ -45,8 +45,8 @@ const CustomerCreateForm = ({show, toggleShow, updateList}: any) => {
                 const formData: any = { 
                     ...values,
                     priority: parseInt(values?.priority),
-                    customer_type: values?.customer_type !== '' ? parseInt(values?.customer_type) : null,
-                    business_type: values?.business_type !== '' ? parseInt(values?.business_type) : null,
+                    customer_type_id: values?.customer_type_id !== '' ? parseInt(values?.customer_type_id) : null,
+                    business_type_id: values?.business_type_id !== '' ? parseInt(values?.business_type_id) : null,
                 }
                 if(idForUpdate === 0 && idForStatus === 0){
                     await createRequest(CUSTOMERS_URL,formData).then((response) => {
@@ -84,8 +84,8 @@ const CustomerCreateForm = ({show, toggleShow, updateList}: any) => {
                 formik.setFieldValue("address",response.address)
                 formik.setFieldValue("optional_contact",response.optional_contact)
                 formik.setFieldValue("priority",response?.priority)
-                formik.setFieldValue("customer_type",response?.customer_type)
-                formik.setFieldValue("business_type",response?.business_type)
+                formik.setFieldValue("customer_type_id",response?.customer_type_id)
+                formik.setFieldValue("business_type_id",response?.business_type_id)
                 formik.setFieldValue("status",response?.status)
             }).finally(() => {
                 setLoading(false)
@@ -174,14 +174,14 @@ const CustomerCreateForm = ({show, toggleShow, updateList}: any) => {
                                     />
                                     <Field
                                         label="Customer Type"
-                                        name="customer_type"
+                                        name="customer_type_id"
                                         options={getSettingsOptions(settings, 'customer-type')}
                                         component={SelectField}
                                         size="sm"
                                     />
                                     <Field
                                         label="Business Type"
-                                        name="business_type"
+                                        name="business_type_id"
                                         options={getSettingsOptions(settings, 'business-type')}
                                         component={SelectField}
                                         size="sm"

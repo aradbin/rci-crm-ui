@@ -28,16 +28,16 @@ const CustomersPage = () => {
             name: "",
             email: "",
             contact: "",
-            customer_type: "",
-            business_type: "",
+            customer_type_id: "",
+            business_type_id: "",
             status: ""
         },
         fields: [
             { label: "Name", name: "name" },
             { label: "Email", name: "email" },
             { label: "Contact", name: "contact" },
-            { label: "Customer Type", name: "customer_type", type: "select", options: getSettingsOptions(settings, 'customer-type') },
-            { label: "Business Type", name: "business_type", type: "select", options: getSettingsOptions(settings, 'business-type') },
+            { label: "Customer Type", name: "customer_type_id", type: "select", options: getSettingsOptions(settings, 'customer-type') },
+            { label: "Business Type", name: "business_type_id", type: "select", options: getSettingsOptions(settings, 'business-type') },
             { label: "Status", name: "status", type: "select", options: [
                 { label: 'Active', value: true },
                 { label: 'Inactive', value: false },
