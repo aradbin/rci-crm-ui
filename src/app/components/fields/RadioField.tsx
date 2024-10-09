@@ -2,7 +2,6 @@ import clsx from "clsx";
 
 export const RadioField = ({
     label,
-    placeholder,
     field,
     type,
     required,
@@ -23,7 +22,7 @@ export const RadioField = ({
                             className={clsx('form-check-input mb-3 mb-lg-0',
                                 {'w-35px h-20px': size==='sm'}
                             )}
-                            defaultChecked={field.checked}
+                            checked={field.checked}
                         />
                         <label className='form-check-label'></label>
                     </div>
@@ -36,7 +35,7 @@ export const RadioField = ({
                         className={clsx('form-check-input mb-3 mb-lg-0',
                             {'w-35px h-20px': size==='sm'},
                         )}
-                        defaultChecked={field.checked}
+                        checked={field.checked}
                     />
                     <label className='form-check-label'></label>
                 </div>

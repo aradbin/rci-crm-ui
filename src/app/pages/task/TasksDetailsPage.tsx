@@ -1,14 +1,12 @@
-import { Link, useNavigate, useParams } from "react-router-dom";
+import { Link, useParams } from "react-router-dom";
 import { toAbsoluteUrl } from "../../../_metronic/helpers";
 import { useContext, useEffect, useState } from "react";
-import { getRequest, updateRequest } from "../../helpers/Requests";
 import { TASKS_URL } from "../../helpers/ApiEndpoints";
 import { AppContext } from "../../providers/AppProvider";
 import { formatDate, getTaskPriorityBadge, getTaskStatusBadge, getTaskTime, getTaskTimeString } from "../../helpers/Utils";
 import { LoadingComponent } from "../../components/common/LoadingComponent";
 import TaskStatusField from "../../components/fields/TaskStatusField";
 import { Query } from "../../helpers/Queries";
-import TaskList from "../../components/task/TaskList";
 import { TableWithDataComponent } from "../../components/common/TableWithDataComponent";
 import { taskColumns } from "../../columns/taskColumns";
 
@@ -47,11 +45,6 @@ const TaskOverview = ({ task }: any) => {
 }
 
 const TaskActions = ({ task }: any) => {
-    const [worked, setWorked] = useState(0)
-
-    useEffect(() => {
-
-    },[task])
     return (
         <div className='card mb-5'>
             <div className='card-header justify-content-center'>
@@ -63,28 +56,32 @@ const TaskActions = ({ task }: any) => {
                 <div className="d-flex justify-content-between gap-4">
                     <span>Assignee</span>
                     <span>
-                        <Link to={`/users/${task?.assignee?.id}`} className='d-flex align-items-center text-dark text-hover-primary'>
-                            {/* <div className='symbol symbol-30px me-5'>
-                                <img src={task?.assignee?.avatar || toAbsoluteUrl('/media/avatars/blank.png')} alt='Avatar' />
-                            </div> */}
-                            <div className='d-flex justify-content-start flex-column'>
-                                <span className='fw-bold fs-7'>{task?.assignee?.name}</span>
-                            </div>
-                        </Link>
+                        {task?.taskUsers?.filter((user: any) => user?.type === 'assignee')?.map((item: any, index: number) =>
+                            <Link to={`/users/${item?.user?.id}`} className='d-flex align-items-center text-dark text-hover-primary' key={index}>
+                                <div className='symbol symbol-30px me-5'>
+                                    <img src={item?.user?.avatar || toAbsoluteUrl('/media/avatars/blank.png')} alt='Avatar' />
+                                </div>
+                                <div className='d-flex justify-content-start flex-column'>
+                                    <span className='fw-bold fs-7'>{item?.user?.name}</span>
+                                </div>
+                            </Link>
+                        )}
                     </span>
                 </div>
                 <div className="separator separator-dashed"></div>
                 <div className="d-flex justify-content-between gap-4">
                     <span>Reporter</span>
                     <span>
-                        <Link to={`/users/${task?.reporter?.id}`} className='d-flex align-items-center text-dark text-hover-primary'>
-                            {/* <div className='symbol symbol-30px me-5'>
-                                <img src={task?.reporter?.avatar || toAbsoluteUrl('/media/avatars/blank.png')} alt='Avatar' />
-                            </div> */}
-                            <div className='d-flex justify-content-start flex-column'>
-                                <span className='fw-bold fs-7'>{task?.reporter?.name}</span>
-                            </div>
-                        </Link>
+                        {task?.taskUsers?.filter((user: any) => user?.type === 'reporter')?.map((item: any, index: number) =>
+                            <Link to={`/users/${item?.user?.id}`} className='d-flex align-items-center text-dark text-hover-primary' key={index}>
+                                <div className='symbol symbol-30px me-5'>
+                                    <img src={item?.user?.avatar || toAbsoluteUrl('/media/avatars/blank.png')} alt='Avatar' />
+                                </div>
+                                <div className='d-flex justify-content-start flex-column'>
+                                    <span className='fw-bold fs-7'>{item?.user?.name}</span>
+                                </div>
+                            </Link>
+                        )}
                     </span>
                 </div>
                 <div className="separator separator-dashed"></div>

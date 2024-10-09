@@ -129,18 +129,20 @@ const TaskCreateForm = () => {
             toggleShow(true)
             setLoading(true)
             getRequest(`${TASKS_URL}/${idForTaskUpdate}`).then((response) => {
-                formik.setFieldValue("title",response.title)
+                formik.setFieldValue("title",response.title || "")
                 formik.setFieldValue("description",response.description || "")
-                formik.setFieldValue("due_date",formatDate(response.due_date, 'input'))
-                formik.setFieldValue("estimation",response.estimation)
-                formik.setFieldValue("priority",response.priority)
-                formik.setFieldValue("parent_id",response.parent_id)
-                formik.setFieldValue("customer_id",response.customer_id)
-                formik.setFieldValue("assignee_id",response.assignee_id)
-                formik.setFieldValue("reporter_id",response.reporter_id)
-                formik.setFieldValue("settings_id",response.settings_id)
-                formik.setFieldValue("billable",response.billable)
-                formik.setFieldValue("bill_amount",response.bill_amount)
+                formik.setFieldValue("due_date",response.due_date ? formatDate(response.due_date, 'input') : "")
+                formik.setFieldValue("estimation",response.estimation || "")
+                formik.setFieldValue("priority",response.priority || "")
+                formik.setFieldValue("parent_id",response.parent_id || "")
+                formik.setFieldValue("customer_id",response.customer_id || "")
+                formik.setFieldValue("settings_id",response.settings_id || "")
+                formik.setFieldValue("billable",response.billable || false)
+                formik.setFieldValue("bill_amount",response.bill_amount || 0)
+                const assignees = response?.taskUsers?.filter((item: any) => item?.type === 'assignee')?.map((item: any) => item?.user_id)
+                formik.setFieldValue("assignee_id",assignees?.length > 0 ? assignees : [])
+                const reporters = response?.taskUsers?.filter((item: any) => item?.type === 'reporter')?.map((item: any) => item?.user_id)
+                formik.setFieldValue("reporter_id",reporters?.length > 0 ? reporters : [])
             }).finally(() => {
                 setLoading(false)
             })
@@ -241,6 +243,7 @@ const TaskCreateForm = () => {
                                     options={assigneeOptions}
                                     component={SearchableSelectField}
                                     size="sm"
+                                    multiple
                                 />
                                 <Field
                                     label="Reporter"
@@ -248,6 +251,7 @@ const TaskCreateForm = () => {
                                     options={assigneeOptions}
                                     component={SearchableSelectField}
                                     size="sm"
+                                    multiple
                                 />
                                 <Field
                                     label="Billable"
