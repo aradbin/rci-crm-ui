@@ -1,6 +1,5 @@
 import { useInfiniteQuery, useQuery } from "react-query"
 import { getRequest, getRequestUnipile } from "../helpers/Requests"
-import { UNIPILE_API_KEY, UNIPILE_BASE_URL } from "./ApiEndpoints"
 
 const Query = (queryKey: any, url: string, params: string = "") => {
     const queryInstance = useQuery([queryKey, params], () => getRequest(url, params), {
