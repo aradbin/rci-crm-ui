@@ -7,6 +7,7 @@ import { ChatInner } from './ChatInner'
 import { formatDate, getSettingsFromUserSettings } from '../../helpers/Utils'
 import { LoadingComponent } from '../common/LoadingComponent'
 import { useAuth } from '../../modules/auth'
+import { AvatarComponent } from '../common/AvatarComponent'
 
 const ChatBox = () => {
   const { currentUser } = useAuth()
@@ -62,9 +63,7 @@ const ChatBox = () => {
                       return (
                         <div className={`d-flex flex-stack px-5 py-3 cursor-pointer rounded ${selectedConversation?.id === item?.id ? 'bg-success-subtle' : ''}`} key={item?.id} onClick={() => setSelectedConversation(item)}>
                           <div className='d-flex align-items-center'>
-                            <div className='symbol symbol-40px symbol-circle'>
-                              <img alt='Avatar' src={item?.customer?.avatar || toAbsoluteUrl('/media/avatars/blank.png')} />
-                            </div>
+                            <AvatarComponent avatar={item?.customer?.avatar} name={item?.customer?.name} style='circle' size='40' />
                             <div className='ms-5'>
                               <span className='fs-5 fw-bolder text-gray-900 text-hover-primary mb-2'>
                                 {item?.name || item?.provider_id?.split('@')[0]}

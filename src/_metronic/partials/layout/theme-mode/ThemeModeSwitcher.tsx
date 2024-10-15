@@ -31,7 +31,7 @@ const ThemeModeSwitcher = ({
       {/* begin::Menu toggle */}
       <a
         href='#'
-        className={clsx('btn btn-icon ', toggleBtnClass)}
+        className={clsx('btn btn-icon btn-sm', toggleBtnClass)}
         data-kt-menu-trigger={menuTrigger}
         data-kt-menu-attach='parent'
         data-kt-menu-placement={menuPlacement}

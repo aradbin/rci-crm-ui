@@ -1,6 +1,8 @@
 import { Link } from "react-router-dom"
 import { TaskActionCell } from "../components/cells/TaskActionCell"
 import { formatDate, getTaskPriorityBadge, getTaskStatusBadge } from "../helpers/Utils"
+import { toAbsoluteUrl } from "../../_metronic/helpers"
+import { AvatarComponent } from "../components/common/AvatarComponent"
 
 export const taskColumns = [
   {
@@ -19,26 +21,36 @@ export const taskColumns = [
     Header: "Assignee",
     accessor: "assignee.name",
     Cell: ({ row }: any) => {
-      if(row?.original?.assignee_id){
+      if(row?.original?.taskUsers?.filter((item: any) => item?.type === 'assignee')?.length > 0){
         return (
-          <Link to={`/users/${row?.original?.assignee_id}`} className='text-dark text-hover-primary'>
-            {row?.original?.assignee?.name}
-          </Link>
+          <div className="symbol-group symbol-hover">
+            {row?.original?.taskUsers?.filter((item: any) => item?.type === 'assignee')?.map((item: any) => (
+              <Link to={`/users/${item?.user_id}`} key={item?.id}>
+                <AvatarComponent avatar={item?.user?.avatar} name={item?.user?.name} style="circle" size="30" fontSize="5" />
+              </Link>
+            ))}
+          </div>
         )
       }
+
       return ""
     }
   },
   {
     Header: "Reporter",
     Cell: ({ row }: any) => {
-      if(row?.original?.reporter_id){
+      if(row?.original?.taskUsers?.filter((item: any) => item?.type === 'reporter')?.length > 0){
         return (
-          <Link to={`/users/${row?.original?.reporter_id}`} className='text-dark text-hover-primary'>
-            {row?.original?.reporter?.name}
-          </Link>
+          <div className="symbol-group symbol-hover">
+            {row?.original?.taskUsers?.filter((item: any) => item?.type === 'reporter')?.map((item: any) => (
+              <Link to={`/users/${item?.user_id}`} key={item?.id}>
+                <AvatarComponent avatar={item?.user?.avatar} name={item?.user?.name} style="circle" size="30" fontSize="5" />
+              </Link>
+            ))}
+          </div>
         )
       }
+
       return ""
     }
   },

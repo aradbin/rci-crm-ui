@@ -9,6 +9,7 @@ import TaskStatusField from "../../components/fields/TaskStatusField";
 import { Query } from "../../helpers/Queries";
 import { TableWithDataComponent } from "../../components/common/TableWithDataComponent";
 import { taskColumns } from "../../columns/taskColumns";
+import { AvatarComponent } from "../../components/common/AvatarComponent";
 
 const SubTasks = ({ task }: any) => {
     const { setShowCreateSubTask } = useContext(AppContext)
@@ -53,50 +54,44 @@ const TaskActions = ({ task }: any) => {
                 </div>
             </div>
             <div className='card-body p-5 d-flex flex-column gap-5'>
-                <div className="d-flex justify-content-between gap-4">
+                <div className="d-flex justify-content-between align-items-center gap-4">
                     <span>Assignee</span>
-                    <span>
+                    <div className="d-flex flex-wrap gap-1">
                         {task?.taskUsers?.filter((user: any) => user?.type === 'assignee')?.map((item: any, index: number) =>
-                            <Link to={`/users/${item?.user?.id}`} className='d-flex align-items-center text-dark text-hover-primary' key={index}>
-                                <div className='symbol symbol-30px me-5'>
-                                    <img src={item?.user?.avatar || toAbsoluteUrl('/media/avatars/blank.png')} alt='Avatar' />
-                                </div>
+                            <Link to={`/users/${item?.user?.id}`} className='d-flex align-items-center btn btn-sm btn-outline btn-outline-dashed py-0 ps-0 pe-3' key={index}>
+                                <AvatarComponent avatar={item?.user?.avatar} name={item?.user?.name} size="30" fontSize="4" classNames="me-5" />
                                 <div className='d-flex justify-content-start flex-column'>
                                     <span className='fw-bold fs-7'>{item?.user?.name}</span>
                                 </div>
                             </Link>
                         )}
-                    </span>
+                    </div>
                 </div>
                 <div className="separator separator-dashed"></div>
                 <div className="d-flex justify-content-between gap-4">
                     <span>Reporter</span>
-                    <span>
+                    <div className="d-flex flex-wrap gap-1">
                         {task?.taskUsers?.filter((user: any) => user?.type === 'reporter')?.map((item: any, index: number) =>
-                            <Link to={`/users/${item?.user?.id}`} className='d-flex align-items-center text-dark text-hover-primary' key={index}>
-                                <div className='symbol symbol-30px me-5'>
-                                    <img src={item?.user?.avatar || toAbsoluteUrl('/media/avatars/blank.png')} alt='Avatar' />
-                                </div>
+                            <Link to={`/users/${item?.user?.id}`} className='d-flex align-items-center btn btn-sm btn-outline btn-outline-dashed py-0 ps-0 pe-3' key={index}>
+                                <AvatarComponent avatar={item?.user?.avatar} name={item?.user?.name} size="30" fontSize="4" classNames="me-5" />
                                 <div className='d-flex justify-content-start flex-column'>
                                     <span className='fw-bold fs-7'>{item?.user?.name}</span>
                                 </div>
                             </Link>
                         )}
-                    </span>
+                    </div>
                 </div>
                 <div className="separator separator-dashed"></div>
                 <div className="d-flex justify-content-between gap-4">
                     <span>Customer</span>
-                    <span>
-                        <Link to={`/customers/${task?.customer?.id}`} className='d-flex align-items-center text-dark text-hover-primary'>
-                            {/* <div className='symbol symbol-30px me-5'>
-                                <img src={task?.customer?.avatar || toAbsoluteUrl('/media/avatars/blank.png')} alt='Avatar' />
-                            </div> */}
+                    <div className="d-flex flex-wrap gap-1">
+                        <Link to={`/customers/${task?.customer?.id}`} className='d-flex align-items-center btn btn-sm btn-outline btn-outline-dashed py-0 ps-0 pe-3'>
+                            <AvatarComponent avatar={task?.customer?.avatar} name={task?.customer?.name} size="30" fontSize="4" classNames="me-5" />
                             <div className='d-flex justify-content-start flex-column'>
                                 <span className='fw-bold fs-7'>{task?.customer?.name}</span>
                             </div>
                         </Link>
-                    </span>
+                    </div>
                 </div>
                 <div className="separator separator-dashed"></div>
                 <div className="d-flex justify-content-between gap-4">
@@ -152,16 +147,14 @@ const TaskActions = ({ task }: any) => {
                 <div className="d-flex justify-content-between gap-4">
                     <span>Created By</span>
                     {task?.creator ?
-                        <span>
-                            <Link to={`/users/${task?.creator?.id}`} className='d-flex align-items-center text-dark text-hover-primary'>
-                                {/* <div className='symbol symbol-30px me-5'>
-                                    <img src={task?.customer?.avatar || toAbsoluteUrl('/media/avatars/blank.png')} alt='Avatar' />
-                                </div> */}
+                        <div className="d-flex flex-wrap gap-1">
+                            <Link to={`/users/${task?.creator?.id}`} className='d-flex align-items-center btn btn-sm btn-outline btn-outline-dashed py-0 ps-0 pe-3'>
+                                <AvatarComponent avatar={task?.creator?.avatar} name={task?.creator?.name} size="30" fontSize="4" classNames="me-5" />
                                 <div className='d-flex justify-content-start flex-column'>
                                     <span className='fw-bold fs-7'>{task?.creator?.name}</span>
                                 </div>
                             </Link>
-                        </span>
+                        </div>
                     :
                         <span>Auto Generated</span>
                     }

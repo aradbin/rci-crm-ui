@@ -48,6 +48,12 @@ const CustomerCreateForm = ({show, toggleShow, updateList}: any) => {
                     customer_type_id: values?.customer_type_id !== '' ? parseInt(values?.customer_type_id) : null,
                     business_type_id: values?.business_type_id !== '' ? parseInt(values?.business_type_id) : null,
                 }
+                delete formData.optional_contact
+                if(values.optional_contact !== ''){
+                    formData.metadata = {
+                        optional_contact: values?.optional_contact
+                    }
+                }
                 if(idForUpdate === 0 && idForStatus === 0){
                     await createRequest(CUSTOMERS_URL,formData).then((response) => {
                         if(response?.status===201){
@@ -82,7 +88,7 @@ const CustomerCreateForm = ({show, toggleShow, updateList}: any) => {
                 formik.setFieldValue("email",response.email)
                 formik.setFieldValue("contact",response.contact)
                 formik.setFieldValue("address",response.address)
-                formik.setFieldValue("optional_contact",response.optional_contact)
+                formik.setFieldValue("optional_contact",response.metadata.optional_contact)
                 formik.setFieldValue("priority",response?.priority)
                 formik.setFieldValue("customer_type_id",response?.customer_type_id)
                 formik.setFieldValue("business_type_id",response?.business_type_id)

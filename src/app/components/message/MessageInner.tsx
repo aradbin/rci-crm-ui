@@ -7,6 +7,7 @@ import { MESSAGES_URL } from '../../helpers/ApiEndpoints'
 import { useAuth } from '../../modules/auth'
 import { formatDateTime } from '../../helpers/Utils'
 import { SocketContext } from '../../providers/SocketProvider'
+import { AvatarComponent } from '../common/AvatarComponent'
 
 const MessageInner = ({selectedUser, setSelectedUser}: any) => {
   const { currentUser } = useAuth()
@@ -50,9 +51,7 @@ const MessageInner = ({selectedUser, setSelectedUser}: any) => {
     <div className='card' id='kt_chat_messenger'>
       <div className='card-header px-5' id='kt_chat_messenger_header'>
         <div className='d-flex align-items-center'>
-          <div className='symbol symbol-45px symbol-circle'>
-            <img alt='Avatar' src={selectedUser?.user?.avatar || toAbsoluteUrl('/media/avatars/blank.png')} />
-          </div>
+          <AvatarComponent avatar={selectedUser?.user?.avatar} name={selectedUser?.user?.name} style='circle' size="45" />
           <div className='ms-5'>
             <a href='#' className='fs-5 fw-bolder text-gray-900 text-hover-primary mb-2'>
               {selectedUser?.user?.name}
@@ -108,15 +107,11 @@ const MessageInner = ({selectedUser, setSelectedUser}: any) => {
                             {currentUser?.name}
                           </a>
                         </div>
-                        <div className='symbol  symbol-35px symbol-circle '>
-                          <img alt='Avatar' src={currentUser?.avatar || toAbsoluteUrl('/media/avatars/blank.png')} />
-                        </div>
+                        <AvatarComponent avatar={currentUser?.avatar} name={currentUser?.name} style='circle' size="35" />
                       </>
                     ) : (
                       <>
-                        <div className='symbol  symbol-35px symbol-circle '>
-                          <img alt='Avatar' src={selectedUser?.user?.avatar || toAbsoluteUrl('/media/avatars/blank.png')} />
-                        </div>
+                        <AvatarComponent avatar={selectedUser?.user?.avatar} name={selectedUser?.user?.name} style='circle' size="35" />
                         <div className='ms-3'>
                           <a href='#' className='fs-5 fw-bolder text-gray-900 text-hover-primary me-1'>
                             {selectedUser?.user?.name}

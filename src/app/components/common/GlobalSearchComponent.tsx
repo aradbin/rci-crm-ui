@@ -3,6 +3,7 @@ import { AppContext } from "../../providers/AppProvider"
 import { toAbsoluteUrl } from "../../../_metronic/helpers"
 import { useNavigate } from "react-router-dom";
 import { firstLetterUpperCase } from "../../helpers/Utils";
+import { AvatarComponent } from "./AvatarComponent";
 
 const GlobalSearchComponent = () => {
   const navigate = useNavigate();
@@ -71,9 +72,7 @@ const GlobalSearchComponent = () => {
                       navigate(`/${item?.type}s/${item?.id}`)
                     }}>
                       <td>
-                        <div className="symbol symbol-40px">
-                          <img src={item?.avatar || toAbsoluteUrl('/media/avatars/blank.png')} alt="" />
-                        </div>
+                        <AvatarComponent avatar={item?.avatar} name={item?.name} style='circle' size="40" />
                       </td>
                       <td>
                         <span className='text-dark fw-bold text-hover-primary mb-1 fs-6'>

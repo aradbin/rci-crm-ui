@@ -1,12 +1,12 @@
 /* eslint-disable jsx-a11y/anchor-is-valid */
 import React, { useContext, useEffect } from 'react'
-import { toAbsoluteUrl } from '../../../_metronic/helpers'
 import { MESSAGES_URL } from '../../helpers/ApiEndpoints'
 import { Query } from '../../helpers/Queries'
 import { formatDateTime } from '../../helpers/Utils'
 import { AppContext } from '../../providers/AppProvider'
 import { useAuth } from '../../modules/auth'
 import { SocketContext } from '../../providers/SocketProvider'
+import { AvatarComponent } from '../common/AvatarComponent'
 
 const MessageBox = ({setSelectedUser}: any) => {
     const { currentUser } = useAuth()
@@ -54,9 +54,7 @@ const MessageBox = ({setSelectedUser}: any) => {
                             conversation_id: item.id
                         })}>
                             <div className='d-flex align-items-center'>
-                                <div className='symbol symbol-45px symbol-circle'>
-                                    <img alt='Avatar' src={item.user_one !== currentUser?.id ? (item?.userOne?.avatar || toAbsoluteUrl('/media/avatars/blank.png')) : (item?.userTwo?.avatar || toAbsoluteUrl('/media/avatars/blank.png'))} />
-                                </div>
+                                <AvatarComponent avatar={item.user_one !== currentUser?.id ? item?.userOne?.avatar : item?.userTwo?.avatar} name={item.user_one !== currentUser?.id ? item?.userOne?.name : item?.userTwo?.name} style='circle' size="45" />
                                 <div className='ms-5'>
                                     <span className='fs-5 fw-bolder text-gray-900 text-hover-primary mb-2'>
                                     {item.user_one !== currentUser?.id ? item?.userOne?.name : item?.userTwo?.name}
@@ -77,9 +75,7 @@ const MessageBox = ({setSelectedUser}: any) => {
                             conversation_id: null
                         })}>
                             <div className='d-flex align-items-center'>
-                                <div className='symbol symbol-45px symbol-circle'>
-                                    <img alt='Avatar' src={item?.avatar || toAbsoluteUrl('/media/avatars/blank.png')} />
-                                </div>
+                                <AvatarComponent avatar={item?.avatar} name={item.name} style='circle' size="45" />
                                 <div className='ms-5'>
                                     <span className='fs-5 fw-bolder text-gray-900 text-hover-primary mb-2'>
                                         {item?.name}

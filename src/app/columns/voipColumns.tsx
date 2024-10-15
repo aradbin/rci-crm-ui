@@ -3,15 +3,14 @@ import { toAbsoluteUrl } from "../../_metronic/helpers"
 // import { CustomerActionCell } from "../components/cells/CustomerActionCell"
 import { formatDate } from "../helpers/Utils"
 import { VoIPActionCell } from "../components/cells/VoIPActionCell"
+import { AvatarComponent } from "../components/common/AvatarComponent"
 
 export const voipColumns = [
   {
     Header: "Customer",
     Cell: ({row}: any) => { return (row?.original?.customer && 
       <Link to={`/customers/${row?.original?.customer?.id}`} className='d-flex align-items-center text-dark text-hover-primary'>
-        <div className='symbol symbol-30px me-5'>
-          <img src={row?.original?.customer?.avatar || toAbsoluteUrl('/media/avatars/blank.png')} alt='Avatar' />
-        </div>
+        <AvatarComponent avatar={row?.original?.customer?.avatar} name={row?.original?.customer?.name} size="30" classNames="me-5" />
         <div className='d-flex justify-content-start flex-column'>
           <span className='fw-bold fs-7'>{row?.original?.customer?.name}</span>
         </div>

@@ -1,15 +1,14 @@
 import { Link } from "react-router-dom"
 import { KTSVG, toAbsoluteUrl } from "../../_metronic/helpers"
 import { CustomerContactActionCell } from "../components/cells/CustomerContactActionCell"
+import { AvatarComponent } from "../components/common/AvatarComponent"
 
 export const customerContactColumns = [
   {
     Header: "Customer",
     accessor: "customer.name",
     Cell: ({row}: any) => <Link to={`/customers/${row?.original?.customer?.id}`} className='d-flex align-items-center text-dark text-hover-primary'>
-        <div className='symbol symbol-30px me-5'>
-          <img src={row?.original?.customer?.avatar || toAbsoluteUrl('/media/avatars/blank.png')} alt='Avatar' />
-        </div>
+        <AvatarComponent avatar={row?.original?.customer?.avatar} name={row?.original?.customer?.name} size="30" classNames="me-5" />
         <div className='d-flex justify-content-start flex-row'>
           <span className='fw-bold fs-7'>{row?.original?.customer?.name}</span>
         </div>
@@ -20,9 +19,7 @@ export const customerContactColumns = [
     Header: "Contact",
     accessor: "contact.name",
     Cell: ({row}: any) => <Link to={`/contacts/${row?.original?.contact?.id}`} className='d-flex align-items-center text-dark text-hover-primary'>
-        <div className='symbol symbol-30px me-5'>
-          <img src={row?.original?.contact?.avatar || toAbsoluteUrl('/media/avatars/blank.png')} alt='Avatar' />
-        </div>
+        <AvatarComponent avatar={row?.original?.contact?.avatar} name={row?.original?.contact?.name} size="30" classNames="me-5" />
         <div className='d-flex justify-content-start flex-row'>
           <span className='fw-bold fs-7'>{row?.original?.contact?.name}</span>
         </div>
