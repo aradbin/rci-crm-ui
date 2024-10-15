@@ -1,9 +1,8 @@
 import { Link, useParams } from "react-router-dom";
-import { toAbsoluteUrl } from "../../../_metronic/helpers";
 import { useContext, useEffect, useState } from "react";
 import { TASKS_URL } from "../../helpers/ApiEndpoints";
 import { AppContext } from "../../providers/AppProvider";
-import { formatDate, getTaskPriorityBadge, getTaskStatusBadge, getTaskTime, getTaskTimeString } from "../../helpers/Utils";
+import { formatDate, getTaskPriorityBadge, getTaskTime, getTaskTimeString } from "../../helpers/Utils";
 import { LoadingComponent } from "../../components/common/LoadingComponent";
 import TaskStatusField from "../../components/fields/TaskStatusField";
 import { Query } from "../../helpers/Queries";

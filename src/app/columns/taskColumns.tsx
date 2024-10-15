@@ -1,7 +1,6 @@
 import { Link } from "react-router-dom"
 import { TaskActionCell } from "../components/cells/TaskActionCell"
 import { formatDate, getTaskPriorityBadge, getTaskStatusBadge } from "../helpers/Utils"
-import { toAbsoluteUrl } from "../../_metronic/helpers"
 import { AvatarComponent } from "../components/common/AvatarComponent"
 
 export const taskColumns = [

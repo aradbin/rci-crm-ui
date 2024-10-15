@@ -1,5 +1,5 @@
 import { Link } from "react-router-dom"
-import { KTSVG, toAbsoluteUrl } from "../../_metronic/helpers"
+import { KTSVG } from "../../_metronic/helpers"
 import { CustomerContactActionCell } from "../components/cells/CustomerContactActionCell"
 import { AvatarComponent } from "../components/common/AvatarComponent"
 

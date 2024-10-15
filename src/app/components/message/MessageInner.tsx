@@ -1,7 +1,6 @@
 /* eslint-disable jsx-a11y/anchor-is-valid */
 import React, {useContext, useEffect, useState} from 'react'
 import clsx from 'clsx'
-import { toAbsoluteUrl } from '../../../_metronic/helpers'
 import { getRequest } from '../../helpers/Requests'
 import { MESSAGES_URL } from '../../helpers/ApiEndpoints'
 import { useAuth } from '../../modules/auth'

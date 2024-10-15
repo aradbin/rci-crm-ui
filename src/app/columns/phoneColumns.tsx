@@ -1,7 +1,4 @@
 import { Link } from "react-router-dom"
-import { toAbsoluteUrl } from "../../_metronic/helpers"
-import { formatDate } from "../helpers/Utils"
-import { VoIPActionCell } from "../components/cells/VoIPActionCell"
 import { AvatarComponent } from "../components/common/AvatarComponent"
 
 export const phoneColumns = [

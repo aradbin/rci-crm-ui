@@ -1,6 +1,5 @@
 import { useContext, useEffect, useState } from "react"
 import { AppContext } from "../../providers/AppProvider"
-import { toAbsoluteUrl } from "../../../_metronic/helpers"
 import { useNavigate } from "react-router-dom";
 import { firstLetterUpperCase } from "../../helpers/Utils";
 import { AvatarComponent } from "./AvatarComponent";

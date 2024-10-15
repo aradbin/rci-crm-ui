@@ -1,5 +1,4 @@
 import { Link } from "react-router-dom"
-import { toAbsoluteUrl } from "../../_metronic/helpers"
 import { UserActionCell } from "../components/cells/UserActionCell"
 import { formatDate, getSettingsFromUserSettings } from "../helpers/Utils"
 import { AvatarComponent } from "../components/common/AvatarComponent"

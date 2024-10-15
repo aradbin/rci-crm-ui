@@ -1,6 +1,5 @@
 /* eslint-disable jsx-a11y/anchor-is-valid */
 import { Fragment, useContext, useEffect, useRef, useState } from 'react'
-import { toAbsoluteUrl } from '../../../_metronic/helpers'
 import { createRequestUnipile, updateRequestUnipile } from '../../helpers/Requests'
 import { CHATS_UNIPILE_URL } from '../../helpers/ApiEndpoints'
 import { formatTime, isUrl } from '../../helpers/Utils'

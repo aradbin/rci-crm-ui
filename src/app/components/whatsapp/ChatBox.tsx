@@ -1,6 +1,5 @@
 /* eslint-disable jsx-a11y/anchor-is-valid */
 import { useEffect, useState } from 'react'
-import { toAbsoluteUrl } from '../../../_metronic/helpers'
 import { CHATS_UNIPILE_URL } from '../../helpers/ApiEndpoints'
 import { QueryInfiniteUnipile } from '../../helpers/Queries'
 import { ChatInner } from './ChatInner'
