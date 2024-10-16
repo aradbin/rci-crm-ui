@@ -12,7 +12,7 @@ const breadCrumbs = [
 
 const TasksPage = () => {
     const [params, setParams] = useState<any>({})
-    const { setShowCreateTask, settings } = useContext(AppContext)
+    const { setShowCreateTask, settings, customers, users } = useContext(AppContext)
 
     const filter = {
         initialValues: {
@@ -25,6 +25,8 @@ const TasksPage = () => {
             { label: "ID", name: "id", type: "number" },
             { label: "Title", name: "title" },
             { label: "Service", name: "settings_id", type: "select", options: getSettingsOptions(settings, 'service') },
+            { label: "Customer", name: "customer_id", type: "select", options: customers?.map((item: any) => ({ label: item?.name, value: item?.id })) },
+            { label: "User", name: "user_id", type: "select", options: users?.map((item: any) => ({ label: item?.name, value: item?.id })) },
             { label: "Sort By", name: "sort", type: "select", options: [
                 { label: "Priority (Low to High)", value: 'priorityLowToHigh' },
                 { label: "Priority (High to Low)", value: 'priorityHighToLow' },

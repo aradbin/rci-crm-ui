@@ -1,8 +1,8 @@
 import { Field, FormikProvider, useFormik } from "formik"
-// import * as Yup from 'yup'
 import { InputField } from "../fields/InputField"
 import { SelectField } from "../fields/SelectField"
 import { KTIcon } from "../../../_metronic/helpers"
+import { SearchableSelectField } from "../fields/SearchableSelectField"
 
 const FilterComponent = ({filter, submit}: any) => {
     const formik = useFormik({
@@ -11,6 +11,17 @@ const FilterComponent = ({filter, submit}: any) => {
             submit(values)
         },
     })
+
+    const getComponent = (type: string) => {
+        switch (type) {
+            case 'select':
+                return SelectField
+            case 'searchableSelect':
+                return SearchableSelectField
+            default:
+                return InputField
+        }
+    }
 
     return (
         <div className='m-0'>
@@ -32,7 +43,7 @@ const FilterComponent = ({filter, submit}: any) => {
                                     name={item?.name}
                                     type={item?.type || "text"}
                                     required={item?.required || ""}
-                                    component={item?.type === 'select' ? SelectField : InputField}
+                                    component={getComponent(item?.type)}
                                     options={item?.options}
                                     size={item?.size || "sm"}
                                 />

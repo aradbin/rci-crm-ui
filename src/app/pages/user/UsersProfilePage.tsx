@@ -22,7 +22,7 @@ const ProfileEmail = ({ user }: any) => {
 const ProfileTasks = ({ user }: any) => {
     return (
         <div className='card mb-5 mb-xl-10' id='kt_profile_details_view'>
-            <TaskList filterParams={{ assignee_id: user?.id }} />
+            <TaskList filterParams={{ user_id: user?.id }} />
         </div>
     )
 }
@@ -136,7 +136,7 @@ const ProfileHeader = ({ user }: any) => {
     useEffect(() => {
         if(user?.id){
             setLoading(true)
-            getRequest(`${TASKS_URL}/count`, `assignee_id=${user?.id}`).then((response) => {
+            getRequest(`${TASKS_URL}/count`, `user_id=${user?.id}`).then((response) => {
                 const count = {}
                 response?.map((item: any) => {
                     count[item?.status] = item?.count
