@@ -10,8 +10,8 @@ const CustomerActionCell = ({ item }: any) => {
       <button className="btn btn-icon btn-bg-light btn-color-primary btn-sm" onClick={() => setIdForUpdate(item?.id)}>
         <KTIcon iconName='pencil' className='fs-3' />
       </button>
-      <button className={`btn btn-icon btn-bg-light btn-color-${item?.status ? 'danger' : 'success'} btn-sm`} onClick={() => setIdForStatus(item?.id)}>
-        <KTIcon iconName={item?.status ? 'shield-cross' : 'shield-tick'} className='fs-1' />
+      <button className={`btn btn-icon btn-bg-light btn-color-${item?.is_active ? 'danger' : 'success'} btn-sm`} onClick={() => setIdForStatus(item?.id)}>
+        <KTIcon iconName={item?.is_active ? 'shield-cross' : 'shield-tick'} className='fs-1' />
       </button>
     </div>
   )

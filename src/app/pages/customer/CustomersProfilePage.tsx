@@ -12,7 +12,7 @@ import CustomerServiceList from "../../components/customer/CustomerServiceList";
 import { CustomerServiceCreateForm } from "../../components/forms/CustomerServiceCreateForm";
 import { TableComponent } from "../../components/common/TableComponent";
 import { voipColumns } from "../../columns/voipColumns";
-import { getCustomerPriorityBadge, stringifyRequestQuery } from "../../helpers/Utils";
+import { getCustomerPriorityBadge, getStatusBadge, stringifyRequestQuery } from "../../helpers/Utils";
 import CustomerContactList from "../../components/customer/CustomerContactList";
 import { CustomerContactCreateForm } from "../../components/forms/CustomerContactCreateForm";
 import { VoIPCreateForm } from "../../components/forms/VoIPCreateForm";
@@ -122,13 +122,19 @@ const ProfileOverview = ({ customer }: any) => {
                 <div className='row mb-7'>
                     <label className='col-lg-4 fw-bold text-muted'>Alternative Contact</label>
                     <div className='col-lg-8'>
-                        <a href={`tel:${customer?.optional_contact}`} className='fw-bolder fs-6 text-dark text-hover-primary'>{customer?.optional_contact}</a>
+                        <a href={`tel:${customer?.metadata?.optional_contact}`} className='fw-bolder fs-6 text-dark text-hover-primary'>{customer?.metadata?.optional_contact}</a>
                     </div>
                 </div>
                 <div className='row mb-7'>
                     <label className='col-lg-4 fw-bold text-muted'>Address</label>
                     <div className='col-lg-8'>
                     <span className='fw-bolder fs-6 text-dark'>{customer?.address}</span>
+                    </div>
+                </div>
+                <div className='row mb-7'>
+                    <label className='col-lg-4 fw-bold text-muted'>Status</label>
+                    <div className='col-lg-8'>
+                    <span className='fw-bolder fs-6 text-dark'>{getStatusBadge(customer?.is_active)}</span>
                     </div>
                 </div>
             </div>

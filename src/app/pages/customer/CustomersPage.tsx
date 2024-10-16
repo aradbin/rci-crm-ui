@@ -30,7 +30,7 @@ const CustomersPage = () => {
             contact: "",
             customer_type_id: "",
             business_type_id: "",
-            status: ""
+            is_active: ""
         },
         fields: [
             { label: "Name", name: "name" },
@@ -38,7 +38,7 @@ const CustomersPage = () => {
             { label: "Contact", name: "contact" },
             { label: "Customer Type", name: "customer_type_id", type: "select", options: getSettingsOptions(settings, 'customer-type') },
             { label: "Business Type", name: "business_type_id", type: "select", options: getSettingsOptions(settings, 'business-type') },
-            { label: "Status", name: "status", type: "select", options: [
+            { label: "Status", name: "is_active", type: "select", options: [
                 { label: 'Active', value: true },
                 { label: 'Inactive', value: false },
             ]},

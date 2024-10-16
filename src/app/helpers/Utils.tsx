@@ -87,6 +87,10 @@ export const getCustomerPriorityBadge = (value: number) => {
   return ''
 }
 
+export const getStatusBadge = (status: boolean) => {  
+  return <span className={`badge badge-${status ? 'success' : 'danger'}`}>{status ? 'Active' : 'Inactive'}</span>
+}
+
 export const getTaskStatusBadge = (value: string) => {
   const status = statuses.find(item => item.value === value)
   

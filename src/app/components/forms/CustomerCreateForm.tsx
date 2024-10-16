@@ -12,6 +12,7 @@ import { useQueryClient } from "react-query"
 import { customerPriorities } from "../../helpers/Variables"
 import { SelectField } from "../fields/SelectField"
 import { getSettingsOptions } from "../../helpers/Utils"
+import { RadioField } from "../fields/RadioField"
 
 const CustomerCreateForm = ({show, toggleShow, updateList}: any) => {
     const [loading, setLoading] = useState(false)
@@ -30,7 +31,7 @@ const CustomerCreateForm = ({show, toggleShow, updateList}: any) => {
             optional_contact: "",
             customer_type_id: "",
             business_type_id: "",
-            status: true
+            is_active: true
         },
         validationSchema: Yup.object().shape({
             name: Yup.string().required('Name is required'),
@@ -63,6 +64,9 @@ const CustomerCreateForm = ({show, toggleShow, updateList}: any) => {
                         }
                     })
                 }else{
+                    if(idForStatus > 0){
+                        formData.is_active = !formData.is_active
+                    }
                     await updateRequest(`${CUSTOMERS_URL}/${idForUpdate > 0 ? idForUpdate : idForStatus}`,formData).then((response) => {
                         if(response?.status===200){
                             toast.success('Customer Updated Successfully')
@@ -88,11 +92,11 @@ const CustomerCreateForm = ({show, toggleShow, updateList}: any) => {
                 formik.setFieldValue("email",response.email)
                 formik.setFieldValue("contact",response.contact)
                 formik.setFieldValue("address",response.address)
-                formik.setFieldValue("optional_contact",response.metadata.optional_contact)
+                formik.setFieldValue("optional_contact",response.metadata?.optional_contact)
                 formik.setFieldValue("priority",response?.priority)
                 formik.setFieldValue("customer_type_id",response?.customer_type_id)
                 formik.setFieldValue("business_type_id",response?.business_type_id)
-                formik.setFieldValue("status",response?.status)
+                formik.setFieldValue("is_active",response?.is_active)
             }).finally(() => {
                 setLoading(false)
             })
@@ -125,9 +129,8 @@ const CustomerCreateForm = ({show, toggleShow, updateList}: any) => {
                         <div className="modal-body scroll-y mx-2 mx-xl-2 my-2">
                             {idForStatus > 0 ? 
                                 <div className="d-flex flex-column">
-                                    <h2 className="text-center">{formik.values.status ? 'Deactivate' : 'Activate'} Customer</h2>
+                                    <h2 className="text-center">{formik.values.is_active ? 'Deactivate' : 'Activate'} Customer</h2>
                                     <p className="text-center">Are you sure?</p>
-                                    <input type="hidden" name="status" value={formik.values.status ? 0 : 1} onChange={(e) => formik.setFieldValue("status", e.target.value)} />
                                 </div>
                             :
                                 <div className='d-flex flex-column'>
@@ -190,6 +193,13 @@ const CustomerCreateForm = ({show, toggleShow, updateList}: any) => {
                                         name="business_type_id"
                                         options={getSettingsOptions(settings, 'business-type')}
                                         component={SelectField}
+                                        size="sm"
+                                    />
+                                    <Field
+                                        label="Active"
+                                        name="is_active"
+                                        type="checkbox"
+                                        component={RadioField}
                                         size="sm"
                                     />
                                 </div>

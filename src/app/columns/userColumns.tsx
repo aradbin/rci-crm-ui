@@ -1,6 +1,6 @@
 import { Link } from "react-router-dom"
 import { UserActionCell } from "../components/cells/UserActionCell"
-import { formatDate, getSettingsFromUserSettings } from "../helpers/Utils"
+import { formatDate, getSettingsFromUserSettings, getStatusBadge } from "../helpers/Utils"
 import { AvatarComponent } from "../components/common/AvatarComponent"
 
 export const userColumns = [
@@ -34,9 +34,13 @@ export const userColumns = [
   {
     Header: "Created At",
     Cell: ({row}: any) => formatDate(row?.original?.created_at)
-  },  
+  },
+  {
+    Header: "Status",
+    Cell: ({row}: any) => getStatusBadge(row?.original?.is_active)
+  },
   {
     Header: "Actions",
-    Cell: ({ row }: any) => <UserActionCell user={row?.original} />
+    Cell: ({ row }: any) => <UserActionCell item={row?.original} />
   }
 ]

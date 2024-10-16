@@ -66,7 +66,7 @@ const CustomerImportForm = ({show, toggleShow, updateList}: any) => {
                             address: item?.Address || "",
                             priority: 1,
                             customer_type_id: customerType?.id || null,
-                            status: item?.Status === 'Active' ? true : false,
+                            is_active: item?.is_active === 'Active' ? true : false,
                             metadata: {
                                 client_id: item?.ClientId || "",
                                 client_manager: item?.ClientManager || "",

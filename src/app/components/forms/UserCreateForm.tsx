@@ -12,10 +12,11 @@ import { Query } from "../../helpers/Queries"
 import { SearchableSelectField } from "../fields/SearchableSelectField"
 import { getSettingsFromUserSettings, getSettingsOptions } from "../../helpers/Utils"
 import { useQueryClient } from "react-query"
+import { RadioField } from "../fields/RadioField"
 
 const UserCreateForm = ({show, toggleShow, updateList}: any) => {
     const [loading, setLoading] = useState(false)
-    const { idForUpdate, setIdForUpdate, settings } = useContext(AppContext)
+    const { idForUpdate, idForStatus, setIdForStatus, setIdForUpdate, settings } = useContext(AppContext)
     const queryClient = useQueryClient()
 
     const formik = useFormik({
@@ -30,13 +31,14 @@ const UserCreateForm = ({show, toggleShow, updateList}: any) => {
             whatsapp_id: [],
             phone_id: [],
             voip_id: [],
+            is_active: true
         },
         validationSchema: Yup.object().shape({
             name: Yup.string().required('Name is required'),
             email: Yup.string().required('Email is required').email('Please provide valid email address'),
             contact: Yup.string().required('Contact is required'),
             password: Yup.string().when({
-                is: () => idForUpdate === 0,
+                is: () => idForUpdate === 0 && idForStatus === 0,
                 then: (schema) => schema.required('Password is required')
             }),
         }),
@@ -48,6 +50,7 @@ const UserCreateForm = ({show, toggleShow, updateList}: any) => {
                     email: values.email,
                     contact: values.contact,
                     password: values.password,
+                    is_active: values.is_active
                 }
                 const settings_id: number[] = []
                 if(values.department_id !== ''){
@@ -69,7 +72,7 @@ const UserCreateForm = ({show, toggleShow, updateList}: any) => {
                     settings_id.push(...values.voip_id)
                 }
                 formData.settings_id = settings_id
-                if(idForUpdate === 0){
+                if(idForUpdate === 0 && idForStatus === 0){
                     await createRequest(USERS_URL, formData).then(async (response) => {
                         if(response?.status===201){
                             toast.success('User Created Successfully')
@@ -79,7 +82,10 @@ const UserCreateForm = ({show, toggleShow, updateList}: any) => {
                     })
                 }else{
                     delete formData.password
-                    await updateRequest(`${USERS_URL}/${idForUpdate}`, formData).then((response) => {
+                    if(idForStatus > 0){
+                        formData.is_active = !formData.is_active
+                    }
+                    await updateRequest(`${USERS_URL}/${idForUpdate > 0 ? idForUpdate : idForStatus}`, formData).then((response) => {
                         if(response?.status===200){
                             toast.success('User Updated Successfully')
                             updateListHandler()
@@ -96,10 +102,10 @@ const UserCreateForm = ({show, toggleShow, updateList}: any) => {
     })
 
     useEffect(() => {
-        if(idForUpdate > 0){
+        if(idForUpdate > 0 || idForStatus > 0){
             toggleShow(true)
             setLoading(true)
-            getRequest(`${USERS_URL}/${idForUpdate}`).then((response) => {
+            getRequest(`${USERS_URL}/${idForUpdate > 0 ? idForUpdate : idForStatus}`).then((response) => {
                 formik.setFieldValue("name",response.name)
                 formik.setFieldValue("email",response.email)
                 formik.setFieldValue("contact",response.contact)
@@ -127,16 +133,18 @@ const UserCreateForm = ({show, toggleShow, updateList}: any) => {
                 if(voip_id.length > 0){
                     formik.setFieldValue("voip_id", voip_id.map((item: any) => item.value))
                 }
+                formik.setFieldValue("is_active",response?.is_active)
             }).finally(() => {
                 setLoading(false)
             })
         }
-    },[idForUpdate])
+    },[idForUpdate, idForStatus])
 
     const closeModal = () => {
         formik.resetForm()
         toggleShow(false)
         setIdForUpdate(0)
+        setIdForStatus(0)
     }
 
     const updateListHandler = () => {
@@ -148,7 +156,7 @@ const UserCreateForm = ({show, toggleShow, updateList}: any) => {
         <Modal className="fade" aria-hidden='true' show={show} centered animation>
             <div className="modal-content">
                 <div className='modal-header'>
-                    <h2 className='fw-bolder'>{idForUpdate === 0 ? 'Create' : 'Update'} User</h2>
+                    <h2 className='fw-bolder'>{(idForUpdate === 0 && idForStatus === 0) ? 'Create' : 'Update'} User</h2>
                     <div className='btn btn-icon btn-sm btn-active-icon-primary' onClick={() => closeModal()}>
                         <i className="fa fa-times fs-2"></i>
                     </div>
@@ -156,86 +164,100 @@ const UserCreateForm = ({show, toggleShow, updateList}: any) => {
                 <FormikProvider value={formik}>
                     <form className="form" onSubmit={formik.handleSubmit} noValidate>
                         <div className="modal-body scroll-y mx-2 mx-xl-2 my-2">
-                            <div className='d-flex flex-column'>
-                                <Field
-                                    label="Name"
-                                    name="name"
-                                    type="text"
-                                    required="required"
-                                    component={InputField}
-                                    size="sm"
-                                />
-                                <Field
-                                    label="Email"
-                                    name="email"
-                                    type="email"
-                                    required="required"
-                                    component={InputField}
-                                    size="sm"
-                                />
-                                <Field
-                                    label="Contact"
-                                    name="contact"
-                                    type="text"
-                                    required="required"
-                                    component={InputField}
-                                    size="sm"
-                                />
-                                {idForUpdate === 0 && <Field
-                                    label="Password"
-                                    name="password"
-                                    type="password"
-                                    required="required"
-                                    component={InputField}
-                                    size="sm"
-                                />}
-                                <Field
-                                    label="Department"
-                                    name="department_id"
-                                    options={getSettingsOptions(settings, 'department')}
-                                    component={SearchableSelectField}
-                                    size="sm"
-                                />
-                                <Field
-                                    label="Designation"
-                                    name="designation_id"
-                                    options={getSettingsOptions(settings, 'designation')}
-                                    component={SearchableSelectField}
-                                    size="sm"
-                                />
-                                <Field
-                                    label="Assign Email"
-                                    name="email_id"
-                                    options={getSettingsOptions(settings, 'email')}
-                                    component={SearchableSelectField}
-                                    size="sm"
-                                    multiple
-                                />
-                                <Field
-                                    label="Assign WhatsApp"
-                                    name="whatsapp_id"
-                                    options={getSettingsOptions(settings, 'whatsapp')}
-                                    component={SearchableSelectField}
-                                    size="sm"
-                                    multiple
-                                />
-                                <Field
-                                    label="Assign Phone"
-                                    name="phone_id"
-                                    options={getSettingsOptions(settings, 'phone')}
-                                    component={SearchableSelectField}
-                                    size="sm"
-                                    multiple
-                                />
-                                <Field
-                                    label="Assign VoIP"
-                                    name="voip_id"
-                                    options={getSettingsOptions(settings, 'voip')}
-                                    component={SearchableSelectField}
-                                    size="sm"
-                                    multiple
-                                />
-                            </div>
+                            {idForStatus > 0 ? 
+                                <div className="d-flex flex-column">
+                                    <h2 className="text-center">{formik.values.is_active ? 'Deactivate' : 'Activate'} User</h2>
+                                    <p className="text-center">Are you sure?</p>
+                                </div>
+                            :
+                                <div className='d-flex flex-column'>
+                                    <Field
+                                        label="Name"
+                                        name="name"
+                                        type="text"
+                                        required="required"
+                                        component={InputField}
+                                        size="sm"
+                                    />
+                                    <Field
+                                        label="Email"
+                                        name="email"
+                                        type="email"
+                                        required="required"
+                                        component={InputField}
+                                        size="sm"
+                                    />
+                                    <Field
+                                        label="Contact"
+                                        name="contact"
+                                        type="text"
+                                        required="required"
+                                        component={InputField}
+                                        size="sm"
+                                    />
+                                    {idForUpdate === 0 && <Field
+                                        label="Password"
+                                        name="password"
+                                        type="password"
+                                        required="required"
+                                        component={InputField}
+                                        size="sm"
+                                    />}
+                                    <Field
+                                        label="Department"
+                                        name="department_id"
+                                        options={getSettingsOptions(settings, 'department')}
+                                        component={SearchableSelectField}
+                                        size="sm"
+                                    />
+                                    <Field
+                                        label="Designation"
+                                        name="designation_id"
+                                        options={getSettingsOptions(settings, 'designation')}
+                                        component={SearchableSelectField}
+                                        size="sm"
+                                    />
+                                    <Field
+                                        label="Assign Email"
+                                        name="email_id"
+                                        options={getSettingsOptions(settings, 'email')}
+                                        component={SearchableSelectField}
+                                        size="sm"
+                                        multiple
+                                    />
+                                    <Field
+                                        label="Assign WhatsApp"
+                                        name="whatsapp_id"
+                                        options={getSettingsOptions(settings, 'whatsapp')}
+                                        component={SearchableSelectField}
+                                        size="sm"
+                                        multiple
+                                    />
+                                    <Field
+                                        label="Assign Phone"
+                                        name="phone_id"
+                                        options={getSettingsOptions(settings, 'phone')}
+                                        component={SearchableSelectField}
+                                        size="sm"
+                                        multiple
+                                    />
+                                    <Field
+                                        label="Assign VoIP"
+                                        name="voip_id"
+                                        options={getSettingsOptions(settings, 'voip')}
+                                        component={SearchableSelectField}
+                                        size="sm"
+                                        multiple
+                                    />
+                                    <Field
+                                        label="Active"
+                                        name="is_active"
+                                        type="checkbox"
+                                        component={RadioField}
+                                        size="sm"
+                                    />
+                                </div>
+                            }
                         </div>
                         <div className="modal-footer">
                             <button type="submit" className="btn btn-sm btn-primary w-125px me-3" disabled={formik.isSubmitting}>

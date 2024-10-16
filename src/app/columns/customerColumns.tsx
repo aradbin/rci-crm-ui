@@ -1,7 +1,7 @@
 import { Link } from "react-router-dom"
 import { KTSVG } from "../../_metronic/helpers"
 import { CustomerActionCell } from "../components/cells/CustomerActionCell"
-import { formatDate, getCustomerPriorityBadge } from "../helpers/Utils"
+import { formatDate, getCustomerPriorityBadge, getStatusBadge } from "../helpers/Utils"
 import { AvatarComponent } from "../components/common/AvatarComponent"
 
 export const customerColumns = [
@@ -28,7 +28,11 @@ export const customerColumns = [
   {
     Header: "Created At",
     Cell: ({row}: any) => formatDate(row?.original?.created_at)
-  },  
+  },
+  {
+    Header: "Status",
+    Cell: ({row}: any) => getStatusBadge(row?.original?.is_active)
+  },
   {
     Header: "Actions",
     Cell: ({ row }: any) => <CustomerActionCell item={row?.original} />

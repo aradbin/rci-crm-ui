@@ -18,12 +18,17 @@ const filter = {
     initialValues: {
         name: "",
         email: "",
-        contact: ""
+        contact: "",
+        is_active: ""
     },
     fields: [
         { label: "Name", name: "name" },
         { label: "Email", name: "email" },
         { label: "Contact", name: "contact" },
+        { label: "Status", name: "is_active", type: "select", options: [
+            { label: 'Active', value: true },
+            { label: 'Inactive', value: false },
+        ]},
     ]
 }
 

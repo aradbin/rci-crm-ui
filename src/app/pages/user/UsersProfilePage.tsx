@@ -5,7 +5,7 @@ import { getRequest } from "../../helpers/Requests";
 import { TASKS_URL, USERS_URL } from "../../helpers/ApiEndpoints";
 import { AppContext } from "../../providers/AppProvider";
 import { UserCreateForm } from "../../components/forms/UserCreateForm";
-import { getSettingsFromUserSettings } from "../../helpers/Utils";
+import { getSettingsFromUserSettings, getStatusBadge } from "../../helpers/Utils";
 import { LoadingComponent } from "../../components/common/LoadingComponent";
 import TaskList from "../../components/task/TaskList";
 import { statuses } from "../../helpers/Variables";
@@ -98,6 +98,12 @@ const ProfileOverview = ({ user }: any) => {
                         {getSettingsFromUserSettings(user?.userSettings, 'voip')?.map((item: any) => (
                             <a href={`tel:${item.number}`} className='fw-bolder fs-6 text-dark text-hover-primary'>{item.label}</a>
                         ))}
+                    </div>
+                </div>
+                <div className='row mb-7'>
+                    <label className='col-lg-4 fw-bold text-muted'>Status</label>
+                    <div className='col-lg-8'>
+                    <span className='fw-bolder fs-6 text-dark'>{getStatusBadge(user?.is_active)}</span>
                     </div>
                 </div>
             </div>
