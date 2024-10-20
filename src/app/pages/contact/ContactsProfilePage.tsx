@@ -35,9 +35,7 @@ const ProfileCustomers = ({ contact }: any) => {
             <div className="card-header justify-content-end">
                 <button className='btn btn-sm btn-primary align-self-center' onClick={() => toggleShow(true)}>Add To Customer</button>
             </div>
-            <div className='card-body py-3'>
-                <CustomerContactList filterParams={{ contact_id: contact?.id }} refetch={refetch} />
-            </div>
+            <CustomerContactList filterParams={{ contact_id: contact?.id }} refetch={refetch} />
         </div>
         <CustomerContactCreateForm contact={contact} show={show} toggleShow={toggleShow} updateList={updateList} />
     </>)

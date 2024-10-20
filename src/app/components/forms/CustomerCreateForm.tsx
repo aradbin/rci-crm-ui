@@ -37,7 +37,6 @@ const CustomerCreateForm = ({show, toggleShow, updateList}: any) => {
             name: Yup.string().required('Name is required'),
             email: Yup.string().required('Email is required').email('Please provide valid email address'),
             contact: Yup.string().required('Contact is required'),
-            address: Yup.string().required('Address is required'),
             priority: Yup.number().required('Priority is required'),
         }),
         onSubmit: async (values, {setSubmitting}) => {
@@ -162,7 +161,6 @@ const CustomerCreateForm = ({show, toggleShow, updateList}: any) => {
                                         label="Address"
                                         name="address"
                                         type="text"
-                                        required="required"
                                         component={InputField}
                                         size="sm"
                                     />

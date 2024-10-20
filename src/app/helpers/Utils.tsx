@@ -172,3 +172,11 @@ export const getSettingsOptions = (settings: any, type: string) => {
 
   return options
 }
+
+export const getOptions = (data: any) => {
+  const options = data?.map((item: any) => (
+    { label: item?.name, value: item?.id }
+  ))
+
+  return options || []
+}

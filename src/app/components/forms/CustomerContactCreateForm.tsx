@@ -9,25 +9,24 @@ import { AppContext } from "../../providers/AppProvider"
 import { LoadingComponent } from "../common/LoadingComponent"
 import { SearchableSelectField } from "../fields/SearchableSelectField"
 import { InputField } from "../fields/InputField"
+import { getOptions } from "../../helpers/Utils"
 
 const CustomerContactCreateForm = ({customer, contact, show, toggleShow, updateList}: any) => {
     const [loading, setLoading] = useState(false)
-    const [customerOptions, setCustomerOptions] = useState([])
-    const [contactOptions, setContactOptions] = useState([])
     const { idForCustomerContactUpdate, setIdForCustomerContactUpdate, customers, contacts } = useContext(AppContext)
 
     const formik = useFormik({
         initialValues: {
             customer_id: "",
             contact_id: "",
-            designation: "",
+            name: "",
+            email: "",
             contact: "",
-            email: ""
+            designation: "",
         },
         validationSchema: Yup.object().shape({
             customer_id: Yup.number().required('Customer is required'),
-            contact_id: Yup.string().required('Contact is required'),
-            designation: Yup.string().required('Designation is required'),
+            name: Yup.string().required('Name is required'),
             contact: Yup.string().required('Contact is required'),
             email: Yup.string().required('Email is required').email('Please provide valid email address'),
         }),
@@ -37,12 +36,12 @@ const CustomerContactCreateForm = ({customer, contact, show, toggleShow, updateL
                 if(idForCustomerContactUpdate === 0){
                     const formData: any = {
                         customer_id: values.customer_id,
-                        contact_id: values.contact_id,
+                        contact_id: values.contact_id || null,
                         metadata: {
-                            designation: values.designation,
-                            contact: values.contact,
+                            name: values.name,
                             email: values.email,
-
+                            contact: values.contact,
+                            designation: values.designation,
                         }
                     }
                     await createRequest(CUSTOMER_CONTACTS_URL, formData).then(async (response) => {
@@ -83,9 +82,10 @@ const CustomerContactCreateForm = ({customer, contact, show, toggleShow, updateL
             getRequest(`${CUSTOMER_CONTACTS_URL}/${idForCustomerContactUpdate}`).then((response) => {
                 formik.setFieldValue("customer_id",response?.customer_id)
                 formik.setFieldValue("contact_id",response?.contact_id)
-                formik.setFieldValue("designation",response?.metadata?.designation)
-                formik.setFieldValue("contact",response?.metadata?.contact)
+                formik.setFieldValue("name",response?.contact?.name)
                 formik.setFieldValue("email",response?.metadata?.email)
+                formik.setFieldValue("contact",response?.metadata?.contact)
+                formik.setFieldValue("designation",response?.metadata?.designation)
             }).finally(() => {
                 setLoading(false)
             })
@@ -93,28 +93,9 @@ const CustomerContactCreateForm = ({customer, contact, show, toggleShow, updateL
     },[idForCustomerContactUpdate])
 
     useEffect(() => {
-        if(customers?.length > 0){
-            const array: any = []
-            customers?.map((item: any) => {
-                array.push({ label: item?.name, value: item?.id })
-            })
-            setCustomerOptions(array)
-        }
-    }, [customers]);
-
-    useEffect(() => {
-        if(contacts?.length > 0){
-            const array: any = []
-            contacts?.map((item: any) => {
-                array.push({ label: item?.name, value: item?.id })
-            })
-            setContactOptions(array)
-        }
-    }, [contacts]);
-
-    useEffect(() => {
         if(contact?.id){
             formik.setFieldValue('contact_id', contact?.id)
+            formik.setFieldValue('name', contact?.name)
             formik.setFieldValue('contact', contact?.contact)
             formik.setFieldValue('email', contact?.email)
         }
@@ -137,10 +118,11 @@ const CustomerContactCreateForm = ({customer, contact, show, toggleShow, updateL
     }
 
     const setContactDetails = (option: any) => {
-        const selected: any = contacts.find((item: any) => item.id = option.value)
+        const selected: any = contacts.find((item: any) => item.id === option.value)
         if(selected){
-            formik.setFieldValue('contact', selected?.contact)
+            formik.setFieldValue('name', selected?.name)
             formik.setFieldValue('email', selected?.email)
+            formik.setFieldValue('contact', selected?.contact)
         }
     }
 
@@ -157,35 +139,40 @@ const CustomerContactCreateForm = ({customer, contact, show, toggleShow, updateL
                     <form className="form" onSubmit={formik.handleSubmit} noValidate>
                         <div className="modal-body scroll-y mx-2 mx-xl-2 my-2">
                             <div className='d-flex flex-column'>
-                                <Field
+                                {!customer?.id && idForCustomerContactUpdate === 0 && <Field
                                     label="Customer"
                                     name="customer_id"
-                                    options={customerOptions}
+                                    options={getOptions(customers)}
                                     required="required"
                                     component={SearchableSelectField}
                                     size="sm"
-                                    isDisabled={(customer?.id || idForCustomerContactUpdate > 0) ? true : false}
-                                />
-                                <Field
+                                />}
+                                {!contact?.id && idForCustomerContactUpdate === 0 && <Field
                                     label="Contact"
                                     name="contact_id"
-                                    options={contactOptions}
-                                    required="required"
+                                    options={getOptions(contacts)}
                                     component={SearchableSelectField}
                                     size="sm"
-                                    isDisabled={(contact?.id || idForCustomerContactUpdate > 0) ? true : false}
                                     onChangeHandler={setContactDetails}
-                                />
-                                <Field
-                                    label="Designation"
-                                    name="designation"
+                                />}
+                                {!contact?.id && idForCustomerContactUpdate === 0 && <Field
+                                    label="Name"
+                                    name="name"
                                     type="text"
+                                    required="required"
+                                    component={InputField}
+                                    size="sm"
+                                />}
+                                <Field
+                                    label="Email"
+                                    name="email"
+                                    type="email"
                                     required="required"
                                     component={InputField}
                                     size="sm"
                                 />
                                 <Field
-                                    label="Contact"
+                                    label="Contact Number"
                                     name="contact"
                                     type="text"
                                     required="required"
@@ -193,10 +180,9 @@ const CustomerContactCreateForm = ({customer, contact, show, toggleShow, updateL
                                     size="sm"
                                 />
                                 <Field
-                                    label="Email"
-                                    name="email"
-                                    type="email"
-                                    required="required"
+                                    label="Designation"
+                                    name="designation"
+                                    type="text"
                                     component={InputField}
                                     size="sm"
                                 />
