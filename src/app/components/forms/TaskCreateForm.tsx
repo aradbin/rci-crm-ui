@@ -10,20 +10,15 @@ import { LoadingComponent } from "../common/LoadingComponent"
 import { AppContext } from "../../providers/AppProvider"
 import { TextAreaField } from "../fields/TextAreaField"
 import { SearchableSelectField } from "../fields/SearchableSelectField"
-import { formatDate, getSettingsOptions } from "../../helpers/Utils"
+import { formatDate, getOptions, getSettingsOptions } from "../../helpers/Utils"
 import { priorities } from "../../helpers/Variables"
 import { SelectField } from "../fields/SelectField"
 import { useQueryClient } from "react-query"
 import { RadioField } from "../fields/RadioField"
 
-type assigneeOptionType = { label: string, value: number }
-type customerOptionType = { label: string, value: number }
-
 const TaskCreateForm = () => {
     const [show, setShow] = useState(false)
     const [loading, setLoading] = useState(false)
-    const [customerOptions, setCustomerOptions] = useState<customerOptionType[]>([])
-    const [assigneeOptions, setAssigneeOptions] = useState<assigneeOptionType[]>([])
 
     const queryClient = useQueryClient()
     const { idForTaskUpdate, setIdForTaskUpdate, showCreateTask, setShowCreateTask, showCreateSubTask, setShowCreateSubTask, titleForCreateTask, setTitleForCreateTask, refetchTask, setRefetchTask, users, customers, settings } = useContext(AppContext)
@@ -103,26 +98,6 @@ const TaskCreateForm = () => {
     const toggleShow = (val: boolean) => {
         setShow(val)
     }
-
-    useEffect(() => {
-        let array: customerOptionType[] = [];
-        if(customers?.length > 0){
-            array = customers?.map((item: any) => {
-                return { label: item?.name, value: item?.id }
-            })
-        }
-        setCustomerOptions(array)
-    }, [customers]);
-
-    useEffect(() => {
-        let array: assigneeOptionType[] = [];
-        if(users?.length > 0){
-            array = users.map((item: any) => {
-                return { label: item?.name, value: item?.id }
-            })
-        }
-        setAssigneeOptions(array)
-    }, [users]);
 
     useEffect(() => {
         if(idForTaskUpdate > 0){
@@ -226,7 +201,7 @@ const TaskCreateForm = () => {
                                 <Field
                                     label="Customer"
                                     name="customer_id"
-                                    options={customerOptions}
+                                    options={getOptions(customers)}
                                     component={SearchableSelectField}
                                     size="sm"
                                 />
@@ -240,7 +215,7 @@ const TaskCreateForm = () => {
                                 <Field
                                     label="Assignee"
                                     name="assignee_id"
-                                    options={assigneeOptions}
+                                    options={getOptions(users)}
                                     component={SearchableSelectField}
                                     size="sm"
                                     multiple
@@ -248,7 +223,7 @@ const TaskCreateForm = () => {
                                 <Field
                                     label="Reporter"
                                     name="reporter_id"
-                                    options={assigneeOptions}
+                                    options={getOptions(users)}
                                     component={SearchableSelectField}
                                     size="sm"
                                     multiple

@@ -10,17 +10,13 @@ import { AppContext } from "../../providers/AppProvider"
 import { LoadingComponent } from "../common/LoadingComponent"
 import { SearchableSelectField } from "../fields/SearchableSelectField"
 import { TextAreaField } from "../fields/TextAreaField"
-
-type customerOptionType = { label: string, value: number }
-type receivedOptionType = { label: string, value: number }
+import { getOptions } from "../../helpers/Utils"
 
 const VoIPCreateForm = ({updateList}: any) => {
     const [loading, setLoading] = useState(false)
     const [showModal, setShowModal] = useState(false)
     const [showEdit, setShowEdit] = useState(false)
     const [log, setLog] = useState<any>(null)
-    const [customerOptions, setCustomerOptions] = useState<customerOptionType[]>([])
-    const [receivedOptions, setReceivedOptions] = useState<receivedOptionType[]>([])
     const { idForVoipDetails, setIdForVoipDetails, idForVoipUpdate, setIdForVoipUpdate, users, customers } = useContext(AppContext)
 
     const formik = useFormik({
@@ -82,26 +78,6 @@ const VoIPCreateForm = ({updateList}: any) => {
             })
         }
     },[idForVoipUpdate])
-
-    useEffect(() => {
-        let array: customerOptionType[] = [];
-        if(customers?.length > 0){
-            array = customers?.map((item: any) => {
-                return { label: item?.name, value: item?.id }
-            })
-        }
-        setCustomerOptions(array)
-    }, [customers]);
-    
-    useEffect(() => {
-        let array: receivedOptionType[] = [];
-        if(users?.length > 0){
-            array = users?.map((item: any) => {
-                return { label: item?.name, value: item?.id }
-            })
-        }
-        setReceivedOptions(array)
-    }, [users]);
 
     const closeModal = () => {
         toggleShowModal(false)
@@ -212,14 +188,14 @@ const VoIPCreateForm = ({updateList}: any) => {
                                 <Field
                                     label="Customer"
                                     name="customer_id"
-                                    options={customerOptions}
+                                    options={getOptions(customers)}
                                     component={SearchableSelectField}
                                     size="sm"
                                 />
                                 <Field
                                     label="Received By"
                                     name="received_by"
-                                    options={receivedOptions}
+                                    options={getOptions(users)}
                                     component={SearchableSelectField}
                                     size="sm"
                                 />
