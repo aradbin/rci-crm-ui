@@ -12,7 +12,7 @@ import { AppContext } from "../../providers/AppProvider"
 
 const CustomerImportForm = ({show, toggleShow, updateList}: any) => {
     const queryClient = useQueryClient()
-    const { settings } = useContext(AppContext)
+    const { setSettings, setCustomers, setContacts } = useContext(AppContext)
 
     const formik = useFormik({
         initialValues: {
@@ -27,101 +27,131 @@ const CustomerImportForm = ({show, toggleShow, updateList}: any) => {
                 const file = values.file
                 if(!file) return
                 const reader = new FileReader()
-                reader.onload = (e: any) => {
+                reader.onload = async (e: any) => {
                     const data = e.target.result
                     const workbook = XLSX.read(data, { type: 'binary' })
                     const worksheetName = workbook.SheetNames[0]
                     const worksheet = workbook.Sheets[worksheetName]
                     const jsonData = XLSX.utils.sheet_to_json(worksheet)
-                    
-                    const formattedContactData: any = []
-                    jsonData?.forEach((item: any) => {
-                        if(item?.ContactEmail){
-                            const email = formattedContactData?.find((contact: any) => contact?.email === item?.ContactEmail)
-                            if(!email){
-                                formattedContactData.push({
-                                    name: item?.ContactName || "",
-                                    email: item?.ContactEmail,
-                                })
-                            }
-                        }
-                    })
 
-                    createRequest(`${CONTACTS_URL}/import`, formattedContactData).then(async (response) => {
-                        if(response?.status===201){
-                            toast.success('Contact imported Successfully')
-                            updateListHandler()
-                            closeModal()
-                        }
-                    })
-
-                    const formattedData: any = []
-                    const customerTypes: any = settings?.filter((item: any) => item?.type === 'customer-type')
-                    jsonData?.forEach((item: any) => {
-                        const customerType = customerTypes?.find((type: any) => type.name === item?.ClientType)
-                        formattedData.push({
-                            name: item?.CompanyName,
-                            email: item?.Email || "",
-                            contact: item?.Phone || "",
-                            address: item?.Address || "",
-                            priority: 1,
-                            customer_type_id: customerType?.id || null,
-                            is_active: item?.is_active === 'Active' ? true : false,
-                            metadata: {
-                                client_id: item?.ClientId || "",
-                                client_manager: item?.ClientManager || "",
-                                utr_no: item?.UTRNo || "",
-                                auth_code: item?.AuthCode || "",
-                                insurance_no: item?.InsuranceNo || "",
-                                paye_ref_no: item?.PayeRefNo || "",
-                                vat_reg_no: item?.VatRegNo || "",
-                                company_reg_no: item?.CompanyRegNo || "",
-                                post_code: item?.PostCode || "",
-                                business_start_date: item?.BusinessStartDate || "",
-                                book_start_date: item?.BookStartDate || "",
-                                year_end: item?.YearEnd || "",
-                                vat_scheme: item?.VatScheme || "",
-                                vat_reg_date: item?.VatRegDate || "",
-                                vat_submit_type: item?.VatSubmitType || "",
-                                account_ref_no: item?.AccountRefNo || "",
+                    // customer type
+                    let customerTypes: any = []
+                    await getRequest(SETTINGS_URL).then(async (response) => {
+                        setSettings(response)
+                        customerTypes = response?.filter((item: any) => item?.type === 'customer-type')?.map((item: any) => (item?.name))
+                        const formattedCustomerTypeData: any = []
+                        jsonData?.forEach((item: any) => {
+                            if(!customerTypes.includes(item?.ClientType) && !formattedCustomerTypeData.includes(item?.ClientType)){
+                                formattedCustomerTypeData.push(item?.ClientType)
                             }
                         })
-                    })
+                        await formattedCustomerTypeData.forEach(async (item: any) => {
+                            await createRequest(SETTINGS_URL, { name: item, type: 'customer-type'})
+                        })
+                    }).finally(() => {
+                        // contact
+                        const formattedContactData: any = []
+                        jsonData?.forEach((item: any) => {
+                            if(item?.ContactEmail){
+                                const email = formattedContactData?.find((contact: any) => contact?.email === item?.ContactEmail)
+                                if(!email){
+                                    formattedContactData.push({
+                                        name: item?.ContactName || "",
+                                        email: item?.ContactEmail,
+                                    })
+                                }
+                            }
+                        })
 
-                    const batches: any = [];
-                    for (let i = 0; i < formattedData.length; i += 200) {
-                        batches.push(formattedData.slice(i, i + 100));
-                    }
-
-                    batches.forEach(async (batch: any) => {
-                        await createRequest(`${CUSTOMERS_URL}/import`, batch).then(async (response) => {
+                        createRequest(`${CONTACTS_URL}/import`, formattedContactData).then((response) => {
                             if(response?.status===201){
-                                toast.success('Customer imported Successfully')
+                                toast.success('Contact imported Successfully')
                                 updateListHandler()
                                 closeModal()
                             }
-                        })  
-                    })
+                        }).finally(() => {
+                            // customer
+                            const formattedData: any = []
+                            getRequest(SETTINGS_URL).then((response) => {
+                                setSettings(response)
+                                customerTypes = response?.filter((item: any) => item?.type === 'customer-type')?.map((item: any) => (item?.name))
+                            }).finally(async () => {
+                                jsonData?.forEach((item: any) => {
+                                    if(!formattedData.find((data: any) => data?.email === item?.Email)){
+                                        const customerType = customerTypes?.find((type: any) => type.name === item?.ClientType)
+                                        formattedData.push({
+                                            name: item?.CompanyName,
+                                            email: item?.Email || "",
+                                            contact: item?.Phone || "",
+                                            address: item?.Address || "",
+                                            priority: 1,
+                                            customer_type_id: customerType?.id || null,
+                                            is_active: item?.Status === 'Active' ? true : false,
+                                            metadata: {
+                                                client_id: item?.ClientId || "",
+                                                client_manager: item?.ClientManager || "",
+                                                utr_no: item?.UTRNo || "",
+                                                auth_code: item?.AuthCode || "",
+                                                insurance_no: item?.InsuranceNo || "",
+                                                paye_ref_no: item?.PayeRefNo || "",
+                                                vat_reg_no: item?.VatRegNo || "",
+                                                company_reg_no: item?.CompanyRegNo || "",
+                                                post_code: item?.PostCode || "",
+                                                business_start_date: item?.BusinessStartDate || "",
+                                                book_start_date: item?.BookStartDate || "",
+                                                year_end: item?.YearEnd || "",
+                                                vat_scheme: item?.VatScheme || "",
+                                                vat_reg_date: item?.VatRegDate || "",
+                                                vat_submit_type: item?.VatSubmitType || "",
+                                                account_ref_no: item?.AccountRefNo || "",
+                                            }
+                                        })
+                                    }
+                                })
+    
+                                const batches: any = [];
+                                for (let i = 0; i < formattedData.length; i += 200) {
+                                    batches.push(formattedData.slice(i, i + 100));
+                                }
+    
+                                await batches.forEach(async (batch: any) => {
+                                    await createRequest(`${CUSTOMERS_URL}/import`, batch).then(async (response) => {
+                                        if(response?.status===201){
+                                            toast.success('Customer imported Successfully')
+                                            updateListHandler()
+                                            closeModal()
+                                        }
+                                    })  
+                                })
 
-                    const customerContactsFormattedData: any = []
-                    getRequest(CUSTOMERS_URL).then((customerResponse) => {
-                        getRequest(CONTACTS_URL).then((contactResponse) => {
-                            jsonData?.forEach((item: any) => {
-                                const customer = customerResponse?.find((customer: any) => customer?.email === item?.Email)
-                                const contact = contactResponse?.find((contact: any) => contact?.email === item?.ContactEmail)
-                                if(customer && contact){
-                                    customerContactsFormattedData.push({
-                                        customer_id: customer?.id,
-                                        contact_id: contact?.id
+                                // customer contact
+                                const customerContactsFormattedData: any = []
+                                getRequest(CUSTOMERS_URL).then(async (customerResponse) => {
+                                    setCustomers(customerResponse)
+                                    await getRequest(CONTACTS_URL).then(async (contactResponse) => {
+                                        setContacts(contactResponse)
+                                        await getRequest(CUSTOMER_CONTACTS_URL).then(async (customerContactResponse) => {
+                                            jsonData?.forEach((item: any) => {
+                                                const customer = customerResponse?.find((customerItem: any) => customerItem?.email === item?.Email)
+                                                const contact = contactResponse?.find((contactItem: any) => contactItem?.email === item?.ContactEmail)
+                                                const exist = customerContactResponse?.find((customerContactItem: any) => customerContactItem?.customer_id === customer?.id && customerContactItem?.contact_id === contact?.id)
+                                                if(customer && contact && !exist){
+                                                    customerContactsFormattedData.push({
+                                                        customer_id: customer?.id,
+                                                        contact_id: contact?.id
+                                                    })
+                                                }
+                                            })
+                                            await createRequest(`${CUSTOMER_CONTACTS_URL}/import`, customerContactsFormattedData).then(async (response) => {
+                                                if(response?.status===201){
+                                                    toast.success('Customer Contact imported Successfully')
+                                                    updateListHandler()
+                                                    closeModal()
+                                                }
+                                            })
+                                        })
                                     })
-                                }
-                            })
-                            createRequest(`${CUSTOMER_CONTACTS_URL}/import`, customerContactsFormattedData).then(async (response) => {
-                                if(response?.status===201){
-                                    toast.success('Customer Contact imported Successfully')
-                                    updateListHandler()
-                                    closeModal()
-                                }
+                                })
                             })
                         })
                     })
