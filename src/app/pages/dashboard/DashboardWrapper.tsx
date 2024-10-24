@@ -16,7 +16,7 @@ const DashboardPage = () => {
     const total = tasks?.reduce((acc: number, cur: any) => acc + parseInt(cur.count), 0)
     const success = tasks?.find((item: any) => item?.status === 'done')?.count || 0
 
-    return `${Math.round((success / total) * 100)}%`
+    return `${(Math.round((success / total) * 100)) || 0}%`
   }
   
   return (

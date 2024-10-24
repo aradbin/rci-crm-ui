@@ -1,5 +1,5 @@
 export const API_URL_LOCAL = 'http://localhost:8080'
-export const API_URL_PROD = 'https://api.rci.rest'
+export const API_URL_PROD = 'https://erp-api-lk73d.ondigitalocean.app'
 
 export const BASE_URL = API_URL_PROD
 
