@@ -74,7 +74,9 @@ const AuthInit: FC<WithChildren> = ({children}) => {
           const {data} = await getUserByToken()
           if (data) {
             setCurrentUser(data)
-            setIdForTaskRunning(data?.runningTask?.id || 0)
+            if(data?.runningTask?.length > 0){
+              setIdForTaskRunning(data?.runningTask) 
+            }
           }
         }
       } catch (error) {

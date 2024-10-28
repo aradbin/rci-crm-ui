@@ -20,7 +20,7 @@ const AppContext = createContext({
     idForVoipDetails: 0, setIdForVoipDetails: (id: number) => {},
     idForVoipUpdate: 0, setIdForVoipUpdate: (id: number) => {},
 
-    idForTaskRunning: 0, setIdForTaskRunning: (id: number) => {},
+    idForTaskRunning: [], setIdForTaskRunning: (arr: []) => {},
     idForTaskUpdate: 0, setIdForTaskUpdate: (id: number) => {},
     idForTaskDelete: 0, setIdForTaskDelete: (id: number) => {},
     showCreateTask: false, setShowCreateTask: (val: boolean) => {},
@@ -54,7 +54,7 @@ const AppProvider = ({children}: any) => {
     const [idForVoipDetails, setIdForVoipDetails] = useState(0)
     const [idForVoipUpdate, setIdForVoipUpdate] = useState(0)
 
-    const [idForTaskRunning, setIdForTaskRunning] = useState(0)
+    const [idForTaskRunning, setIdForTaskRunning] = useState([])
     const [idForTaskUpdate, setIdForTaskUpdate] = useState(0)
     const [idForTaskDelete, setIdForTaskDelete] = useState(0)
     const [showCreateTask, setShowCreateTask] = useState(false)

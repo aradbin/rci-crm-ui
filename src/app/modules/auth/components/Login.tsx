@@ -33,7 +33,9 @@ export function Login() {
         if(response?.status===201){
           saveAuth({accessToken: response?.data?.accessToken})
           setCurrentUser({...response?.data?.user})
-          setIdForTaskRunning(response?.data?.user?.runningTask?.id || 0)
+          if(response?.data?.user?.runningTask?.length > 0){
+            setIdForTaskRunning(response?.data?.user?.runningTask) 
+          }
         }
       }).catch((error) => {
         setHasError(error?.response?.data?.message)
