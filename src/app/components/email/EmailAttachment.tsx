@@ -9,7 +9,7 @@ const EmailAttachment = ({email, attachment}: any) => {
     const [pdfUrl, setPdfUrl] = useState("")
     const [otherUrl, setOtherUrl] = useState("")
     
-    const {isLoading, data} = QueryUnipile(`email-attachment-${email}-${attachment?.id}`, `${EMAIL_UNIPILE_URL}/${email}/attachments/${attachment?.id}`, '', true)
+    const {isLoading, data} = QueryUnipile(`email-attachment-${email}-${attachment?.id}`, `${EMAIL_UNIPILE_URL}/${email}/attachments/${attachment?.id}`, {}, true)
 
     useEffect(() => {
         if(email && attachment && data && imgUrl === "" && audUrl === "" && vidUrl === "" && pdfUrl === "" && otherUrl === "") {

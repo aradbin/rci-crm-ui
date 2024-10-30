@@ -1,6 +1,7 @@
 import axios, {AxiosResponse} from 'axios'
 import { toast } from 'react-toastify'
 import { UNIPILE_API_KEY } from './ApiEndpoints'
+import { stringifyRequestQuery } from './Utils'
 
 export async function getRequest(url: string, query?: string) {
   return await axios
@@ -47,8 +48,8 @@ export async function deleteRequest(url: string) {
     })
 }
 
-export async function getRequestUnipile(url: string, query: string = "", attachment: boolean = false){
-  return await fetch(`${url}${query !== '' ? `?${query}` : ''}`, {
+export async function getRequestUnipile(url: string, query: any = {}, attachment: boolean = false){
+  return await fetch(`${url}${stringifyRequestQuery(query) !== '' ? `?${stringifyRequestQuery(query)}` : ''}`, {
     method: 'GET',
     headers: {accept: '*/*', 'X-API-KEY': `${UNIPILE_API_KEY}`}
   }).then(async (response: any) => {

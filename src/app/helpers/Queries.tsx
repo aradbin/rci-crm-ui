@@ -19,7 +19,7 @@ const QueryInfinite = (queryKey: any, url: string, params: string = "") => {
     return queryInstance
 }
 
-const QueryUnipile = (queryKey: any, url: string, params: string = "", attachment: boolean = false, enabled: boolean = true) => {
+const QueryUnipile = (queryKey: any, url: string, params: any = {}, attachment: boolean = false, enabled: boolean = true) => {
     const queryInstance = useQuery([queryKey, params], () => getRequestUnipile(url, params, attachment), {
         keepPreviousData: true,
         enabled: enabled
@@ -28,11 +28,16 @@ const QueryUnipile = (queryKey: any, url: string, params: string = "", attachmen
     return queryInstance
 }
 
-const QueryInfiniteUnipile = (queryKey: any, url: string, params: string = "") => {
+const QueryInfiniteUnipile = (queryKey: any, url: string, params: any = {}) => {
     const queryInstance = useInfiniteQuery([queryKey, params], ({ pageParam }) => {
-        return getRequestUnipile(`${url}${params !== '' ? `?${params}` : ''}${pageParam ? (params !== '' ? `&cursor=${pageParam}` : `?cursor=${pageParam}`) : ''}`)
+        const payload = {
+            ...params,
+            ...pageParam
+        }
+
+        return getRequestUnipile(url, payload)
     }, {
-        getNextPageParam: (lastPage, _) => lastPage.cursor,
+        getNextPageParam: (lastPage, _) => ({cursor: lastPage.cursor}),
     })
 
     return queryInstance

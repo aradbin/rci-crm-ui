@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react"
 import { EMAIL_UNIPILE_URL } from "../../helpers/ApiEndpoints"
-import { firstLetterUpperCase, getSettingsFromUserSettings, stringifyRequestQuery } from "../../helpers/Utils"
+import { firstLetterUpperCase, getSettingsFromUserSettings } from "../../helpers/Utils"
 import { useAuth } from "../../modules/auth"
 import { emailColumns } from "../../columns/emailColumns"
 import { folders } from "../../helpers/Variables"
@@ -34,7 +34,7 @@ const EmailList = ({ filterParams }: any) => {
         <select className='form-select' value={account} onChange={(e) => setAccount(e.target.value)}>
           <option value='0'>Select</option>
           {getSettingsFromUserSettings(currentUser?.userSettings, 'email')?.map((item: any) => (
-            <option value={item.unipile_account_id}>{item.label}</option>
+            <option value={item.unipile_account_id} key={item.unipile_account_id}>{item.label}</option>
           ))}
         </select>
       </div>
@@ -47,7 +47,7 @@ const EmailList = ({ filterParams }: any) => {
       </div>
     </div>
     <div className='card-body py-3'>
-      {params?.account_id && <EmailTable queryKey={`all-email-${params?.account_id}`} url={EMAIL_UNIPILE_URL} params={stringifyRequestQuery(params)} columns={emailColumns} refetch={1} />}
+      {params?.account_id && <EmailTable queryKey={`all-email-${params?.account_id}`} url={EMAIL_UNIPILE_URL} params={params} columns={emailColumns} refetch={1} />}
     </div>
     <ShowEmail />
   </>)

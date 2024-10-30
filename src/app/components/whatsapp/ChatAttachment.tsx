@@ -9,7 +9,7 @@ const ChatAttachment = ({message, attachment}: any) => {
     const [pdfUrl, setPdfUrl] = useState("")
     const [otherUrl, setOtherUrl] = useState("")
     
-    const {isLoading, data} = QueryUnipile(`whatsapp-attachment-${message}-${attachment?.id}`, `${MESSAGES_UNIPILE_URL}/${message}/attachments/${attachment?.id}`, '', true)
+    const {isLoading, data} = QueryUnipile(`whatsapp-attachment-${message}-${attachment?.id}`, `${MESSAGES_UNIPILE_URL}/${message}/attachments/${attachment?.id}`, {}, true)
 
     useEffect(() => {
         if(message && attachment && data && imgUrl === "" && audUrl === "" && vidUrl === "" && pdfUrl === "" && otherUrl === "") {

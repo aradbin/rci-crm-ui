@@ -21,7 +21,7 @@ const ShowEmail = () => {
     const [files, setFiles] = useState<any>(null)
     const { idForDetails, setIdForDetails } = useContext(AppContext)
 
-    const { data: email, isFetching } = QueryUnipile(`email-${idForDetails}`, `${EMAIL_UNIPILE_URL}/${idForDetails}`, '', false, idForDetails === 0 ? false : true)
+    const { data: email, isFetching } = QueryUnipile(`email-${idForDetails}`, `${EMAIL_UNIPILE_URL}/${idForDetails}`, {}, false, idForDetails === 0 ? false : true)
 
     const queryClient = useQueryClient()
 

@@ -70,7 +70,7 @@ const TableInstance = ({tableData, tableColumns}: any) => {
     );
 }
 
-const EmailTable = ({queryKey, url, params='', columns, refetch, canExpand=''}: any) => {
+const EmailTable = ({queryKey, url, params = {}, columns, refetch, canExpand=''}: any) => {
     const queryClient = useQueryClient()
 
     const { data, fetchNextPage, hasNextPage, isFetchingNextPage } = QueryInfiniteUnipile(queryKey, url, params)
