@@ -1,8 +1,7 @@
 import { useContext, useEffect, useState } from "react"
 import { OverlayTrigger, Tooltip } from "react-bootstrap"
 import { AppContext } from "../../providers/AppProvider"
-import { getTaskTime, getTaskTimeString } from "../../helpers/Utils"
-import { Link } from "react-router-dom"
+import { getTaskTime } from "../../helpers/Utils"
 import { updateRequest } from "../../helpers/Requests"
 import { TASKS_URL } from "../../helpers/ApiEndpoints"
 import { useQueryClient } from "react-query"
@@ -86,7 +85,7 @@ const ShortcutComponent = () => {
                 </OverlayTrigger>
             </div>
 
-            {runningTask &&
+            {/* {runningTask &&
                 <div className="bg-info d-flex justify-content-between" style={{ borderRadius: '50px', width: '140px' }}>
                     <Link to={`/tasks/${runningTask?.id}`} className="btn btn-sm btn-color-white fs-3 pe-0" style={{ borderRadius: '50px'}} title={runningTask?.title}>{getTaskTimeString(time)}</Link>
                     <button className="btn btn-icon btn-color-white pe-2" style={{ borderRadius: '50px'}} onClick={() => update(!runningTask?.running)}>
@@ -97,7 +96,7 @@ const ShortcutComponent = () => {
                         }
                     </button>
                 </div>
-            }
+            } */}
         </div>
     )
 }
