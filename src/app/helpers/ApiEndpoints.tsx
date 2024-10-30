@@ -23,5 +23,6 @@ export const UNIPILE_API_KEY = 'vR5WwQLJ.XaiBvDhfEsWaZcnDqu040dFhWnkIleJAktktMub
 
 export const ACCOUNTS_UNIPILE_URL = `${UNIPILE_BASE_URL}/accounts`
 export const CHATS_UNIPILE_URL = `${UNIPILE_BASE_URL}/chats`
+export const CHAT_ATTENDEES_UNIPILE_URL = `${UNIPILE_BASE_URL}/chat_attendees`
 export const MESSAGES_UNIPILE_URL = `${UNIPILE_BASE_URL}/messages`
 export const EMAIL_UNIPILE_URL = `${UNIPILE_BASE_URL}/emails`
