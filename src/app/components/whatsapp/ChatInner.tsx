@@ -99,12 +99,12 @@ const ChatInner = ({conversation}: any) => {
     <div className='card' id='kt_chat_whatsapp'>
       <div className='card-header px-5' id='kt_chat_whatsapp_header'>
         <div className='d-flex align-items-center'>
-          <AvatarComponent avatar={conversation?.customer?.avatar} name={conversation?.customer?.name} style='circle' size='45' />
+          <AvatarComponent avatar={conversation?.customer?.avatar} name={conversation?.name || conversation?.attendee?.name || conversation?.provider_id?.split('@')[0]} style='circle' size='45' />
           <div className='ms-5'>
             <a href='#' className='fs-5 fw-bolder text-gray-900 text-hover-primary mb-2'>
-              {conversation?.name || conversation?.provider_id?.split('@')[0]}
+              {conversation?.name || conversation?.attendee?.name?.split('@')[0] || conversation?.provider_id?.split('@')[0]}
             </a>
-            {conversation?.name && <div className='fw-bold text-gray-400'>{conversation?.provider_id?.split('@')[0]}</div>}
+            {(conversation?.name || conversation?.attendee?.name) && <div className='fw-bold text-gray-400'>{conversation?.provider_id?.split('@')[0]}</div>}
           </div>
         </div>
       </div>

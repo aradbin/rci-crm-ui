@@ -1,6 +1,6 @@
 /* eslint-disable jsx-a11y/anchor-is-valid */
 import { useEffect, useState } from 'react'
-import { CHATS_UNIPILE_URL } from '../../helpers/ApiEndpoints'
+import { CHAT_ATTENDEES_UNIPILE_URL, CHATS_UNIPILE_URL } from '../../helpers/ApiEndpoints'
 import { QueryInfiniteUnipile } from '../../helpers/Queries'
 import { ChatInner } from './ChatInner'
 import { formatDate, getSettingsFromUserSettings } from '../../helpers/Utils'
@@ -12,14 +12,53 @@ const ChatBox = () => {
   const { currentUser } = useAuth()
   const [filter, setFilter] = useState('')
   const [account, setAccount] = useState(getSettingsFromUserSettings(currentUser?.userSettings, 'whatsapp')[0]?.unipile_account_id)
+  const [conversations, setConversations] = useState<any>([])
   const [selectedConversation, setSelectedConversation]: any = useState()
 
-  const { data, fetchNextPage, hasNextPage, isFetchingNextPage } = QueryInfiniteUnipile(`all-whatsapp-${account}`, `${CHATS_UNIPILE_URL}?account_id=${account}`)
+  let { data, fetchNextPage, hasNextPage, isFetchingNextPage } = QueryInfiniteUnipile(`all-whatsapp-${account}`, CHATS_UNIPILE_URL, {account_id: account})
+
+  const { data: attendees, fetchNextPage: fetchNextPageAttendees, hasNextPage: hasNextPageAttendees } = QueryInfiniteUnipile(`all-attendees-${account}`, CHAT_ATTENDEES_UNIPILE_URL, {account_id: account})
+
+  useEffect(() => {
+    if(attendees?.pages[attendees?.pages?.length - 1]?.cursor){
+      setConversations(data)
+      fetchNextPageAttendees()
+    }else{
+      if(data?.pages && data?.pages.length > 0 && attendees?.pages && attendees?.pages.length > 0){
+        const allAttendees: any = []
+        attendees?.pages?.forEach((page: any) => {
+          page?.items?.forEach((item: any) => {
+            allAttendees.push(item)            
+          });
+        })
+
+        const pages: any = []
+        data?.pages?.forEach((page: any) => {
+          const items: any = []
+          page?.items?.forEach((item: any) => {
+            const attendee = allAttendees.find((a: any) => a?.provider_id === item?.provider_id)
+            items.push({
+              ...item,
+              attendee: attendee
+            })            
+          });
+          pages.push({
+            ...page,
+            items: items
+          })
+        })
+        setConversations({
+          ...data,
+          pages: pages
+        })
+      }
+    }
+  },[attendees, data])
 
   useEffect(() => {
     setSelectedConversation(null)
   },[account])
-
+console.log(conversations)
   return (
     <div className='d-flex flex-column flex-lg-row'>
       <div className='flex-column flex-lg-row-auto w-100 w-lg-300px w-xl-400px mb-10 mb-lg-0'>
@@ -28,7 +67,7 @@ const ChatBox = () => {
             <select className='form-select' value={account} onChange={(e) => setAccount(e.target.value)}>
               <option value='0'>Select</option>
               {getSettingsFromUserSettings(currentUser?.userSettings, 'whatsapp')?.map((item: any) => (
-                <option value={item.unipile_account_id}>{item.label}</option>
+                <option value={item.unipile_account_id} key={item.unipile_account_id}>{item.label}</option>
               ))}
             </select>
             <form className='w-100 position-relative' autoComplete='off'>
@@ -55,19 +94,19 @@ const ChatBox = () => {
               data-kt-scroll-offset='0px'
               style={{ height: 'calc(100vh - 320px)' }}
             >
-              {data?.pages?.map((page: any, index: number) => (
+              {conversations?.pages?.map((page: any, index: number) => (
                 <div key={index}>
                   {page?.items?.map((item: any) => {
-                    if(!filter || (item?.provider_id?.toLowerCase()?.includes(filter?.toLowerCase()) || item?.name?.toLowerCase()?.includes(filter?.toLowerCase()))){
+                    if(!filter || (item?.provider_id?.toLowerCase()?.includes(filter?.toLowerCase()) || item?.name?.toLowerCase()?.includes(filter?.toLowerCase()) || item?.attendee?.name?.toLowerCase()?.includes(filter?.toLowerCase()))){
                       return (
-                        <div className={`d-flex flex-stack px-5 py-3 cursor-pointer rounded ${selectedConversation?.id === item?.id ? 'bg-success-subtle' : ''}`} key={item?.id} onClick={() => setSelectedConversation(item)}>
+                        <div className={`d-flex flex-stack pe-5 py-3 cursor-pointer rounded ${selectedConversation?.id === item?.id ? 'bg-success-subtle' : ''}`} key={item?.id} onClick={() => setSelectedConversation(item)}>
                           <div className='d-flex align-items-center'>
-                            <AvatarComponent avatar={item?.customer?.avatar} name={item?.customer?.name} style='circle' size='40' />
+                            <AvatarComponent avatar={item?.customer?.avatar} name={item?.name || item?.attendee?.name || item?.provider_id?.split('@')[0]} style='circle' size='40' />
                             <div className='ms-5'>
                               <span className='fs-5 fw-bolder text-gray-900 text-hover-primary mb-2'>
-                                {item?.name || item?.provider_id?.split('@')[0]}
+                                {item?.name || item?.attendee?.name?.split('@')[0] || item?.provider_id?.split('@')[0]}
                               </span>
-                              {item?.name && <div className='fw-bold text-gray-400'>{item?.provider_id?.split('@')[0]}</div>}
+                              {(item?.name || item?.attendee?.name) && <div className='fw-bold text-gray-400'>{item?.provider_id?.split('@')[0]}</div>}
                             </div>
                             {item?.unread === 1 &&item?.unread_count > 0 && <span className="badge badge-circle badge-light-success ms-3">{item?.unread_count}</span>}
                           </div>
