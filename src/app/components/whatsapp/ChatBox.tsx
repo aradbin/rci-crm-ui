@@ -15,49 +15,48 @@ const ChatBox = () => {
   const [conversations, setConversations] = useState<any>([])
   const [selectedConversation, setSelectedConversation]: any = useState()
 
-  let { data, fetchNextPage, hasNextPage, isFetchingNextPage } = QueryInfiniteUnipile(`all-whatsapp-${account}`, CHATS_UNIPILE_URL, { account_id: account, limit: 250 })
+  let { data, fetchNextPage, hasNextPage, isFetchingNextPage } = QueryInfiniteUnipile(`all-whatsapp-${account}`, CHATS_UNIPILE_URL, { account_id: account, limit: 250 }, account ? true : false)
 
-  const { data: attendees, fetchNextPage: fetchNextPageAttendees, hasNextPage: hasNextPageAttendees } = QueryInfiniteUnipile(`all-attendees-${account}`, CHAT_ATTENDEES_UNIPILE_URL, { account_id: account, limit: 250 })
+  const { data: attendees, fetchNextPage: fetchNextPageAttendees, hasNextPage: hasNextPageAttendees } = QueryInfiniteUnipile(`all-attendees-${account}`, CHAT_ATTENDEES_UNIPILE_URL, { account_id: account, limit: 250 }, account ? true : false)
 
   useEffect(() => {
-    if(attendees?.pages[attendees?.pages?.length - 1]?.cursor){
-      setConversations(data)
+    if(hasNextPageAttendees){
       fetchNextPageAttendees()
-    }else{
-      if(data?.pages && data?.pages.length > 0 && attendees?.pages && attendees?.pages.length > 0){
-        const allAttendees: any = []
-        attendees?.pages?.forEach((page: any) => {
-          page?.items?.forEach((item: any) => {
-            allAttendees.push(item)            
-          });
-        })
-
-        const pages: any = []
-        data?.pages?.forEach((page: any) => {
-          const items: any = []
-          page?.items?.forEach((item: any) => {
-            const attendee = allAttendees.find((a: any) => a?.provider_id === item?.provider_id)
-            items.push({
-              ...item,
-              attendee: attendee
-            })            
-          });
-          pages.push({
-            ...page,
-            items: items
-          })
-        })
-        setConversations({
-          ...data,
-          pages: pages
-        })
-      }
     }
-  },[attendees, data])
+    if(data?.pages && data?.pages.length > 0 && attendees?.pages && attendees?.pages.length > 0){
+      const allAttendees: any = []
+      attendees?.pages?.forEach((page: any) => {
+        page?.items?.forEach((item: any) => {
+          allAttendees.push(item)            
+        });
+      })
+
+      const pages: any = []
+      data?.pages?.forEach((page: any) => {
+        const items: any = []
+        page?.items?.forEach((item: any) => {
+          const attendee = allAttendees.find((a: any) => a?.provider_id === item?.provider_id)
+          items.push({
+            ...item,
+            attendee: attendee
+          })            
+        });
+        pages.push({
+          ...page,
+          items: items
+        })
+      })
+      setConversations({
+        ...data,
+        pages: pages
+      })
+    }else{
+      setConversations(data)
+    }
+  },[account, attendees, data])
 
   useEffect(() => {
     setSelectedConversation(null)
-    setConversations([])
   },[account])
 
   return (
@@ -132,7 +131,7 @@ const ChatBox = () => {
             </div>
           </div>
 
-          {!data?.pages?.length && <LoadingComponent />}
+          {account && !data?.pages?.length && <LoadingComponent />}
         </div>
       </div>
 
