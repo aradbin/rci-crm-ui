@@ -18,7 +18,7 @@ const ChatInner = ({conversation}: any) => {
   const [loading, setLoading] = useState<boolean>(false)
   const { setTitleForCreateTask } = useContext(AppContext)
 
-  const { data, isFetching, fetchNextPage, hasNextPage, isFetchingNextPage, refetch } = QueryInfiniteUnipile(`whatsapp-${conversation?.id}`, `${CHATS_UNIPILE_URL}/${conversation?.id}/messages`)
+  const { data, isFetching, fetchNextPage, hasNextPage, isFetchingNextPage, refetch } = QueryInfiniteUnipile(`whatsapp-${conversation?.id}`, `${CHATS_UNIPILE_URL}/${conversation?.id}/messages`, { limit: 250 })
 
   const queryClient = useQueryClient()
 

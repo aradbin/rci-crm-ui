@@ -15,9 +15,9 @@ const ChatBox = () => {
   const [conversations, setConversations] = useState<any>([])
   const [selectedConversation, setSelectedConversation]: any = useState()
 
-  let { data, fetchNextPage, hasNextPage, isFetchingNextPage } = QueryInfiniteUnipile(`all-whatsapp-${account}`, CHATS_UNIPILE_URL, {account_id: account})
+  let { data, fetchNextPage, hasNextPage, isFetchingNextPage } = QueryInfiniteUnipile(`all-whatsapp-${account}`, CHATS_UNIPILE_URL, { account_id: account, limit: 250 })
 
-  const { data: attendees, fetchNextPage: fetchNextPageAttendees, hasNextPage: hasNextPageAttendees } = QueryInfiniteUnipile(`all-attendees-${account}`, CHAT_ATTENDEES_UNIPILE_URL, {account_id: account})
+  const { data: attendees, fetchNextPage: fetchNextPageAttendees, hasNextPage: hasNextPageAttendees } = QueryInfiniteUnipile(`all-attendees-${account}`, CHAT_ATTENDEES_UNIPILE_URL, { account_id: account, limit: 250 })
 
   useEffect(() => {
     if(attendees?.pages[attendees?.pages?.length - 1]?.cursor){
@@ -57,8 +57,9 @@ const ChatBox = () => {
 
   useEffect(() => {
     setSelectedConversation(null)
+    setConversations([])
   },[account])
-console.log(conversations)
+
   return (
     <div className='d-flex flex-column flex-lg-row'>
       <div className='flex-column flex-lg-row-auto w-100 w-lg-300px w-xl-400px mb-10 mb-lg-0'>
@@ -99,7 +100,7 @@ console.log(conversations)
                   {page?.items?.map((item: any) => {
                     if(!filter || (item?.provider_id?.toLowerCase()?.includes(filter?.toLowerCase()) || item?.name?.toLowerCase()?.includes(filter?.toLowerCase()) || item?.attendee?.name?.toLowerCase()?.includes(filter?.toLowerCase()))){
                       return (
-                        <div className={`d-flex flex-stack pe-5 py-3 cursor-pointer rounded ${selectedConversation?.id === item?.id ? 'bg-success-subtle' : ''}`} key={item?.id} onClick={() => setSelectedConversation(item)}>
+                        <div className={`d-flex flex-stack pe-5 ps-2 py-3 cursor-pointer rounded ${selectedConversation?.id === item?.id ? 'bg-success-subtle' : ''}`} key={item?.id} onClick={() => setSelectedConversation(item)}>
                           <div className='d-flex align-items-center'>
                             <AvatarComponent avatar={item?.customer?.avatar} name={item?.name || item?.attendee?.name || item?.provider_id?.split('@')[0]} style='circle' size='40' />
                             <div className='ms-5'>
