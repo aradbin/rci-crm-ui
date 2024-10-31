@@ -20,7 +20,7 @@ const TaskStatusField = ({task}: any) => {
             setLabel(status.label)
         }
         if(task?.status === 'inprogress' && task?.running){
-            setIdForTaskRunning(task?.id)
+            setIdForTaskRunning(task)
         }else{
             setIdForTaskRunning([])
         }
