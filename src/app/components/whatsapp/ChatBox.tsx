@@ -97,7 +97,7 @@ const ChatBox = () => {
               {conversations?.pages?.map((page: any, index: number) => (
                 <div key={index}>
                   {page?.items?.map((item: any) => {
-                    if(!filter || (item?.provider_id?.toLowerCase()?.includes(filter?.toLowerCase()) || item?.name?.toLowerCase()?.includes(filter?.toLowerCase()) || item?.attendee?.name?.toLowerCase()?.includes(filter?.toLowerCase()))){
+                    if(item?.provider_id !== 'status@broadcast' && (!filter || item?.provider_id?.toLowerCase()?.includes(filter?.toLowerCase()) || item?.name?.toLowerCase()?.includes(filter?.toLowerCase()) || item?.attendee?.name?.toLowerCase()?.includes(filter?.toLowerCase()))){
                       return (
                         <div className={`d-flex flex-stack pe-5 ps-2 py-3 cursor-pointer rounded ${selectedConversation?.id === item?.id ? 'bg-success-subtle' : ''}`} key={item?.id} onClick={() => setSelectedConversation(item)}>
                           <div className='d-flex align-items-center'>
